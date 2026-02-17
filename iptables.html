@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iptables: The Firewall Under Everything — A DevOps Engineering Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@300;400;500;600&display=swap');
+
+  :root {
+    --ink: #1a1814;
+    --paper: #f5f0e8;
+    --rule: #c8bfa8;
+    --accent: #b84a2e;
+    --accent-light: #e8d0c8;
+    --muted: #6b6458;
+    --code-bg: #f0ebe0;
+    --pull-bg: #1a1814;
+    --pull-text: #f5f0e8;
+    --column: 720px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 18px;
+  }
+
+  /* HEADER */
+  .masthead {
+    border-bottom: 3px double var(--ink);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .masthead-label {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .masthead-category {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* HERO */
+  .hero {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem 3rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .hero-kicker {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .hero-kicker::before {
+    content: '';
+    display: inline-block;
+    width: 2rem;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    max-width: 820px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-deck {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 640px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-meta {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .hero-meta strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .tag {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    display: inline-block;
+  }
+
+  /* LAYOUT */
+  .article-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 4rem;
+    padding-top: 3.5rem;
+    padding-bottom: 4rem;
+  }
+
+  @media (max-width: 900px) {
+    .article-wrapper { grid-template-columns: 1fr; gap: 2rem; }
+    .sidebar { display: none; }
+  }
+
+  .article-body { min-width: 0; }
+
+  /* TYPOGRAPHY */
+  h2 {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin-top: 3rem;
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  h2:first-child { margin-top: 0; }
+
+  h3 {
+    font-family: 'Barlow', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 2rem;
+    margin-bottom: 0.7rem;
+  }
+
+  p {
+    margin-bottom: 1.3rem;
+    color: var(--ink);
+  }
+
+  p + p { text-indent: 1.2em; }
+  h2 + p, h3 + p, blockquote + p, pre + p, .callout + p { text-indent: 0; }
+
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* CODE */
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.8em;
+    background: var(--code-bg);
+    border: 1px solid var(--rule);
+    padding: 0.1em 0.4em;
+    border-radius: 2px;
+    color: var(--accent);
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.82rem;
+    background: var(--ink);
+    color: #d4cfbf;
+    padding: 1.5rem 1.6rem;
+    overflow-x: auto;
+    margin: 1.8rem 0;
+    line-height: 1.65;
+    border-left: 3px solid var(--accent);
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  .comment { color: #7a7060; }
+  .cmd { color: #e8c87a; }
+  .flag { color: #82b0d4; }
+  .value { color: #a8c895; }
+
+  /* PULL QUOTE */
+  blockquote {
+    margin: 2.5rem -1.5rem;
+    padding: 1.8rem 2rem;
+    background: var(--pull-bg);
+    color: var(--pull-text);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    border: none;
+    position: relative;
+  }
+
+  blockquote::before {
+    content: '"';
+    font-size: 5rem;
+    line-height: 0;
+    position: absolute;
+    top: 2.5rem;
+    left: 1.5rem;
+    opacity: 0.2;
+    font-family: Georgia, serif;
+  }
+
+  blockquote p {
+    color: var(--pull-text);
+    margin: 0;
+    padding-left: 2rem;
+  }
+
+  blockquote p + p { text-indent: 0; margin-top: 0.5rem; color: #a09888; font-size: 0.85rem; font-style: normal; }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 1.2rem 1.5rem;
+    margin: 2rem 0;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 400;
+    color: #4a2018;
+    line-height: 1.65;
+  }
+
+  .callout strong {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  .callout p { margin: 0; color: inherit; }
+  .callout p + p { text-indent: 0; margin-top: 0.5rem; }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 1.8rem 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.88rem;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    padding: 0.7rem 1rem;
+    text-align: left;
+  }
+
+  td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+
+  td code {
+    font-size: 0.85em;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    padding-top: 0.5rem;
+  }
+
+  .sidebar-box {
+    border: 1px solid var(--rule);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: sticky;
+    top: 2rem;
+  }
+
+  .sidebar-label {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .toc-list li {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.83rem;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+    padding-left: 0.8rem;
+    border-left: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .toc-list li:hover { border-left-color: var(--accent); }
+
+  .toc-list a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .toc-list a:hover { color: var(--ink); }
+
+  .toc-list .toc-num {
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 0.4rem;
+    font-size: 0.75rem;
+  }
+
+  /* DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 2.5rem 0;
+  }
+
+  .section-rule {
+    text-align: center;
+    color: var(--rule);
+    margin: 2.5rem 0;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+  }
+
+  /* INLINE LIST */
+  ul.inline-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.2rem 0 1.5rem;
+  }
+
+  ul.inline-list li {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.93rem;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    line-height: 1.5;
+  }
+
+  ul.inline-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  ul.inline-list li:last-child { border-bottom: none; }
+
+  /* FOOTER */
+  .article-footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-top: 3px double var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-note {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .footer-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero { animation: fadeIn 0.5s ease both; }
+  .article-wrapper { animation: fadeIn 0.6s ease 0.1s both; }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header>
+  <div class="masthead">
+    <span class="masthead-label">Infrastructure Engineering</span>
+    <span class="masthead-category">Linux &bull; Security &bull; DevOps</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">Deep Dive</div>
+  <h1>iptables: The Firewall Under Everything</h1>
+  <p class="hero-deck">You may never touch an iptables command directly — but it is already running on every Linux server, every Kubernetes node, and every Docker host you operate. Here is what you actually need to understand about it.</p>
+  <div class="hero-meta">
+    <span><strong>Audience:</strong> DevOps, Platform, Security Engineers</span>
+    <span><strong>Level:</strong> Intermediate – Advanced</span>
+    <span class="tag">Linux</span>
+    <span class="tag">Networking</span>
+    <span class="tag">Security</span>
+    <span class="tag">Kubernetes</span>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="article-wrapper">
+
+  <!-- ARTICLE BODY -->
+  <article class="article-body">
+
+    <!-- 1. HOOK -->
+    <h2 id="intro">The Firewall You Did Not Configure Is Already Running</h2>
+
+    <p>Here is something that tends to surprise engineers who are new to Kubernetes: when you install a cluster and deploy a service, iptables rules start appearing on your nodes whether you asked for it or not. kube-proxy writes them. Flannel writes them. Calico writes them. Your CNI plugin is manipulating Netfilter chains every time a pod starts or a service changes. You may have spent years configuring cloud security groups and AWS VPC routing, never touching a raw iptables command, and yet your entire workload routing has been running on top of it the whole time.</p>
+
+    <p>That is worth pausing on. iptables is not legacy technology being phased out. It is the load balancer for ClusterIP services on most clusters today. It is how Docker builds network isolation between containers. It is why your VPN server correctly routes traffic and why your homelab bastion can forward SSH to internal nodes. If you operate Linux infrastructure at any depth, you are operating on top of iptables — and if you do not understand it, you are flying blind.</p>
+
+    <blockquote>
+      <p>The engineers who get burned by iptables are almost never the ones who know too much about it. They are the ones who assumed someone else handled it.</p>
+    </blockquote>
+
+    <p>This guide is not a command reference. You can read man pages for that. What this is about is building the correct mental model — understanding how packets actually move through the system, where the real risks are, and how to design firewall logic that does not fail you at 2am.</p>
+
+
+    <!-- 2. WHAT IT IS -->
+    <h2 id="what-it-is">What iptables Actually Is</h2>
+
+    <p>The first thing to understand is that <code>iptables</code> itself does almost nothing. It is a user-space tool — a command-line interface that talks to the kernel subsystem called Netfilter. Netfilter is a set of hooks embedded into the Linux network stack. Every packet that enters, exits, or is forwarded through the kernel passes through these hooks. Netfilter is the engine. iptables is how you program it.</p>
+
+    <p>This distinction matters because it explains the architecture's stability. The Netfilter hooks have been in the Linux kernel since version 2.4, and they have not fundamentally changed. iptables as a front-end is older than most current infrastructure engineers' careers. When people say iptables is "old," they are right — and that is part of why it is everywhere. Every Linux tool that needs packet filtering either uses it directly or builds on the same Netfilter hooks underneath.</p>
+
+    <p>The complexity of iptables comes from one design decision: it tries to be general enough to handle almost any packet manipulation task. Filtering, NAT, packet marking, connection tracking, logging — all of it flows through the same framework. That generality is what makes it powerful and what makes it confusing. When you start learning iptables, you are not learning a firewall. You are learning a packet processing pipeline that can be used to build a firewall among other things.</p>
+
+
+    <!-- 3. PACKET FLOW -->
+    <h2 id="packet-flow">How Packets Actually Move Through the System</h2>
+
+    <p>If there is one concept to internalize before writing a single rule, it is the packet flow model. Most production mistakes I have seen come directly from engineers who did not understand where in the flow their rule was being applied.</p>
+
+    <h3>Tables and Their Purpose</h3>
+
+    <p>Rules in iptables are organized into tables, each serving a different concern. The four you will realistically encounter are:</p>
+
+    <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Table</th><th>Purpose</th><th>When You Use It</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>filter</code></td>
+          <td>Allow or deny packets</td>
+          <td>All standard firewalling. This is the default if you specify no table.</td>
+        </tr>
+        <tr>
+          <td><code>nat</code></td>
+          <td>Address translation</td>
+          <td>Port forwarding, masquerading, DNAT for load balancing.</td>
+        </tr>
+        <tr>
+          <td><code>mangle</code></td>
+          <td>Packet header modification</td>
+          <td>Changing TTL, marking packets for routing policy, QoS.</td>
+        </tr>
+        <tr>
+          <td><code>raw</code></td>
+          <td>Bypass connection tracking</td>
+          <td>High-throughput scenarios where conntrack overhead is a problem.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Chains: Where Packets Enter the Pipeline</h3>
+
+    <p>Within each table, packets enter at a chain. The chain name reflects the hook in the network stack. <code>INPUT</code> handles packets destined for the local machine. <code>OUTPUT</code> handles packets generated by local processes. <code>FORWARD</code> handles packets that are routing through the machine to somewhere else — this is what kube-proxy is writing to when it routes between pods.</p>
+
+    <p>The critical mental model: a packet destined for your server hits <code>PREROUTING</code> first, then gets routed, and if it is for a local process it hits <code>INPUT</code>. A packet you are forwarding hits <code>PREROUTING</code>, then <code>FORWARD</code>, then <code>POSTROUTING</code>. Never <code>INPUT</code>, never <code>OUTPUT</code>. This is where engineers write rules in the wrong chain and then spend an hour wondering why traffic is not matching.</p>
+
+    <h3>Rules and Targets</h3>
+
+    <p>Each rule in a chain specifies match conditions — protocol, source IP, destination port, connection state — and a target, which is what happens when the packet matches. <code>ACCEPT</code> and <code>DROP</code> are the common ones. <code>REJECT</code> sends back an ICMP error. <code>LOG</code> writes a log entry and continues processing. Rules are evaluated in order, and the first match wins. That ordering is not optional — it is the entire logic of how the firewall behaves.</p>
+
+
+    <!-- 4. PRACTICAL USE CASES -->
+    <h2 id="practical">Practical DevOps Usage: What You Actually Need</h2>
+
+    <h3>Protecting SSH Without Locking Yourself Out</h3>
+
+    <p>SSH access is both the most important thing to protect and the most dangerous rule to write incorrectly. The canonical failure mode: engineer sets default policy to DROP, forgets to allow port 22 first, saves the rules, and is now locked out of a cloud VM with no console access.</p>
+
+    <p>The discipline is simple. Before you set a restrictive default policy, put the allow rules in first. Always test with the default policy still set to ACCEPT, verify your rules match, then change the policy. And add rate limiting to SSH from day one — it is not optional on anything internet-facing:</p>
+
+<pre><span class="comment"># Rate-limit new SSH connections to 4 per minute per IP</span>
+<span class="cmd">iptables</span> <span class="flag">-A INPUT</span> <span class="flag">-p tcp</span> <span class="flag">--dport 22</span> <span class="flag">-m conntrack</span> <span class="flag">--ctstate NEW</span> \
+  <span class="flag">-m recent</span> <span class="flag">--name ssh</span> <span class="flag">--rcheck</span> <span class="flag">--seconds 60</span> <span class="flag">--hitcount 4</span> <span class="flag">-j DROP</span>
+<span class="cmd">iptables</span> <span class="flag">-A INPUT</span> <span class="flag">-p tcp</span> <span class="flag">--dport 22</span> <span class="flag">-m conntrack</span> <span class="flag">--ctstate NEW</span> \
+  <span class="flag">-m recent</span> <span class="flag">--name ssh</span> <span class="flag">--set</span> <span class="flag">-j ACCEPT</span></pre>
+
+    <p>The <code>recent</code> module tracks per-IP hit counts in a kernel table. No external dependency, no daemon to manage. This alone eliminates a significant fraction of brute force exposure on SSH.</p>
+
+    <h3>Database Server Isolation</h3>
+
+    <p>Database servers are where misconfiguration is most costly. The correct design is to explicitly enumerate which source IPs are allowed on the database port, and drop everything else, rather than relying only on application-layer authentication:</p>
+
+<pre><span class="comment"># Only these application servers may connect to PostgreSQL</span>
+<span class="cmd">iptables</span> <span class="flag">-A INPUT</span> <span class="flag">-p tcp</span> <span class="flag">-s 192.168.10.5</span> <span class="flag">--dport 5432</span> <span class="flag">-j ACCEPT</span>
+<span class="cmd">iptables</span> <span class="flag">-A INPUT</span> <span class="flag">-p tcp</span> <span class="flag">-s 192.168.10.6</span> <span class="flag">--dport 5432</span> <span class="flag">-j ACCEPT</span>
+<span class="comment"># Drop everything else attempting port 5432 — no REJECT, no logging, just drop</span>
+<span class="cmd">iptables</span> <span class="flag">-A INPUT</span> <span class="flag">-p tcp</span> <span class="flag">--dport 5432</span> <span class="flag">-j DROP</span></pre>
+
+    <p>This pattern gives you defense in depth. Even if a database credential leaks, an attacker connecting from an unauthorized IP hits a wall before the authentication handshake begins.</p>
+
+    <h3>Kubernetes Node Hardening</h3>
+
+    <p>On a Kubernetes node, you are largely a passenger with respect to iptables — kube-proxy owns the <code>KUBE-*</code> chains and will overwrite rules it manages. What you can control is host-level traffic. Restrict <code>INPUT</code> on the host to kubelet API, SSH, and node-to-node ports; let your CNI handle pod-level policy. Do not try to manually manage rules in the same chains kube-proxy writes to. You will lose that battle.</p>
+
+    <div class="callout">
+      <strong>Operational Warning</strong>
+      <p>Never run <code>iptables -F</code> on a live Kubernetes node in production. It will flush the KUBE-SERVICES and KUBE-FORWARD chains and break all ClusterIP routing immediately. Pods will still run, but inter-service communication dies. Recovery requires restarting kube-proxy to rebuild its chains.</p>
+    </div>
+
+
+    <!-- 5. BEST PRACTICES -->
+    <h2 id="best-practices">Security and Operational Best Practices</h2>
+
+    <h3>Connection Tracking Is Not Optional</h3>
+
+    <p>Stateless packet filtering — matching only on IP, protocol, and port — was the approach before conntrack existed. You could make it work, but you had to write explicit rules for both directions of every connection. Connection tracking was a significant improvement: the kernel maintains a state table of active connections, and rules can match on state rather than re-specifying the whole connection pattern.</p>
+
+    <p>The rule that should appear near the top of every INPUT chain:</p>
+
+<pre><span class="cmd">iptables</span> <span class="flag">-A INPUT</span> <span class="flag">-m conntrack</span> <span class="flag">--ctstate ESTABLISHED,RELATED</span> <span class="flag">-j ACCEPT</span>
+<span class="cmd">iptables</span> <span class="flag">-A INPUT</span> <span class="flag">-m conntrack</span> <span class="flag">--ctstate INVALID</span> <span class="flag">-j DROP</span></pre>
+
+    <p>The first line allows return traffic for connections your server already established outbound — outbound DNS queries, package downloads, API calls. The second drops malformed packets that do not match any tracked connection. Without these two rules, you will write rules that seem to allow outbound connections but responses never make it back, and you will spend real time debugging what is a fundamentally simple misconfiguration.</p>
+
+    <h3>Log What You Drop, Not Everything</h3>
+
+    <p>Logging every dropped packet on an internet-facing server will fill your disk and degrade performance. The useful logging strategy is targeted: log on custom chains for specific threat categories, rate-limit the log rule itself, and write to a dedicated file. A LOG target does not terminate processing — the packet continues to the next rule — so you can log and then drop cleanly:</p>
+
+<pre><span class="comment"># Create a reusable chain that logs then drops</span>
+<span class="cmd">iptables</span> <span class="flag">-N</span> <span class="value">LOG_AND_DROP</span>
+<span class="cmd">iptables</span> <span class="flag">-A</span> <span class="value">LOG_AND_DROP</span> <span class="flag">-m limit</span> <span class="flag">--limit 5/min</span> \
+  <span class="flag">-j LOG</span> <span class="flag">--log-prefix</span> <span class="value">"FW-DROP: "</span> <span class="flag">--log-level 4</span>
+<span class="cmd">iptables</span> <span class="flag">-A</span> <span class="value">LOG_AND_DROP</span> <span class="flag">-j DROP</span></pre>
+
+    <h3>Rule Order Is Not a Detail</h3>
+
+    <p>Rules are evaluated top to bottom, first match wins. A broad ACCEPT rule before a narrow DROP rule means the DROP never fires. Engineers who learned iptables by adding rules incrementally often end up with chains where early rules silently supersede later ones. If a rule never shows packet hits in <code>iptables -L -v</code>, it is either never matched or shadowed by an earlier rule — both of which deserve investigation.</p>
+
+
+    <!-- 6. PERFORMANCE -->
+    <h2 id="performance">Performance and Scaling Considerations</h2>
+
+    <p>iptables performance becomes a real concern when rule sets grow large. Each packet traverses the chain linearly until it matches. A chain with five hundred rules means, in the worst case, five hundred comparisons per packet. This is not hypothetical — Kubernetes clusters with hundreds of services accumulate KUBE-SERVICES chain entries at exactly this rate, and it was a known scalability problem that motivated the development of IPVS mode for kube-proxy and eventually nftables.</p>
+
+    <h3>The Connection Tracking Table Limit</h3>
+
+    <p>The most operationally significant performance constraint is <code>nf_conntrack_max</code> — the maximum number of connections the kernel will track simultaneously. The default on many distributions is 65,536. On a high-traffic server or a Kubernetes node handling many short-lived pod connections, this fills up. When it does, new connections fail with cryptic errors and the kernel logs <code>nf_conntrack: table full, dropping packet</code>. Check your current table usage:</p>
+
+<pre><span class="comment"># Current tracked connections vs maximum</span>
+<span class="cmd">cat</span> /proc/net/nf_conntrack | <span class="cmd">wc</span> <span class="flag">-l</span>
+<span class="cmd">cat</span> /proc/sys/net/netfilter/nf_conntrack_max
+
+<span class="comment"># Increase limit and reduce TCP timeout for established connections</span>
+<span class="cmd">sysctl</span> <span class="flag">-w</span> <span class="value">net.netfilter.nf_conntrack_max=262144</span>
+<span class="cmd">sysctl</span> <span class="flag">-w</span> <span class="value">net.netfilter.nf_conntrack_tcp_timeout_established=300</span></pre>
+
+    <h3>Use ipset for Large IP Lists</h3>
+
+    <p>If you need to block or allow hundreds of IP addresses, do not write hundreds of iptables rules. Use <code>ipset</code> to create a hash table of IPs in the kernel, then match the set in a single rule. The performance difference is not marginal — an ipset lookup is O(1), a chain traversal is O(n). For geo-blocking or blocklist management, ipset is the only operationally sane approach:</p>
+
+<pre><span class="comment"># Create and populate a blocklist set</span>
+<span class="cmd">ipset</span> create blocklist hash:ip
+<span class="cmd">ipset</span> add blocklist 198.51.100.0/24
+
+<span class="comment"># One rule handles the entire list</span>
+<span class="cmd">iptables</span> <span class="flag">-A INPUT</span> <span class="flag">-m set</span> <span class="flag">--match-set blocklist src</span> <span class="flag">-j DROP</span></pre>
+
+
+    <!-- 7. MISTAKES -->
+    <h2 id="mistakes">Common Mistakes That Will Ruin Your Day</h2>
+
+    <ul class="inline-list">
+      <li><strong>Forgetting persistence.</strong> iptables rules live in kernel memory. A reboot or a service restart flushes everything. If you wrote the perfect rule set and did not run <code>iptables-save</code> or configure <code>iptables-persistent</code>, it is gone in the morning. This one has caught engineers who have been working with iptables for years.</li>
+      <li><strong>No conntrack rule, but a restrictive default policy.</strong> The server accepts the connection, sends back SYN-ACK, then the response to the client's ACK hits INPUT and drops because there is no ESTABLISHED allow rule. The client sees a connection that never completes. Debugging this via tcpdump and iptables logs takes time that a three-line conntrack rule would have prevented.</li>
+      <li><strong>Testing rule changes in production without a fallback.</strong> The safe approach: set a cron job to run <code>iptables -P INPUT ACCEPT && iptables -F</code> every ten minutes before you start, then delete the cron job after you verify access. If you lock yourself out, the cron fires and saves you. This feels paranoid until the one time it matters.</li>
+      <li><strong>Assuming cloud security groups replace host firewalls.</strong> They are different layers. A cloud security group blocks traffic before it reaches your instance. iptables operates on traffic after it arrives at the kernel. For internal VPC traffic, or for Kubernetes pod-to-pod communication, the cloud security group may not be enforcing what you expect.</li>
+      <li><strong>Writing DROP rules instead of logging first.</strong> When debugging a service that cannot reach another service, if you have no logging on your DROP rules you have no visibility. Write your rules to log first, verify the log shows what you expect, then convert to drop. Debugging is much faster when you have evidence.</li>
+    </ul>
+
+
+    <!-- 8. MODERN INFRA -->
+    <h2 id="modern">iptables in Modern Infrastructure</h2>
+
+    <p>The question engineers ask is: if we have cloud security groups, Kubernetes NetworkPolicies, and service meshes, why do I still need to understand iptables? The answer is that none of those things replace it at the kernel level — they either implement their policies using it, or they sit at a different layer entirely.</p>
+
+    <p>Kubernetes NetworkPolicies, depending on your CNI plugin, are often implemented as iptables rules. Calico translates NetworkPolicy objects into iptables chains. Flannel uses iptables for masquerading egress traffic. Even with Cilium — which uses eBPF — the iptables rules do not entirely disappear from a cluster running in a compatibility mode. Docker builds network bridges and masquerade rules using iptables every time a container starts. You can verify this yourself on any Docker host by comparing <code>iptables -L -t nat</code> before and after <code>docker run</code>.</p>
+
+    <p>The practical implication: when something in your container or Kubernetes networking is broken, knowing how to read and interpret iptables rules is a core debugging skill. The engineer who can look at <code>iptables -L -v -n</code> output and trace where a packet is being dropped will find the problem in minutes. The engineer who cannot will escalate it as a "network issue" and wait for someone else.</p>
+
+
+    <!-- 9. ALTERNATIVES -->
+    <h2 id="alternatives">When to Move Past iptables</h2>
+
+    <p>iptables has real limitations that are worth being honest about. The linear rule traversal model does not scale well past a few hundred rules in a chain. The atomic rule management is difficult — you cannot update the rule set transactionally, so there are brief windows during rule replacement where the firewall state is inconsistent. The syntax is arcane enough that rule review in code review is error-prone.</p>
+
+    <p><strong>nftables</strong> is the direct successor, built on the same Netfilter hooks but with a cleaner rule language and better performance characteristics. It ships with all major current distributions and is what <code>iptables</code> calls transparently on some systems via a compatibility layer. If you are designing a new system from scratch and you have the option, nftables is the correct choice. The concepts transfer almost directly.</p>
+
+    <p><strong>Cloud security groups</strong> are appropriate for external perimeter control on cloud VMs. They operate before traffic reaches the instance and have no per-packet processing overhead at the OS level. Use them. But do not use them as a substitute for host-level firewalling — they are a different layer.</p>
+
+    <p><strong>eBPF-based solutions</strong> like Cilium operate at a fundamentally different performance level and allow policy enforcement with much finer granularity and lower latency than iptables. On large Kubernetes clusters running thousands of services, the difference in kube-proxy behavior between iptables mode and eBPF mode is measurable. But eBPF is a newer operational surface — if your team does not have experience debugging eBPF programs, adding that dependency to your production stack requires honest assessment.</p>
+
+    <p>For most teams managing ten to a hundred Linux servers, a mix of cloud security groups at the perimeter and iptables (or nftables) on the host is still the right answer. It is well-understood, well-documented, and the operational tooling is mature. Adopt newer technology when you have a specific, measurable problem that the new technology solves — not because it is newer.</p>
+
+
+    <!-- 10. CONCLUSION -->
+    <h2 id="conclusion">The Engineering Takeaway</h2>
+
+    <p>iptables is powerful, genuinely useful, and still operating under most Linux infrastructure whether you interact with it directly or not. The engineers who get burned by it are rarely the ones who spent time understanding the packet flow model. They are the ones who copied rules from Stack Overflow without understanding what the rules were doing, or who assumed their cloud security group made host firewalling unnecessary, or who never thought about what happens to their firewall rules after a reboot.</p>
+
+    <p>The discipline iptables rewards is systematic thinking about network state: what traffic should be allowed, where rules are applied in the packet flow, what happens when an assumption is wrong. That discipline transfers to every other network security tool in your stack. Whether you end up managing iptables directly, debugging Kubernetes CNI behavior, or tuning nftables rules for a high-throughput router, the mental model you build here applies.</p>
+
+    <p>Understand the flow. Write rules with intent. Test before you trust. Log before you drop. And always, before you change the default policy to DROP, make sure your SSH allow rule is already in place.</p>
+
+    <div class="section-rule">* * *</div>
+
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-box">
+      <div class="sidebar-label">Contents</div>
+      <ul class="toc-list">
+        <li><a href="#intro"><span class="toc-num">01</span>The Firewall Under Everything</a></li>
+        <li><a href="#what-it-is"><span class="toc-num">02</span>What iptables Actually Is</a></li>
+        <li><a href="#packet-flow"><span class="toc-num">03</span>How Packets Move Through the System</a></li>
+        <li><a href="#practical"><span class="toc-num">04</span>Practical DevOps Usage</a></li>
+        <li><a href="#best-practices"><span class="toc-num">05</span>Security &amp; Operational Best Practices</a></li>
+        <li><a href="#performance"><span class="toc-num">06</span>Performance Considerations</a></li>
+        <li><a href="#mistakes"><span class="toc-num">07</span>Common Mistakes</a></li>
+        <li><a href="#modern"><span class="toc-num">08</span>iptables in Modern Infrastructure</a></li>
+        <li><a href="#alternatives"><span class="toc-num">09</span>When to Move Past iptables</a></li>
+        <li><a href="#conclusion"><span class="toc-num">10</span>The Engineering Takeaway</a></li>
+      </ul>
+    </div>
+  </aside>
+
+</div><!-- /article-wrapper -->
+
+<!-- FOOTER -->
+<footer class="article-footer">
+  <span class="footer-note">Infrastructure Engineering Series &mdash; Linux, Networking &amp; Security</span>
+  <div class="footer-tags">
+    <span class="tag">iptables</span>
+    <span class="tag">Netfilter</span>
+    <span class="tag">Kubernetes</span>
+    <span class="tag">Linux Security</span>
+  </div>
+</footer>
+
+</body>
+</html>
