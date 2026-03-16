@@ -1,0 +1,270 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{font-family:'Syne',sans-serif;background:#0a0a0f;color:#e8e8f0;min-height:600px;padding:1.5rem;border-radius:12px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.title{font-size:13px;font-family:'JetBrains Mono',monospace;color:#555;letter-spacing:0.1em;text-transform:uppercase}
+.tabs{display:flex;gap:6px}
+.tab{padding:6px 14px;border-radius:6px;border:1px solid #222;background:transparent;color:#666;font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all 0.2s}
+.tab.active{background:#1a1a2e;border-color:#4a4aff;color:#8888ff}
+.tab:hover:not(.active){border-color:#333;color:#aaa}
+
+.diagram{position:relative;min-height:420px}
+
+/* NODES */
+.node{position:absolute;border-radius:10px;border:1px solid #222;padding:14px 16px;cursor:pointer;transition:all 0.25s;background:#111118}
+.node:hover{border-color:#4a4aff44;transform:translateY(-2px)}
+.node.active{border-color:#4a4aff;background:#12121f;box-shadow:0 0 20px #4a4aff22}
+.node-icon{font-size:18px;margin-bottom:6px}
+.node-title{font-size:13px;font-weight:600;color:#e8e8f0;margin-bottom:2px}
+.node-sub{font-size:11px;color:#555;font-family:'JetBrains Mono',monospace}
+.node-badge{display:inline-block;font-size:9px;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:4px;margin-bottom:6px;font-weight:600;letter-spacing:0.05em}
+
+/* ARROWS */
+.arrows-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.arrow-path{fill:none;stroke-width:1.5;stroke-dasharray:5 4;stroke-linecap:round}
+.arrow-path.animated{animation:dash 1.5s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-18}}
+.arrow-label{font-size:10px;font-family:'JetBrains Mono',monospace;fill:#444}
+
+/* DETAIL PANEL */
+.detail{background:#111118;border:1px solid #222;border-radius:10px;padding:1.25rem;margin-top:1rem;animation:fadeIn 0.2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.detail h3{font-size:15px;font-weight:600;margin-bottom:8px;color:#e8e8f0}
+.detail p{font-size:13px;color:#888;line-height:1.6;margin-bottom:10px}
+.detail-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:10px;font-family:'JetBrains Mono',monospace;padding:3px 8px;border-radius:4px;background:#1a1a2e;color:#8888ff;border:1px solid #4a4aff33}
+
+/* TOOLTIP */
+.tooltip{position:absolute;background:#1a1a2e;border:1px solid #4a4aff44;border-radius:8px;padding:8px 12px;font-size:11px;color:#aaa;font-family:'JetBrains Mono',monospace;pointer-events:none;z-index:100;opacity:0;transition:opacity 0.15s;max-width:180px;line-height:1.5}
+
+/* LEGEND */
+.legend{display:flex;gap:16px;margin-top:1rem;font-size:11px;font-family:'JetBrains Mono',monospace;color:#444}
+.legend span{display:flex;align-items:center;gap:5px}
+.ldot{width:8px;height:8px;border-radius:2px}
+</style>
+
+<div class="wrap">
+  <div class="top-bar">
+    <div class="title">// interactive diagram template</div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('mcp')">MCP</button>
+      <button class="tab" onclick="switchTab('rag')">RAG</button>
+      <button class="tab" onclick="switchTab('agent')">AI Agent</button>
+    </div>
+  </div>
+
+  <div class="diagram" id="diagram">
+    <svg class="arrows-svg" id="arrows"></svg>
+    <!-- nodes injected by JS -->
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+
+  <div id="detail" style="display:none"></div>
+
+  <div class="legend">
+    <span><span class="ldot" style="background:#4a4aff"></span>active flow</span>
+    <span><span class="ldot" style="background:#ff6b4a"></span>data</span>
+    <span><span class="ldot" style="background:#4aff9a"></span>output</span>
+    <span><span class="ldot" style="background:#333"></span>click node for details</span>
+  </div>
+</div>
+
+<script>
+const TABS = {
+  mcp: {
+    nodes: [
+      {id:'host', x:10, y:10, w:130, h:80, badge:'HOST', badgeColor:'#4a4aff', icon:'⬡', title:'MCP Host', sub:'Claude / IDE / Tools', detail:{h:'MCP Host', p:'The host application (Claude Desktop, VS Code, etc.) that contains MCP clients. It manages connections and coordinates tool access for the LLM.', tags:['Claude Desktop','VS Code','Cursor','Any LLM app']}},
+      {id:'clientA', x:175, y:5, w:110, h:55, badge:'CLIENT', badgeColor:'#666', icon:'◈', title:'MCP Client A', sub:'protocol handler', detail:{h:'MCP Client', p:'Thin protocol layer inside the host. Each client maintains a 1:1 connection with one MCP server, handling message serialization and transport.', tags:['JSON-RPC 2.0','stdio / SSE','1:1 with server']}},
+      {id:'clientB', x:175, y:70, w:110, h:55, badge:'CLIENT', badgeColor:'#666', icon:'◈', title:'MCP Client B', sub:'protocol handler', detail:{h:'MCP Client', p:'Thin protocol layer inside the host. Each client maintains a 1:1 connection with one MCP server, handling message serialization and transport.', tags:['JSON-RPC 2.0','stdio / SSE','1:1 with server']}},
+      {id:'clientC', x:175, y:135, w:110, h:55, badge:'CLIENT', badgeColor:'#666', icon:'◈', title:'MCP Client C', sub:'protocol handler', detail:{h:'MCP Client', p:'Thin protocol layer inside the host. Each client maintains a 1:1 connection with one MCP server, handling message serialization and transport.', tags:['JSON-RPC 2.0','stdio / SSE','1:1 with server']}},
+      {id:'serverA', x:320, y:5, w:120, h:55, badge:'SERVER', badgeColor:'#ff6b4a', icon:'▣', title:'MCP Server A', sub:'tools + resources', detail:{h:'MCP Server', p:'Exposes tools, prompts, and resources to the LLM via the MCP protocol. Servers are thin wrappers around existing APIs or local capabilities.', tags:['Tools','Prompts','Resources','Sampling']}},
+      {id:'serverB', x:320, y:70, w:120, h:55, badge:'SERVER', badgeColor:'#ff6b4a', icon:'▣', title:'MCP Server B', sub:'tools + resources', detail:{h:'MCP Server', p:'Exposes tools, prompts, and resources to the LLM via the MCP protocol. Servers are thin wrappers around existing APIs or local capabilities.', tags:['Tools','Prompts','Resources','Sampling']}},
+      {id:'serverC', x:320, y:135, w:120, h:55, badge:'SERVER', badgeColor:'#ff6b4a', icon:'▣', title:'MCP Server C', sub:'tools + resources', detail:{h:'MCP Server', p:'Exposes tools, prompts, and resources to the LLM via the MCP protocol. Servers are thin wrappers around existing APIs or local capabilities.', tags:['Tools','Prompts','Resources','Sampling']}},
+      {id:'github', x:475, y:5, w:105, h:50, badge:'API', badgeColor:'#4aff9a', icon:'◎', title:'GitHub / Slack', sub:'web APIs', detail:{h:'External APIs', p:'Remote services accessed via HTTP. MCP servers translate LLM tool calls into API requests and return structured results.', tags:['REST','GraphQL','Webhooks']}},
+      {id:'db', x:475, y:70, w:105, h:50, badge:'DATA', badgeColor:'#4aff9a', icon:'◉', title:'Database', sub:'executes queries', detail:{h:'Database', p:'SQL or NoSQL databases. The MCP server handles connection pooling, query execution, and result formatting back to the LLM.', tags:['PostgreSQL','MySQL','MongoDB']}},
+      {id:'fs', x:475, y:135, w:105, h:50, badge:'FS', badgeColor:'#4aff9a', icon:'◌', title:'Filesystem', sub:'reads / writes', detail:{h:'Filesystem', p:'Local file access with configurable path restrictions. The MCP server enforces access controls before passing file contents to the LLM.', tags:['Read','Write','Watch','Search']}},
+    ],
+    arrows:[
+      {from:'host', to:'clientA', color:'#4a4aff', label:''},
+      {from:'host', to:'clientB', color:'#4a4aff', label:''},
+      {from:'host', to:'clientC', color:'#4a4aff', label:''},
+      {from:'clientA', to:'serverA', color:'#4a4aff', label:'MCP Protocol', animated:true},
+      {from:'clientB', to:'serverB', color:'#4a4aff', label:'MCP Protocol', animated:true},
+      {from:'clientC', to:'serverC', color:'#4a4aff', label:'MCP Protocol', animated:true},
+      {from:'serverA', to:'github', color:'#ff6b4a', label:'', animated:true},
+      {from:'serverB', to:'db', color:'#ff6b4a', label:'', animated:true},
+      {from:'serverC', to:'fs', color:'#ff6b4a', label:'', animated:true},
+    ]
+  },
+  rag: {
+    nodes: [
+      {id:'user', x:10, y:80, w:100, h:65, badge:'INPUT', badgeColor:'#4a4aff', icon:'◎', title:'User', sub:'query', detail:{h:'User Query', p:'The user submits a natural language question. The query is passed to the retriever which searches the knowledge base for relevant context.', tags:['Natural language','Any topic','Real-time']}},
+      {id:'retriever', x:145, y:60, w:120, h:70, badge:'SEARCH', badgeColor:'#ff6b4a', icon:'⊕', title:'Retriever', sub:'semantic search', detail:{h:'Retriever', p:'Converts the query to a vector embedding and performs similarity search against the vector database. Returns top-k most relevant chunks.', tags:['Embedding model','cosine similarity','top-k chunks']}},
+      {id:'kb', x:145, y:175, w:120, h:75, badge:'STORE', badgeColor:'#ffaa4a', icon:'▦', title:'Knowledge Base', sub:'PDF · VectorDB · Code', detail:{h:'Knowledge Base', p:'Pre-indexed document store. Raw documents are chunked, embedded, and stored in a vector database during the indexing phase.', tags:['Chunking','Embedding','FAISS','Pinecone','pgvector']}},
+      {id:'llm', x:340, y:60, w:120, h:70, badge:'LLM', badgeColor:'#4aff9a', icon:'◈', title:'LLM', sub:'GPT / Claude / Gemini', detail:{h:'LLM', p:'Receives the original query plus retrieved context chunks. Generates a grounded response using only the provided context, reducing hallucination.', tags:['GPT-4','Claude','Gemini','Llama']}},
+      {id:'output', x:490, y:75, w:110, h:55, badge:'OUTPUT', badgeColor:'#4aff9a', icon:'◉', title:'Response', sub:'grounded answer', detail:{h:'Grounded Response', p:'The final answer is grounded in retrieved documents, with source citations. Much more factual than a vanilla LLM response.', tags:['Cited sources','Factual','Low hallucination']}},
+    ],
+    arrows:[
+      {from:'user', to:'retriever', color:'#4a4aff', label:'① query', animated:true},
+      {from:'retriever', to:'kb', color:'#ff6b4a', label:'② fetch', animated:true},
+      {from:'kb', to:'retriever', color:'#ffaa4a', label:'③ docs', animated:true},
+      {from:'retriever', to:'llm', color:'#4a4aff', label:'④ query+docs', animated:true},
+      {from:'llm', to:'output', color:'#4aff9a', label:'⑤ response', animated:true},
+    ]
+  },
+  agent: {
+    nodes: [
+      {id:'human', x:10, y:70, w:110, h:65, badge:'HUMAN', badgeColor:'#4a4aff', icon:'◎', title:'Human Control', sub:'autonomy level', detail:{h:'Human in the Loop', p:'Humans define the goal and set the autonomy level. Fully autonomous agents act without approval; supervised agents pause at key decision points.', tags:['Goal setting','Approval gates','HITL']}},
+      {id:'agent', x:200, y:100, w:120, h:75, badge:'AGENT', badgeColor:'#ff6b4a', icon:'⬡', title:'AI Agent', sub:'reason · plan · act', detail:{h:'AI Agent (LLM Core)', p:'The LLM acts as the reasoning engine. It observes the environment, plans a sequence of actions, invokes tools, and updates its plan based on results — in a loop.', tags:['ReAct','Chain-of-thought','Tool use','Planning']}},
+      {id:'memory', x:200, y:10, w:120, h:60, badge:'MEMORY', badgeColor:'#aa4aff', icon:'◈', title:'Memory', sub:'short + long term', detail:{h:'Memory Systems', p:'Agents maintain multiple memory types: in-context (conversation), external (vector DB), episodic (past runs), and semantic (world knowledge).', tags:['In-context','Vector DB','Episodic','Semantic']}},
+      {id:'tools', x:390, y:10, w:120, h:60, badge:'TOOLS', badgeColor:'#4aff9a', icon:'▣', title:'Tools', sub:'API · browser · code', detail:{h:'Tool Invocation', p:'Agents call external tools to interact with the world: web search, code execution, API calls, file I/O. Tools extend what the LLM can do beyond text generation.', tags:['Web search','Code exec','API calls','File I/O']}},
+      {id:'env', x:390, y:155, w:120, h:60, badge:'ENV', badgeColor:'#ffaa4a', icon:'◉', title:'Environment', sub:'world state', detail:{h:'Environment', p:'The external world the agent interacts with: websites, APIs, codebases, file systems. The agent observes environment state and takes actions to change it.', tags:['Web','Code','Files','APIs']}},
+      {id:'action', x:10, y:190, w:110, h:60, badge:'OUTPUT', badgeColor:'#4aff9a', icon:'◌', title:'Autonomous Action', sub:'result', detail:{h:'Autonomous Action', p:'The final output of the agent loop: a completed task, a generated artifact, a sequence of API calls, or a decision. The agent reports results back to the human.', tags:['Task complete','Artifact','Report','Escalate']}},
+    ],
+    arrows:[
+      {from:'human', to:'agent', color:'#4a4aff', label:'goal', animated:true},
+      {from:'agent', to:'memory', color:'#aa4aff', label:'access', animated:true},
+      {from:'memory', to:'tools', color:'#aa4aff', label:'', animated:false},
+      {from:'agent', to:'tools', color:'#4aff9a', label:'invoke', animated:true},
+      {from:'tools', to:'env', color:'#ff6b4a', label:'actions', animated:true},
+      {from:'env', to:'agent', color:'#ffaa4a', label:'observe', animated:true},
+      {from:'agent', to:'action', color:'#4aff9a', label:'result', animated:true},
+    ]
+  }
+};
+
+let currentTab = 'mcp';
+let activeNode = null;
+const tooltip = document.getElementById('tooltip');
+
+function getNodeCenter(node, diagramRect) {
+  return {
+    x: node.x + node.w / 2,
+    y: node.y + node.h / 2
+  };
+}
+
+function renderDiagram(tab) {
+  const diagram = document.getElementById('diagram');
+  const arrows = document.getElementById('arrows');
+  const detail = document.getElementById('detail');
+  detail.style.display = 'none';
+  activeNode = null;
+
+  // remove old nodes
+  diagram.querySelectorAll('.node').forEach(n => n.remove());
+  arrows.innerHTML = '';
+
+  const data = TABS[tab];
+  const nodeMap = {};
+
+  // render nodes
+  data.nodes.forEach(n => {
+    nodeMap[n.id] = n;
+    const el = document.createElement('div');
+    el.className = 'node';
+    el.id = 'node-' + n.id;
+    el.style.left = n.x + 'px';
+    el.style.top = n.y + 'px';
+    el.style.width = n.w + 'px';
+    el.style.minHeight = n.h + 'px';
+    el.innerHTML = `
+      <div class="node-badge" style="background:${n.badgeColor}22;color:${n.badgeColor};border:1px solid ${n.badgeColor}44">${n.badge}</div>
+      <div class="node-icon">${n.icon}</div>
+      <div class="node-title">${n.title}</div>
+      <div class="node-sub">${n.sub}</div>
+    `;
+    el.addEventListener('click', () => showDetail(n, el));
+    el.addEventListener('mouseenter', (e) => showTooltip(e, n.detail.p));
+    el.addEventListener('mousemove', moveTooltip);
+    el.addEventListener('mouseleave', hideTooltip);
+    diagram.appendChild(el);
+  });
+
+  // render arrows after nodes placed
+  setTimeout(() => {
+    data.arrows.forEach(a => {
+      const fromN = nodeMap[a.from];
+      const toN = nodeMap[a.to];
+      if (!fromN || !toN) return;
+
+      const fx = fromN.x + fromN.w;
+      const fy = fromN.y + fromN.h / 2;
+      const tx = toN.x;
+      const ty = toN.y + toN.h / 2;
+      const mx = (fx + tx) / 2;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d', `M${fx},${fy} C${mx},${fy} ${mx},${ty} ${tx},${ty}`);
+      path.setAttribute('class', 'arrow-path' + (a.animated ? ' animated' : ''));
+      path.setAttribute('stroke', a.color);
+      arrows.appendChild(path);
+
+      // arrow head
+      const head = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      head.setAttribute('points', `${tx},${ty} ${tx-8},${ty-4} ${tx-8},${ty+4}`);
+      head.setAttribute('fill', a.color);
+      arrows.appendChild(head);
+
+      if (a.label) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+        text.setAttribute('x', mx);
+        text.setAttribute('y', (fy + ty) / 2 - 4);
+        text.setAttribute('text-anchor','middle');
+        text.setAttribute('class','arrow-label');
+        text.setAttribute('fill', a.color + 'aa');
+        text.textContent = a.label;
+        arrows.appendChild(text);
+      }
+    });
+  }, 50);
+}
+
+function showDetail(n, el) {
+  if (activeNode === n.id) {
+    activeNode = null;
+    el.classList.remove('active');
+    document.getElementById('detail').style.display = 'none';
+    return;
+  }
+  document.querySelectorAll('.node').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  activeNode = n.id;
+  const d = n.detail;
+  const detail = document.getElementById('detail');
+  detail.style.display = 'block';
+  detail.innerHTML = `
+    <div class="detail">
+      <h3>${d.h}</h3>
+      <p>${d.p}</p>
+      <div class="detail-tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>
+  `;
+}
+
+function showTooltip(e, text) {
+  tooltip.textContent = text.substring(0, 80) + '…';
+  tooltip.style.opacity = '1';
+  moveTooltip(e);
+}
+function moveTooltip(e) {
+  const rect = document.getElementById('diagram').getBoundingClientRect();
+  const x = e.clientX - rect.left + 10;
+  const y = e.clientY - rect.top - 40;
+  tooltip.style.left = Math.min(x, rect.width - 200) + 'px';
+  tooltip.style.top = y + 'px';
+}
+function hideTooltip() { tooltip.style.opacity = '0'; }
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+  renderDiagram(tab);
+}
+
+renderDiagram('mcp');
+</script>
