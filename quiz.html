@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Trainer — Interview Words & Phrases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f7f7f5;--bg2:#ffffff;--bg3:#f0f0ec;--bg4:#e8e8e2;
+  --border:#e2e2dc;--border2:#c4c4bc;
+  --text:#16160e;--muted:#68685e;--dim:#aeaea4;
+  --accent:#1a52e0;--accent-l:#eef2ff;--accent-b:#bfcbfc;
+  --green:#0d7a52;--green-l:#edfaf3;--green-b:#86e0bb;
+  --amber:#a85900;--amber-l:#fff8ed;--amber-b:#fbbf6a;
+  --red:#bf1b1b;--red-l:#fff1f1;--red-b:#fcaaaa;
+  --purple:#6524c4;--purple-l:#f4efff;--purple-b:#c4a8f8;
+  --teal:#0b7b8a;--teal-l:#edfbfd;--teal-b:#86d8e4;
+  --shadow:0 1px 3px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.09),0 1px 4px rgba(0,0,0,0.05);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.13),0 4px 12px rgba(0,0,0,0.06);
+  --r:12px;--r-sm:8px;--r-pill:24px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% -5%,rgba(26,82,224,0.05) 0%,transparent 65%);pointer-events:none;z-index:0;}
+.wrap{max-width:780px;margin:0 auto;padding:0 22px;position:relative;z-index:1;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* ══ SETUP ══ */
+.setup-top{padding:48px 0 32px;text-align:center;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+.setup-top h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,42px);font-weight:400;line-height:1.12;margin-bottom:10px;}
+.setup-top h1 em{font-style:italic;color:var(--accent);}
+.setup-top p{color:var(--muted);font-size:14px;max-width:460px;margin:0 auto;}
+
+.scard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--shadow-md);margin-bottom:14px;}
+.scard h3{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:14px;}
+
+.opt-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.opt{padding:8px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-pill);font-family:'Sora',sans-serif;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;}
+.opt:hover{border-color:var(--border2);color:var(--text);}
+.opt.sel{background:var(--accent-l);border-color:var(--accent-b);color:var(--accent);}
+
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
+.cat-opt{padding:9px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);font-family:'Sora',sans-serif;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;}
+.cat-opt:hover{border-color:var(--border2);color:var(--text);}
+.cat-opt.sel{background:var(--accent-l);border-color:var(--accent-b);color:var(--accent);}
+.cico{font-size:14px;}
+
+.start-btn{width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-family:'Sora',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .15s;margin-top:8px;box-shadow:0 4px 16px rgba(26,82,224,0.3);}
+.start-btn:hover{background:#1442c0;transform:translateY(-1px);}
+.start-btn:disabled{background:var(--dim);box-shadow:none;cursor:not-allowed;transform:none;}
+
+/* ══ TRAINER ══ */
+.tr-header{padding:22px 0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);margin-bottom:26px;gap:12px;}
+.prog-info{display:flex;align-items:center;gap:12px;}
+.prog-count{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);}
+.prog-bar{width:120px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease;}
+
+/* mode toggle */
+.mode-toggle{display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-pill);padding:3px;gap:3px;}
+.mode-btn{padding:5px 12px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);cursor:pointer;border-radius:20px;transition:all .15s;border:none;background:transparent;}
+.mode-btn.active{background:var(--bg2);color:var(--text);box-shadow:var(--shadow);}
+
+/* FLASHCARD */
+.flashcard-wrap{perspective:1200px;margin-bottom:20px;}
+.flashcard{
+  position:relative;width:100%;min-height:240px;
+  transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);
+  cursor:pointer;
+}
+.flashcard.flipped{transform:rotateY(180deg);}
+.card-face{
+  position:absolute;inset:0;
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:32px 28px;box-shadow:var(--shadow-md);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;min-height:240px;
+}
+.card-back{transform:rotateY(180deg);}
+
+.card-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:16px;}
+.card-word{font-family:'DM Serif Display',serif;font-size:clamp(24px,4vw,36px);font-weight:400;line-height:1.2;color:var(--text);margin-bottom:8px;}
+.card-type{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;}
+.card-hint{font-size:12px;color:var(--dim);margin-top:14px;}
+
+/* back face */
+.card-meaning{font-size:14px;color:var(--text);line-height:1.65;margin-bottom:18px;max-width:480px;}
+.card-example{font-family:'DM Serif Display',serif;font-style:italic;font-size:14px;color:var(--muted);line-height:1.6;padding:12px 16px;background:var(--bg3);border-left:3px solid var(--accent);border-radius:0 var(--r-sm) var(--r-sm) 0;margin-bottom:16px;max-width:480px;width:100%;}
+
+.syn-ant{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:480px;}
+.syn-pill{padding:4px 12px;border-radius:var(--r-pill);font-size:12px;cursor:default;}
+.syn{background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
+.ant{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
+.syn-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);width:100%;text-align:center;margin-top:6px;}
+
+/* CONTROLS */
+.ctrl-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.cbtn{padding:10px 20px;border-radius:var(--r-sm);font-family:'Sora',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--bg2);color:var(--muted);box-shadow:var(--shadow);}
+.cbtn:hover{border-color:var(--border2);color:var(--text);}
+.cbtn.know{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 2px 8px rgba(13,122,82,.22);}
+.cbtn.know:hover{background:#0a6644;}
+.cbtn.unsure{background:var(--amber-l);color:var(--amber);border-color:var(--amber-b);}
+.cbtn.skip{color:var(--dim);}
+.cbtn.flip{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 8px rgba(26,82,224,.22);}
+.cbtn.flip:hover{background:#1442c0;}
+
+/* QUIZ MODE */
+.quiz-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:28px;box-shadow:var(--shadow-md);margin-bottom:20px;animation:slideIn .3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.quiz-question{font-family:'DM Serif Display',serif;font-size:clamp(18px,3vw,24px);font-weight:400;line-height:1.3;margin-bottom:24px;color:var(--text);}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:500px){.quiz-opts{grid-template-columns:1fr;}}
+.qopt{padding:14px 18px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);font-size:13px;color:var(--text);cursor:pointer;transition:all .15s;text-align:left;line-height:1.4;}
+.qopt:hover{border-color:var(--border2);background:var(--bg2);}
+.qopt.correct{background:var(--green-l);border-color:var(--green-b);color:var(--green);}
+.qopt.wrong{background:var(--red-l);border-color:var(--red-b);color:var(--red);}
+.qopt:disabled{cursor:default;}
+
+/* MATCH MODE */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+@media(max-width:500px){.match-grid{grid-template-columns:1fr;}}
+.match-word,.match-def{
+  padding:12px 16px;background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);font-size:13px;color:var(--text);cursor:pointer;
+  transition:all .15s;line-height:1.4;
+}
+.match-word{font-weight:600;}
+.match-word:hover,.match-def:hover{border-color:var(--accent-b);background:var(--accent-l);}
+.match-word.sel,.match-def.sel{border-color:var(--accent);background:var(--accent-l);color:var(--accent);}
+.match-word.matched,.match-def.matched{border-color:var(--green-b);background:var(--green-l);color:var(--green);cursor:default;}
+.match-word.wrong-match,.match-def.wrong-match{border-color:var(--red-b);background:var(--red-l);animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+
+/* RESULTS */
+.res-top{padding:44px 0 28px;text-align:center;}
+.res-top h2{font-family:'DM Serif Display',serif;font-size:clamp(26px,4vw,36px);font-weight:400;margin-bottom:8px;}
+.res-top h2 em{font-style:italic;color:var(--accent);}
+
+.score-wrap{display:flex;justify-content:center;margin:24px 0;}
+.score-ring{position:relative;width:120px;height:120px;}
+.score-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.score-ring .tr{fill:none;stroke:var(--border);stroke-width:6;}
+.score-ring .fi{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-num{font-family:'DM Serif Display',serif;font-size:32px;line-height:1;}
+.score-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+.stats-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:26px;}
+.sbox{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;text-align:center;box-shadow:var(--shadow);min-width:90px;}
+.sbox-num{font-family:'DM Serif Display',serif;font-size:26px;line-height:1;margin-bottom:3px;}
+.sbox-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;}
+
+.review-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-md);margin-bottom:20px;}
+.review-head{padding:12px 20px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);}
+.review-item{padding:12px 20px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;}
+.review-item:last-child{border-bottom:none;}
+.ri-word{font-weight:600;font-size:13px;}
+.ri-def{font-size:12px;color:var(--muted);margin-top:2px;}
+.ri-badge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:3px 9px;border-radius:var(--r-pill);white-space:nowrap;}
+.badge-know{background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
+.badge-learn{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
+.badge-skip{background:var(--bg3);color:var(--dim);border:1px solid var(--border);}
+
+.restart-btn{width:100%;padding:15px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;box-shadow:0 4px 14px rgba(26,82,224,.28);margin-bottom:40px;}
+.restart-btn:hover{background:#1442c0;transform:translateY(-1px);}
+
+/* misc */
+.status-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.sbar-item{font-family:'DM Mono',monospace;font-size:11px;padding:4px 10px;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--bg2);}
+.sbar-know{color:var(--green);border-color:var(--green-b);background:var(--green-l);}
+.sbar-learn{color:var(--red);border-color:var(--red-b);background:var(--red-l);}
+.sbar-left{color:var(--accent);border-color:var(--accent-b);background:var(--accent-l);}
+.match-status{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ══ SETUP ═════════════════════════════════════════════════════════════════ -->
+<div class="screen active" id="setupScreen">
+  <div class="setup-top">
+    <div class="eyebrow">Vocabulary Trainer</div>
+    <h1>Interview Words<br><em>&amp; Phrases</em></h1>
+    <p>Flashcards, quiz, and match modes. Synonyms, antonyms, and usage examples for every word.</p>
+  </div>
+
+  <div class="scard">
+    <h3>Training mode</h3>
+    <div class="opt-grid" id="modeOpts">
+      <button class="opt sel" data-val="flash">🃏 Flashcards</button>
+      <button class="opt" data-val="quiz">❓ Quiz</button>
+      <button class="opt" data-val="match">🔗 Match</button>
+    </div>
+  </div>
+
+  <div class="scard">
+    <h3>Category</h3>
+    <div class="cat-grid" id="catOpts">
+      <button class="cat-opt sel" data-val="all"><span class="cico">🎯</span>All categories</button>
+      <button class="cat-opt" data-val="power"><span class="cico">⚡</span>Power verbs</button>
+      <button class="cat-opt" data-val="strength"><span class="cico">💪</span>Strengths</button>
+      <button class="cat-opt" data-val="achieve"><span class="cico">🏆</span>Achievement</button>
+      <button class="cat-opt" data-val="lead"><span class="cico">🧭</span>Leadership</button>
+      <button class="cat-opt" data-val="problem"><span class="cico">🔍</span>Problem solving</button>
+      <button class="cat-opt" data-val="collab"><span class="cico">🤝</span>Collaboration</button>
+      <button class="cat-opt" data-val="growth"><span class="cico">🌱</span>Growth</button>
+      <button class="cat-opt" data-val="phrases"><span class="cico">💬</span>Full phrases</button>
+    </div>
+  </div>
+
+  <div class="scard">
+    <h3>Number of cards</h3>
+    <div class="opt-grid" id="countOpts">
+      <button class="opt" data-val="10">10</button>
+      <button class="opt sel" data-val="20">20</button>
+      <button class="opt" data-val="30">30</button>
+      <button class="opt" data-val="999">All</button>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startTrainer()">Start training →</button>
+</div>
+
+<!-- ══ TRAINER ════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="trainerScreen">
+  <div class="tr-header">
+    <div class="prog-info">
+      <span class="prog-count" id="progCount">1 / 20</span>
+      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    </div>
+    <div class="mode-toggle" id="modeSwitcher"></div>
+  </div>
+
+  <div class="status-bar" id="statusBar"></div>
+
+  <!-- FLASH -->
+  <div id="flashMode">
+    <div class="flashcard-wrap">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="card-face card-front">
+          <div class="card-tag" id="fcTag">Category</div>
+          <div class="card-word" id="fcWord">Word</div>
+          <div class="card-type" id="fcType">noun</div>
+          <div class="card-hint">tap to see meaning →</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-tag" id="bcTag">Meaning</div>
+          <div class="card-meaning" id="bcMeaning">Definition</div>
+          <div class="card-example" id="bcExample">Example</div>
+          <div class="syn-ant" id="bcSynAnt"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ctrl-row" id="flashCtrls">
+      <button class="cbtn flip" onclick="flipCard()">Flip card</button>
+      <button class="cbtn skip" onclick="markCard('skip')">Skip</button>
+    </div>
+    <div class="ctrl-row" id="ratingCtrls" style="display:none;">
+      <button class="cbtn know" onclick="markCard('know')">✓ I know this</button>
+      <button class="cbtn unsure" onclick="markCard('learn')">↩ Need to learn</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quizMode" style="display:none;">
+    <div class="quiz-card">
+      <div class="card-tag" id="qTag">Category</div>
+      <div class="quiz-question" id="qQuestion">What is the meaning of…</div>
+      <div class="quiz-opts" id="qOpts"></div>
+    </div>
+  </div>
+
+  <!-- MATCH -->
+  <div id="matchMode" style="display:none;">
+    <div class="match-status" id="matchStatus">Match each word to its meaning</div>
+    <div class="match-grid" id="matchGrid"></div>
+    <div class="ctrl-row">
+      <button class="cbtn skip" onclick="nextMatchRound()">Next round →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESULTS ════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="resultsScreen">
+  <div class="res-top">
+    <div class="eyebrow">Session complete</div>
+    <h2>Vocabulary<br><em>Results</em></h2>
+  </div>
+
+  <div class="score-wrap">
+    <div class="score-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle class="tr" cx="60" cy="60" r="52"/>
+        <circle class="fi" id="scoreArc" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="326.73"/>
+      </svg>
+      <div class="score-center">
+        <div class="score-num" id="scoreNum">—</div>
+        <div class="score-lbl">score</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="sbox"><div class="sbox-num" id="stTotal">—</div><div class="sbox-lbl">Cards</div></div>
+    <div class="sbox"><div class="sbox-num" id="stKnow" style="color:var(--green)">—</div><div class="sbox-lbl">Knew</div></div>
+    <div class="sbox"><div class="sbox-num" id="stLearn" style="color:var(--red)">—</div><div class="sbox-lbl">To learn</div></div>
+    <div class="sbox"><div class="sbox-num" id="stSkip">—</div><div class="sbox-lbl">Skipped</div></div>
+  </div>
+
+  <div class="review-section" id="reviewLearn" style="display:none;">
+    <div class="review-head">🔴 Need to review</div>
+    <div id="reviewLearnList"></div>
+  </div>
+
+  <div class="review-section" id="reviewKnow" style="display:none;">
+    <div class="review-head">🟢 You know these</div>
+    <div id="reviewKnowList"></div>
+  </div>
+
+  <button class="restart-btn" onclick="restart()">← New session</button>
+</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// VOCABULARY DATABASE
+// ═══════════════════════════════════════════════════════════════════════════
+const VOCAB = [
+
+  // ── POWER VERBS ──────────────────────────────────────────────────────────
+  {cat:"power",word:"spearheaded",type:"verb",
+   meaning:"Led or initiated an important project or activity as the driving force.",
+   example:"I spearheaded the migration to a containerized infrastructure across 3 client teams.",
+   syn:["led","pioneered","championed","drove","initiated","launched"],
+   ant:["followed","supported","assisted"]},
+
+  {cat:"power",word:"architected",type:"verb",
+   meaning:"Designed and built the overall structure of a complex technical system.",
+   example:"I architected a GitOps-based delivery platform that became the standard across the organization.",
+   syn:["designed","engineered","constructed","built","devised"],
+   ant:["dismantled","inherited","maintained"]},
+
+  {cat:"power",word:"orchestrated",type:"verb",
+   meaning:"Planned and coordinated complex activities or people to achieve a specific goal.",
+   example:"I orchestrated the alignment of five engineering teams around a single deployment standard.",
+   syn:["coordinated","managed","directed","arranged","facilitated"],
+   ant:["disrupted","fragmented","scattered"]},
+
+  {cat:"power",word:"streamlined",type:"verb",
+   meaning:"Made a process simpler, faster, and more efficient by removing unnecessary steps.",
+   example:"I streamlined the regulatory submission process, cutting prep time from days to hours.",
+   syn:["simplified","optimized","accelerated","improved","refined"],
+   ant:["complicated","slowed","bloated"]},
+
+  {cat:"power",word:"implemented",type:"verb",
+   meaning:"Carried out a plan or action; put something into practical effect.",
+   example:"I implemented automated validation pipelines for EU compliance reporting.",
+   syn:["executed","deployed","delivered","rolled out","established"],
+   ant:["planned","proposed","abandoned"]},
+
+  {cat:"power",word:"transformed",type:"verb",
+   meaning:"Changed something completely and fundamentally, often for the better.",
+   example:"I transformed a manual ETL process into a fully automated Kubernetes-based pipeline.",
+   syn:["overhauled","modernized","revolutionized","converted","revamped"],
+   ant:["preserved","maintained","stagnated"]},
+
+  {cat:"power",word:"optimized",type:"verb",
+   meaning:"Improved the efficiency, performance, or quality of something to its best possible state.",
+   example:"I optimized query performance on a billion-record data warehouse, preventing SLA breaches.",
+   syn:["improved","enhanced","tuned","refined","maximized"],
+   ant:["degraded","worsened","ignored"]},
+
+  {cat:"power",word:"mentored",type:"verb",
+   meaning:"Guided and supported the development of a less experienced person over time.",
+   example:"I mentored three junior engineers, all of whom advanced to senior roles.",
+   syn:["coached","guided","developed","trained","nurtured"],
+   ant:["neglected","undermined","ignored"]},
+
+  {cat:"power",word:"collaborated",type:"verb",
+   meaning:"Worked jointly with others toward a shared goal.",
+   example:"I collaborated with DBA, DevOps, and compliance teams to deliver the regulatory system.",
+   syn:["partnered","cooperated","worked with","teamed up","coordinated"],
+   ant:["worked alone","competed","isolated"]},
+
+  {cat:"power",word:"resolved",type:"verb",
+   meaning:"Successfully dealt with or found a solution to a problem or conflict.",
+   example:"I resolved a critical production incident within 40 minutes, restoring service before SLA breach.",
+   syn:["solved","fixed","addressed","remedied","settled"],
+   ant:["ignored","escalated","deferred"]},
+
+  {cat:"power",word:"delivered",type:"verb",
+   meaning:"Successfully completed and handed over something as promised.",
+   example:"I delivered the CESOP compliance system on deadline without external dependencies.",
+   syn:["completed","shipped","produced","achieved","accomplished"],
+   ant:["missed","failed","abandoned"]},
+
+  {cat:"power",word:"established",type:"verb",
+   meaning:"Set up something that becomes a foundation or standard going forward.",
+   example:"I established the engineering standards for pipeline structure and secret management.",
+   syn:["created","founded","set up","instituted","introduced"],
+   ant:["dismantled","removed","abolished"]},
+
+  {cat:"power",word:"reduced",type:"verb",
+   meaning:"Made something smaller, less, or lower — often a metric like time, cost, or error rate.",
+   example:"I reduced deployment error rate by eliminating manual steps through Python automation.",
+   syn:["cut","decreased","minimized","lowered","trimmed"],
+   ant:["increased","raised","grew"]},
+
+  {cat:"power",word:"standardized",type:"verb",
+   meaning:"Introduced consistent rules, methods, or processes across a team or organization.",
+   example:"I standardized IaC conventions across 6 client engagement teams at DBITS LT.",
+   syn:["unified","normalized","harmonized","consolidated","formalized"],
+   ant:["fragmented","diversified","individualized"]},
+
+  {cat:"power",word:"automated",type:"verb",
+   meaning:"Replaced manual processes with systems that run without human intervention.",
+   example:"I automated the quarterly regulatory reporting pipeline, eliminating human error at every stage.",
+   syn:["systematized","programmed","mechanized","scripted"],
+   ant:["manualized","added manual steps"]},
+
+  {cat:"power",word:"diagnosed",type:"verb",
+   meaning:"Identified the root cause of a technical problem through investigation and analysis.",
+   example:"I diagnosed a memory leak in the monitoring agent that was causing production degradation.",
+   syn:["identified","analyzed","traced","pinpointed","uncovered"],
+   ant:["guessed","assumed","overlooked"]},
+
+  {cat:"power",word:"mitigated",type:"verb",
+   meaning:"Reduced the severity, impact, or risk of a problem.",
+   example:"I mitigated compliance risk by introducing automated schema validation before every submission.",
+   syn:["reduced","minimized","lessened","controlled","contained"],
+   ant:["worsened","amplified","ignored"]},
+
+  {cat:"power",word:"championed",type:"verb",
+   meaning:"Actively supported and fought for a cause, idea, or person.",
+   example:"I championed observability as a first-class engineering concern, not an afterthought.",
+   syn:["advocated","promoted","supported","defended","backed"],
+   ant:["opposed","resisted","abandoned"]},
+
+  // ── STRENGTHS ────────────────────────────────────────────────────────────
+  {cat:"strength",word:"ownership",type:"noun",
+   meaning:"Taking full responsibility for a task, outcome, or system — not delegating accountability.",
+   example:"I take complete ownership of what I build, including incidents and postmortems.",
+   syn:["accountability","responsibility","stewardship","commitment"],
+   ant:["delegation","avoidance","detachment"]},
+
+  {cat:"strength",word:"pragmatic",type:"adjective",
+   meaning:"Dealing with problems practically rather than following ideology or theory rigidly.",
+   example:"I take a pragmatic approach to technical debt — it's a tool, not a failure.",
+   syn:["practical","realistic","sensible","grounded","rational"],
+   ant:["idealistic","theoretical","dogmatic","impractical"]},
+
+  {cat:"strength",word:"systematic",type:"adjective",
+   meaning:"Done according to a clear, organized plan or method.",
+   example:"My approach to debugging is systematic: isolate, reproduce, fix, validate, prevent.",
+   syn:["methodical","structured","organized","disciplined","logical"],
+   ant:["random","haphazard","chaotic","ad-hoc"]},
+
+  {cat:"strength",word:"meticulous",type:"adjective",
+   meaning:"Showing great attention to detail and care in execution.",
+   example:"I'm meticulous about change management — every deployment has a documented rollback path.",
+   syn:["thorough","precise","careful","diligent","rigorous"],
+   ant:["careless","sloppy","hasty","negligent"]},
+
+  {cat:"strength",word:"proactive",type:"adjective",
+   meaning:"Taking action in anticipation of future problems rather than reacting after they occur.",
+   example:"I'm proactive about capacity planning — I identified the fragmentation risk 6 weeks early.",
+   syn:["anticipatory","forward-thinking","initiative-driven","preventive"],
+   ant:["reactive","passive","responsive","wait-and-see"]},
+
+  {cat:"strength",word:"resilient",type:"adjective",
+   meaning:"Able to recover quickly from difficulties and maintain performance under pressure.",
+   example:"I've run major incident responses across regulated environments — I'm resilient under pressure.",
+   syn:["adaptable","robust","tenacious","durable","persistent"],
+   ant:["fragile","brittle","vulnerable","breakable"]},
+
+  {cat:"strength",word:"self-sufficient",type:"adjective",
+   meaning:"Able to work and deliver without relying on others for direction or support.",
+   example:"I'm self-sufficient end-to-end — from architecture to postmortem.",
+   syn:["autonomous","independent","self-reliant","capable"],
+   ant:["dependent","reliant","needy"]},
+
+  {cat:"strength",word:"accountable",type:"adjective",
+   meaning:"Willing to accept responsibility for one's actions and their consequences.",
+   example:"When I bypassed change management, I wrote and presented the postmortem without deflecting.",
+   syn:["responsible","answerable","reliable","dependable"],
+   ant:["evasive","irresponsible","unaccountable"]},
+
+  {cat:"strength",word:"decisive",type:"adjective",
+   meaning:"Able to make clear choices quickly and confidently when needed.",
+   example:"In a production incident, I make the rollback call without waiting for consensus.",
+   syn:["resolute","firm","confident","definitive","determined"],
+   ant:["indecisive","hesitant","uncertain","wavering"]},
+
+  {cat:"strength",word:"adaptable",type:"adjective",
+   meaning:"Able to change approach effectively in response to new situations or requirements.",
+   example:"I adapted quickly to CESOP regulations — a domain I had no prior experience in.",
+   syn:["flexible","versatile","agile","responsive","accommodating"],
+   ant:["rigid","inflexible","stubborn","fixed"]},
+
+  {cat:"strength",word:"diligent",type:"adjective",
+   meaning:"Showing careful and persistent effort in work.",
+   example:"I'm diligent about documentation — every shortcut gets an ADR.",
+   syn:["hardworking","thorough","conscientious","dedicated","persistent"],
+   ant:["lazy","negligent","careless","sloppy"]},
+
+  {cat:"strength",word:"collaborative",type:"adjective",
+   meaning:"Involving or willing to work with others toward shared goals.",
+   example:"I'm collaborative during architecture phases and independent during deep implementation.",
+   syn:["cooperative","team-oriented","inclusive","participative"],
+   ant:["isolated","solitary","competitive","uncooperative"]},
+
+  {cat:"strength",word:"analytical",type:"adjective",
+   meaning:"Using logical reasoning and data to examine problems and make decisions.",
+   example:"I took an analytical approach: measured detect time, diagnose time, and fix time separately.",
+   syn:["logical","data-driven","methodical","investigative","critical"],
+   ant:["intuitive","emotional","impulsive","gut-driven"]},
+
+  // ── ACHIEVEMENT ──────────────────────────────────────────────────────────
+  {cat:"achieve",word:"measurable impact",type:"phrase",
+   meaning:"An outcome that can be quantified and verified with actual data.",
+   example:"Every improvement I make has measurable impact — I don't claim success without numbers.",
+   syn:["quantifiable results","verifiable outcomes","concrete results"],
+   ant:["vague improvement","unmeasured change","subjective progress"]},
+
+  {cat:"achieve",word:"scalable solution",type:"phrase",
+   meaning:"A system or approach that continues to work effectively as size or load increases.",
+   example:"I built a scalable compliance pipeline architecture — it handled three separate mandates.",
+   syn:["extensible system","growth-ready approach","reusable framework"],
+   ant:["one-off fix","brittle solution","hard-coded workaround"]},
+
+  {cat:"achieve",word:"zero downtime",type:"phrase",
+   meaning:"Completing a change or deployment without interrupting the live service.",
+   example:"We achieved zero downtime during the ETL migration using rolling Kubernetes updates.",
+   syn:["uninterrupted service","seamless deployment","live migration"],
+   ant:["outage","service disruption","downtime window"]},
+
+  {cat:"achieve",word:"reduced by X%",type:"phrase",
+   meaning:"A specific, quantified decrease in a metric — the preferred way to state achievement.",
+   example:"We reduced manual effort by 80% through deployment automation.",
+   syn:["cut from X to Y","improved by X%","decreased by X%"],
+   ant:["roughly improved","somewhat better","slightly faster"]},
+
+  {cat:"achieve",word:"ahead of schedule",type:"phrase",
+   meaning:"Completed before the planned or committed deadline.",
+   example:"I delivered the MMR-SASK pipeline two weeks ahead of schedule.",
+   syn:["early delivery","before deadline","under timeline"],
+   ant:["late","delayed","behind schedule","overdue"]},
+
+  {cat:"achieve",word:"adopted as standard",type:"phrase",
+   meaning:"When a solution you created becomes the baseline used by the whole team or organization.",
+   example:"The runbook framework I built was adopted as standard across three client engagements.",
+   syn:["became the template","set the standard","widely replicated"],
+   ant:["abandoned","one-time use","deprecated"]},
+
+  {cat:"achieve",word:"prevented breach",type:"phrase",
+   meaning:"Stopped a serious problem (SLA, security, compliance) from occurring.",
+   example:"My capacity planning work prevented an SLA breach approximately six weeks out.",
+   syn:["avoided failure","averted incident","blocked violation"],
+   ant:["experienced breach","missed the risk","failed to prevent"]},
+
+  {cat:"achieve",word:"improved by an order of magnitude",type:"phrase",
+   meaning:"Improved something by roughly 10x — a strong but credible claim when backed by data.",
+   example:"Query performance improved by an order of magnitude after redesigning the index strategy.",
+   syn:["10x improvement","dramatically faster","massively reduced"],
+   ant:["marginal improvement","incremental gain","minimal change"]},
+
+  // ── LEADERSHIP ───────────────────────────────────────────────────────────
+  {cat:"lead",word:"cross-functional alignment",type:"phrase",
+   meaning:"Getting teams with different goals and responsibilities to work toward one shared objective.",
+   example:"I drove cross-functional alignment across DBA, platform, and compliance teams on the delivery pipeline.",
+   syn:["stakeholder buy-in","org-wide agreement","interdepartmental coordination"],
+   ant:["silos","fragmentation","misalignment","conflicting priorities"]},
+
+  {cat:"lead",word:"influence without authority",type:"phrase",
+   meaning:"Getting people to follow your direction without having management power over them.",
+   example:"I led the IaC standardization through influence without authority — no mandate, just value.",
+   syn:["persuasion","earning trust","voluntary adoption","soft power"],
+   ant:["command and control","mandate","top-down enforcement"]},
+
+  {cat:"lead",word:"technical vision",type:"phrase",
+   meaning:"A clear long-term direction for how the technology should evolve.",
+   example:"I set the technical vision for self-hosted AI infrastructure before it became an industry requirement.",
+   syn:["engineering roadmap","platform strategy","architectural direction"],
+   ant:["short-termism","tactical thinking","no roadmap"]},
+
+  {cat:"lead",word:"engineering judgment",type:"phrase",
+   meaning:"The ability to make sound technical decisions based on experience, not just rules.",
+   example:"What I bring is engineering judgment built from real consequences in regulated environments.",
+   syn:["technical intuition","sound decision-making","experience-driven thinking"],
+   ant:["guesswork","rule-following","inexperience"]},
+
+  {cat:"lead",word:"trade-off analysis",type:"phrase",
+   meaning:"Evaluating the pros and cons of different options before making a decision.",
+   example:"I presented a trade-off analysis of containers vs legacy ETL — not just a recommendation.",
+   syn:["pros and cons","cost-benefit analysis","options assessment"],
+   ant:["single-option thinking","no comparison","gut decision"]},
+
+  {cat:"lead",word:"stakeholder management",type:"phrase",
+   meaning:"Identifying and managing the needs and expectations of people who affect or are affected by your work.",
+   example:"Stakeholder management at government scale taught me how to speak risk in non-technical terms.",
+   syn:["relationship management","expectation alignment","executive communication"],
+   ant:["ignoring stakeholders","siloed working","poor communication"]},
+
+  {cat:"lead",word:"ownership mindset",type:"phrase",
+   meaning:"Treating the work as your responsibility from start to finish, regardless of formal role.",
+   example:"An ownership mindset means I don't close the ticket when I ship — I close it when it works.",
+   syn:["end-to-end accountability","full responsibility","entrepreneurial thinking"],
+   ant:["task mentality","hand-off culture","minimal effort"]},
+
+  // ── PROBLEM SOLVING ──────────────────────────────────────────────────────
+  {cat:"problem",word:"root cause",type:"noun",
+   meaning:"The underlying, fundamental reason a problem occurred — not just the surface symptom.",
+   example:"I never stop at the symptom. I find the root cause so we can prevent recurrence.",
+   syn:["underlying issue","fundamental cause","source of failure"],
+   ant:["symptom","surface issue","side effect"]},
+
+  {cat:"problem",word:"blast radius",type:"noun",
+   meaning:"The extent of damage or disruption that an incident or change can cause.",
+   example:"First I assess blast radius — how many users affected, is data at risk, is revenue impacted.",
+   syn:["impact scope","damage potential","failure extent"],
+   ant:["narrow scope","isolated impact","contained failure"]},
+
+  {cat:"problem",word:"systematic debugging",type:"phrase",
+   meaning:"A structured, step-by-step approach to finding and fixing technical problems.",
+   example:"Systematic debugging means I isolate variables one at a time — not random changes.",
+   syn:["methodical troubleshooting","structured investigation","logical diagnosis"],
+   ant:["random fixing","trial and error","guessing","shooting in the dark"]},
+
+  {cat:"problem",word:"hypothesis-driven",type:"adjective",
+   meaning:"Starting with a testable theory and designing experiments to confirm or disprove it.",
+   example:"My debugging is hypothesis-driven — I state what I believe the cause is, then test it.",
+   syn:["evidence-based","test-driven","scientific approach"],
+   ant:["random","instinctive","unstructured","guesswork"]},
+
+  {cat:"problem",word:"postmortem",type:"noun",
+   meaning:"A structured analysis of what went wrong after an incident — focused on learning, not blame.",
+   example:"I write the postmortem within 24 hours while context is fresh. It's about the system, not the person.",
+   syn:["incident review","retrospective","failure analysis","after-action review"],
+   ant:["blame meeting","no follow-up","ignore and move on"]},
+
+  {cat:"problem",word:"blameless culture",type:"phrase",
+   meaning:"A team environment where incidents are treated as learning opportunities, not personal failures.",
+   example:"I present postmortems in a blameless way — the question is how the system allowed it, not who caused it.",
+   syn:["psychological safety","learning culture","no-blame approach"],
+   ant:["blame culture","finger-pointing","punitive environment"]},
+
+  {cat:"problem",word:"edge case",type:"noun",
+   meaning:"An unusual or extreme condition that a system may not handle correctly.",
+   example:"The CESOP failure was an edge case in multi-currency cross-border transaction data.",
+   syn:["corner case","boundary condition","exceptional scenario","outlier"],
+   ant:["happy path","typical case","normal scenario"]},
+
+  {cat:"problem",word:"risk register",type:"phrase",
+   meaning:"A documented list of risks, their likelihood, impact, and mitigation plans.",
+   example:"In week two at a new role, I deliver a risk register — not complaints, not rewrites.",
+   syn:["risk log","issue tracker","threat assessment","vulnerability list"],
+   ant:["no documentation","ignored risks","verbal-only concerns"]},
+
+  // ── COLLABORATION ────────────────────────────────────────────────────────
+  {cat:"collab",word:"buy-in",type:"noun",
+   meaning:"Agreement and support from stakeholders or team members for a plan or decision.",
+   example:"I got buy-in by inviting the most skeptical engineers into the design process first.",
+   syn:["agreement","consensus","commitment","alignment","approval"],
+   ant:["resistance","opposition","rejection","push-back"]},
+
+  {cat:"collab",word:"psychological safety",type:"phrase",
+   meaning:"A team environment where people feel safe to speak up, make mistakes, and disagree.",
+   example:"I create psychological safety by giving direct feedback and expecting the same in return.",
+   syn:["safe environment","open culture","trust","candor"],
+   ant:["fear culture","blame environment","silenced team"]},
+
+  {cat:"collab",word:"constructive feedback",type:"phrase",
+   meaning:"Feedback focused on improving performance rather than criticizing the person.",
+   example:"I give constructive feedback after code reviews — with written explanation, not just comments.",
+   syn:["developmental feedback","improvement-focused critique","coaching"],
+   ant:["destructive criticism","personal attack","vague complaint"]},
+
+  {cat:"collab",word:"consensus",type:"noun",
+   meaning:"General agreement among a group of people.",
+   example:"I build consensus before implementing standards — I never mandate what I can persuade.",
+   syn:["agreement","alignment","accord","shared understanding","unity"],
+   ant:["disagreement","conflict","dissent","division"]},
+
+  {cat:"collab",word:"empathy",type:"noun",
+   meaning:"The ability to understand and share the feelings and perspectives of others.",
+   example:"When the DBA team resisted change, empathy helped me understand the real concern was job security.",
+   syn:["understanding","compassion","perspective-taking","emotional intelligence"],
+   ant:["indifference","dismissiveness","tone-deafness"]},
+
+  {cat:"collab",word:"active listening",type:"phrase",
+   meaning:"Fully concentrating on and understanding what someone says before responding.",
+   example:"Active listening helped me realize the DBA resistance wasn't technical — it was existential.",
+   syn:["attentive listening","engaged listening","deep listening"],
+   ant:["talking over","dismissing","half-listening","interrupting"]},
+
+  {cat:"collab",word:"cross-functional",type:"adjective",
+   meaning:"Involving people from different departments, teams, or areas of expertise.",
+   example:"I led cross-functional working groups to design standards that all teams would actually adopt.",
+   syn:["interdisciplinary","multi-team","diverse","integrated","collaborative"],
+   ant:["siloed","isolated","departmental","narrow"]},
+
+  // ── GROWTH MINDSET ───────────────────────────────────────────────────────
+  {cat:"growth",word:"continuous improvement",type:"phrase",
+   meaning:"An ongoing effort to improve processes, products, or skills over time.",
+   example:"I don't wait for a scheduled review. Continuous improvement is built into how I work.",
+   syn:["iterative improvement","kaizen","ongoing optimization","perpetual learning"],
+   ant:["stagnation","fixed mindset","complacency","good enough"]},
+
+  {cat:"growth",word:"curiosity",type:"noun",
+   meaning:"A strong desire to learn, explore, and understand new things.",
+   example:"My homelab exists because of curiosity — I run things in production before they become requirements.",
+   syn:["inquisitiveness","eagerness to learn","intellectual appetite","openness"],
+   ant:["disinterest","complacency","closed-mindedness","apathy"]},
+
+  {cat:"growth",word:"self-directed learning",type:"phrase",
+   meaning:"Taking initiative to acquire new skills and knowledge without being told to.",
+   example:"I'm a self-directed learner — my blog forces me to understand things well enough to be challenged.",
+   syn:["autonomous learning","self-initiated study","proactive development"],
+   ant:["passive learning","waiting to be trained","assigned learning only"]},
+
+  {cat:"growth",word:"growth mindset",type:"phrase",
+   meaning:"The belief that abilities can be developed through effort, learning, and persistence.",
+   example:"A growth mindset means I treat failures as data, not verdicts.",
+   syn:["learning orientation","development focus","resilience mindset"],
+   ant:["fixed mindset","fear of failure","avoidance mindset"]},
+
+  {cat:"growth",word:"feedback-driven",type:"adjective",
+   meaning:"Using feedback from others and from results to improve behavior and performance.",
+   example:"I'm feedback-driven — I ask for honest critique because comfortable feedback doesn't help me grow.",
+   syn:["open to feedback","improvement-oriented","coachable","receptive"],
+   ant:["defensive","resistant to feedback","closed","arrogant"]},
+
+  {cat:"growth",word:"intellectual humility",type:"phrase",
+   meaning:"Recognizing the limits of your own knowledge and being open to being wrong.",
+   example:"I have 18 years of experience but intellectual humility to know I don't have all the answers.",
+   syn:["open-mindedness","modesty","epistemic humility","awareness of limits"],
+   ant:["arrogance","overconfidence","know-it-all attitude","closed-mindedness"]},
+
+  // ── FULL PHRASES ─────────────────────────────────────────────────────────
+  {cat:"phrases",word:"I took end-to-end ownership",type:"phrase",
+   meaning:"You were responsible for the entire lifecycle — from design to delivery to incident response.",
+   example:"I took end-to-end ownership of the compliance pipeline — architecture, code, and production support.",
+   syn:["I owned it fully","I was accountable from start to finish","I drove it end-to-end"],
+   ant:["I was involved","I contributed","I helped out"]},
+
+  {cat:"phrases",word:"I identified and mitigated the risk",type:"phrase",
+   meaning:"You spotted a problem before it occurred and took steps to reduce its impact.",
+   example:"I identified and mitigated the fragmentation risk 6 weeks before it would have caused an SLA breach.",
+   syn:["I caught the issue early","I prevented the failure","I flagged and resolved the risk"],
+   ant:["I noticed it after","I reacted to the incident","I was caught off-guard"]},
+
+  {cat:"phrases",word:"The outcome was measurable",type:"phrase",
+   meaning:"The result was quantifiable — not just 'things got better', but by how much.",
+   example:"The outcome was measurable: quarterly prep dropped from 4 days to under 4 hours.",
+   syn:["we tracked the improvement","the results were quantified","we had before-and-after data"],
+   ant:["we think it improved","it felt better","anecdotally faster"]},
+
+  {cat:"phrases",word:"I built it to last, not just to ship",type:"phrase",
+   meaning:"You prioritized long-term quality and maintainability over speed.",
+   example:"I built it to last — the architecture I designed in 2019 is still running without modification.",
+   syn:["I focused on durability","I built for the long term","I engineered for reliability"],
+   ant:["I hacked it together","I built a quick fix","I shipped and moved on"]},
+
+  {cat:"phrases",word:"I made myself redundant",type:"phrase",
+   meaning:"You documented, trained, and handed off so the work could continue without you — the mature engineer's goal.",
+   example:"My definition of done is making myself redundant — runbook written, team trained, system monitored.",
+   syn:["I handed it off properly","I documented everything","I enabled the team to own it"],
+   ant:["I became the single point of failure","only I could maintain it","I kept knowledge to myself"]},
+
+  {cat:"phrases",word:"I disagreed and committed",type:"phrase",
+   meaning:"You raised your objection, had your say, then fully supported the final decision.",
+   example:"I disagreed with the approach but committed to making it work once the decision was made.",
+   syn:["I voiced my concern then supported the decision","I challenged then aligned"],
+   ant:["I secretly sabotaged it","I kept complaining","I refused to proceed"]},
+
+  {cat:"phrases",word:"I provided data, not opinion",type:"phrase",
+   meaning:"You backed your recommendations with evidence rather than personal preference.",
+   example:"I provided data — 3 specific incidents with estimated cost — not just my opinion on the stack.",
+   syn:["I came with evidence","I showed the numbers","I backed it with facts"],
+   ant:["I just felt strongly about it","it was my preference","I had a gut feeling"]},
+
+  {cat:"phrases",word:"I can be productive from day one",type:"phrase",
+   meaning:"You have enough relevant experience to contribute immediately, without a long ramp-up.",
+   example:"I don't need 6 months to become useful. I can be productive from day one in a Kubernetes environment.",
+   syn:["I hit the ground running","I come up to speed quickly","minimal onboarding needed"],
+   ant:["I need time to learn the stack","I'll need hand-holding initially"]},
+
+  {cat:"phrases",word:"I thrive in ambiguity",type:"phrase",
+   meaning:"You perform well even when requirements are unclear or the path forward is uncertain.",
+   example:"I thrive in ambiguity — I write down assumptions, start building, and iterate based on feedback.",
+   syn:["I'm comfortable with uncertainty","I work well without a complete spec"],
+   ant:["I need clear requirements","I struggle without direction","I get stuck when things are unclear"]},
+
+  {cat:"phrases",word:"The culture follows the utility",type:"phrase",
+   meaning:"People adopt tools and practices because they solve real pain — not because they're told to.",
+   example:"I don't mandate observability culture — I show the value first. The culture follows the utility.",
+   syn:["adoption follows value","demonstrate before mandating","earn adoption by solving pain"],
+   ant:["enforce compliance","mandate from above","require without value"]},
+
+  {cat:"phrases",word:"I optimize for long-term team velocity",type:"phrase",
+   meaning:"You make decisions that help the whole team move faster over time, not just deliver quickly now.",
+   example:"I take time to write runbooks because I optimize for long-term team velocity, not just this sprint.",
+   syn:["I invest in sustainable pace","I focus on team scalability","I build for team effectiveness"],
+   ant:["I optimize for short-term speed","I ship and let others figure it out","I focus only on my output"]},
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════════
+let cfg = { mode:'flash', cat:'all', count:20 };
+let session = {
+  cards:[], current:0,
+  results:[], // {word, cat, status:'know'|'learn'|'skip'}
+  mode:'flash',
+  flipped:false,
+  // quiz
+  quizAnswered:false,
+  // match
+  matchWords:[], matchDefs:[], matchPairs:[],
+  matchSelected:null, matchSelectedType:null,
+  matchMatched:new Set(), matchTotal:0, matchCorrect:0,
+  matchRound:0,
+};
+
+const CAT_LABELS = {
+  power:'Power verbs', strength:'Strengths', achieve:'Achievement',
+  lead:'Leadership', problem:'Problem solving', collab:'Collaboration',
+  growth:'Growth mindset', phrases:'Full phrases'
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SETUP
+// ═══════════════════════════════════════════════════════════════════════════
+function initSetup(){
+  function single(id, key){
+    document.getElementById(id).querySelectorAll('[data-val]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.getElementById(id).querySelectorAll('[data-val]').forEach(b=>b.classList.remove('sel'));
+        btn.classList.add('sel');
+        cfg[key] = btn.dataset.val;
+      });
+    });
+  }
+  single('modeOpts','mode');
+  single('catOpts','cat');
+  single('countOpts','count');
+}
+
+function startTrainer(){
+  let pool = cfg.cat==='all' ? [...VOCAB] : VOCAB.filter(v=>v.cat===cfg.cat);
+  pool = pool.sort(()=>Math.random()-.5);
+  const n = cfg.count==='999' ? pool.length : Math.min(Number(cfg.count), pool.length);
+  pool = pool.slice(0,n);
+
+  session.cards = pool;
+  session.current = 0;
+  session.results = [];
+  session.mode = cfg.mode;
+  session.flipped = false;
+
+  show('trainerScreen');
+  renderModeSwitcher();
+
+  if(cfg.mode==='flash') loadFlash();
+  else if(cfg.mode==='quiz') loadQuiz();
+  else loadMatch();
+}
+
+function renderModeSwitcher(){
+  const ms = document.getElementById('modeSwitcher');
+  const modes = [{v:'flash',l:'Flashcard'},{v:'quiz',l:'Quiz'},{v:'match',l:'Match'}];
+  ms.innerHTML = modes.map(m=>`
+    <button class="mode-btn ${session.mode===m.v?'active':''}" onclick="switchMode('${m.v}')">${m.l}</button>
+  `).join('');
+}
+
+function switchMode(m){
+  session.mode = m;
+  session.current = 0;
+  session.flipped = false;
+  renderModeSwitcher();
+  document.getElementById('flashMode').style.display='none';
+  document.getElementById('quizMode').style.display='none';
+  document.getElementById('matchMode').style.display='none';
+  if(m==='flash'){document.getElementById('flashMode').style.display='block';loadFlash();}
+  else if(m==='quiz'){document.getElementById('quizMode').style.display='block';loadQuiz();}
+  else{document.getElementById('matchMode').style.display='block';loadMatch();}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SHARED
+// ═══════════════════════════════════════════════════════════════════════════
+function updateProgress(){
+  const n = session.cards.length;
+  const i = Math.min(session.current, n);
+  document.getElementById('progCount').textContent = `${i+1} / ${n}`;
+  document.getElementById('progFill').style.width = `${(i/n)*100}%`;
+  renderStatusBar();
+}
+
+function renderStatusBar(){
+  const know = session.results.filter(r=>r.status==='know').length;
+  const learn = session.results.filter(r=>r.status==='learn').length;
+  const left = session.cards.length - session.results.length;
+  document.getElementById('statusBar').innerHTML = `
+    <span class="sbar-item sbar-know">✓ ${know} knew</span>
+    <span class="sbar-item sbar-learn">↩ ${learn} to learn</span>
+    <span class="sbar-item sbar-left">${left} left</span>
+  `;
+}
+
+function isDone(){ return session.current >= session.cards.length; }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FLASHCARD MODE
+// ═══════════════════════════════════════════════════════════════════════════
+function loadFlash(){
+  document.getElementById('flashMode').style.display='block';
+  document.getElementById('quizMode').style.display='none';
+  document.getElementById('matchMode').style.display='none';
+  if(isDone()){showResults();return;}
+
+  session.flipped = false;
+  updateProgress();
+
+  const card = session.cards[session.current];
+  const fc = document.getElementById('flashcard');
+  fc.classList.remove('flipped');
+
+  // front
+  document.getElementById('fcTag').textContent = CAT_LABELS[card.cat]||card.cat;
+  document.getElementById('fcWord').textContent = card.word;
+  document.getElementById('fcType').textContent = card.type;
+
+  // back
+  document.getElementById('bcTag').textContent = `${card.type} · ${CAT_LABELS[card.cat]||card.cat}`;
+  document.getElementById('bcMeaning').textContent = card.meaning;
+  document.getElementById('bcExample').innerHTML = `"${card.example}"`;
+
+  // syn/ant
+  const sa = document.getElementById('bcSynAnt');
+  let html = '';
+  if(card.syn?.length){
+    html += `<div class="syn-label">Synonyms</div>`;
+    html += card.syn.map(s=>`<span class="syn-pill syn">${s}</span>`).join('');
+  }
+  if(card.ant?.length){
+    html += `<div class="syn-label" style="margin-top:6px;">Antonyms</div>`;
+    html += card.ant.map(a=>`<span class="syn-pill ant">${a}</span>`).join('');
+  }
+  sa.innerHTML = html;
+
+  document.getElementById('flashCtrls').style.display='flex';
+  document.getElementById('ratingCtrls').style.display='none';
+}
+
+function flipCard(){
+  session.flipped = !session.flipped;
+  document.getElementById('flashcard').classList.toggle('flipped', session.flipped);
+  if(session.flipped){
+    document.getElementById('flashCtrls').style.display='none';
+    document.getElementById('ratingCtrls').style.display='flex';
+  }
+}
+
+function markCard(status){
+  const card = session.cards[session.current];
+  session.results.push({word:card.word, cat:card.cat, meaning:card.meaning, status});
+  session.current++;
+  loadFlash();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// QUIZ MODE
+// ═══════════════════════════════════════════════════════════════════════════
+function loadQuiz(){
+  document.getElementById('flashMode').style.display='none';
+  document.getElementById('quizMode').style.display='block';
+  document.getElementById('matchMode').style.display='none';
+  if(isDone()){showResults();return;}
+
+  session.quizAnswered = false;
+  updateProgress();
+
+  const card = session.cards[session.current];
+  const qType = Math.random() > 0.5 ? 'meaning' : 'word';
+
+  // build distractors from all vocab
+  const others = VOCAB.filter(v=>v.word!==card.word).sort(()=>Math.random()-.5).slice(0,3);
+
+  document.getElementById('qTag').textContent = CAT_LABELS[card.cat]||card.cat;
+
+  let question, answers, correctIdx;
+
+  if(qType==='meaning'){
+    question = `What does "${card.word}" mean?`;
+    const opts = [card.meaning, ...others.map(o=>o.meaning)].sort(()=>Math.random()-.5);
+    correctIdx = opts.indexOf(card.meaning);
+    answers = opts;
+  } else {
+    question = `Which word means: "${card.meaning.substring(0,100)}${card.meaning.length>100?'…':''}"`;
+    const opts = [card.word, ...others.map(o=>o.word)].sort(()=>Math.random()-.5);
+    correctIdx = opts.indexOf(card.word);
+    answers = opts;
+  }
+
+  document.getElementById('qQuestion').textContent = question;
+  const optsEl = document.getElementById('qOpts');
+  optsEl.innerHTML = answers.map((a,i)=>`
+    <button class="qopt" onclick="answerQuiz(${i},${correctIdx},this)">${a}</button>
+  `).join('');
+}
+
+function answerQuiz(chosen, correct, el){
+  if(session.quizAnswered) return;
+  session.quizAnswered = true;
+
+  const btns = document.querySelectorAll('.qopt');
+  btns.forEach(b=>b.disabled=true);
+
+  const isCorrect = chosen === correct;
+  el.classList.add(isCorrect?'correct':'wrong');
+  btns[correct].classList.add('correct');
+
+  const card = session.cards[session.current];
+  session.results.push({word:card.word, cat:card.cat, meaning:card.meaning, status: isCorrect?'know':'learn'});
+
+  setTimeout(()=>{
+    session.current++;
+    loadQuiz();
+  }, 900);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MATCH MODE
+// ═══════════════════════════════════════════════════════════════════════════
+const MATCH_SIZE = 5;
+
+function loadMatch(){
+  document.getElementById('flashMode').style.display='none';
+  document.getElementById('quizMode').style.display='none';
+  document.getElementById('matchMode').style.display='block';
+
+  if(isDone()){showResults();return;}
+
+  session.matchSelected = null;
+  session.matchSelectedType = null;
+
+  // pick next MATCH_SIZE cards
+  const start = session.matchRound * MATCH_SIZE;
+  const slice = session.cards.slice(start, start + MATCH_SIZE);
+  if(!slice.length){showResults();return;}
+
+  session.matchPairs = slice;
+  session.matchMatched = new Set();
+
+  document.getElementById('matchStatus').textContent = `Match ${slice.length} words to their meanings`;
+
+  renderMatchGrid();
+  updateProgress();
+}
+
+function renderMatchGrid(){
+  const pairs = session.matchPairs;
+  const matched = session.matchMatched;
+
+  const words = [...pairs].sort(()=>Math.random()-.5);
+  const defs  = [...pairs].sort(()=>Math.random()-.5);
+
+  const grid = document.getElementById('matchGrid');
+  grid.innerHTML = '';
+
+  const col1 = document.createElement('div');
+  col1.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+  const col2 = document.createElement('div');
+  col2.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+
+  words.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'match-word' + (matched.has(p.word)?' matched':'');
+    el.dataset.id = p.word;
+    el.dataset.type = 'word';
+    el.textContent = p.word;
+    if(!matched.has(p.word)) el.onclick = ()=>selectMatch(p.word,'word',el);
+    col1.appendChild(el);
+  });
+
+  defs.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'match-def' + (matched.has(p.word)?' matched':'');
+    el.dataset.id = p.word;
+    el.dataset.type = 'def';
+    el.textContent = p.meaning.substring(0,80) + (p.meaning.length>80?'…':'');
+    if(!matched.has(p.word)) el.onclick = ()=>selectMatch(p.word,'def',el);
+    col2.appendChild(el);
+  });
+
+  grid.appendChild(col1);
+  grid.appendChild(col2);
+}
+
+function selectMatch(id, type, el){
+  if(session.matchMatched.has(id)) return;
+
+  if(session.matchSelected === null){
+    session.matchSelected = id;
+    session.matchSelectedType = type;
+    el.classList.add('sel');
+    return;
+  }
+
+  // same type — switch selection
+  if(session.matchSelectedType === type){
+    document.querySelectorAll('.match-word.sel,.match-def.sel').forEach(e=>e.classList.remove('sel'));
+    session.matchSelected = id;
+    session.matchSelectedType = type;
+    el.classList.add('sel');
+    return;
+  }
+
+  // evaluate match
+  const correct = session.matchSelected === id;
+
+  // find both elements
+  const allEls = document.querySelectorAll('[data-id]');
+  let wordEl, defEl;
+  allEls.forEach(e=>{
+    if(e.dataset.id===session.matchSelected && e.dataset.type==='word') wordEl=e;
+    if(e.dataset.id===session.matchSelected && e.dataset.type==='def') defEl=e;
+    if(e.dataset.id===id && e.dataset.type==='word') wordEl=wordEl||e;
+    if(e.dataset.id===id && e.dataset.type==='def') defEl=defEl||e;
+  });
+
+  if(correct){
+    session.matchMatched.add(id);
+    session.matchMatched.add(session.matchSelected);
+    allEls.forEach(e=>{
+      if(e.dataset.id===id||e.dataset.id===session.matchSelected){
+        e.classList.remove('sel');
+        e.classList.add('matched');
+        e.onclick=null;
+      }
+    });
+
+    const card = session.matchPairs.find(p=>p.word===id);
+    if(card) session.results.push({word:card.word,cat:card.cat,meaning:card.meaning,status:'know'});
+    session.current++;
+
+    if(session.matchMatched.size >= session.matchPairs.length * 2){
+      document.getElementById('matchStatus').textContent = '✓ All matched! Loading next round…';
+      session.matchRound++;
+      setTimeout(()=>loadMatch(), 800);
+    }
+  } else {
+    // wrong
+    el.classList.add('wrong-match');
+    document.querySelectorAll('.match-word.sel,.match-def.sel').forEach(e=>{
+      e.classList.add('wrong-match');
+      setTimeout(()=>{e.classList.remove('sel','wrong-match');},500);
+    });
+    setTimeout(()=>el.classList.remove('wrong-match'),500);
+
+    const card = session.matchPairs.find(p=>p.word===session.matchSelected||p.word===id);
+    if(card){
+      const existing = session.results.find(r=>r.word===card.word);
+      if(!existing) session.results.push({word:card.word,cat:card.cat,meaning:card.meaning,status:'learn'});
+    }
+  }
+
+  session.matchSelected = null;
+  session.matchSelectedType = null;
+}
+
+function nextMatchRound(){
+  session.matchRound++;
+  // mark remaining unmatched as skip
+  session.matchPairs.forEach(p=>{
+    if(!session.matchMatched.has(p.word)){
+      if(!session.results.find(r=>r.word===p.word)){
+        session.results.push({word:p.word,cat:p.cat,meaning:p.meaning,status:'skip'});
+      }
+      session.current++;
+    }
+  });
+  loadMatch();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════════════════════════════════════
+function showResults(){
+  show('resultsScreen');
+
+  const res = session.results;
+  const know  = res.filter(r=>r.status==='know').length;
+  const learn = res.filter(r=>r.status==='learn').length;
+  const skip  = res.filter(r=>r.status==='skip').length;
+  const total = res.length;
+  const pct   = total>0 ? know/total : 0;
+  const score = Math.round(pct*100);
+
+  // ring
+  const arc = document.getElementById('scoreArc');
+  const sn  = document.getElementById('scoreNum');
+  sn.textContent = score + '%';
+  sn.style.color = score>=70?'var(--green)':score>=50?'var(--amber)':'var(--red)';
+  arc.style.stroke = score>=70?'var(--green)':score>=50?'var(--amber)':'var(--red)';
+  setTimeout(()=>{ arc.style.strokeDashoffset = 326.73*(1-pct); },100);
+
+  document.getElementById('stTotal').textContent  = total;
+  document.getElementById('stKnow').textContent   = know;
+  document.getElementById('stLearn').textContent  = learn;
+  document.getElementById('stSkip').textContent   = skip;
+
+  // to learn
+  const learnItems = res.filter(r=>r.status==='learn');
+  const knowItems  = res.filter(r=>r.status==='know');
+
+  if(learnItems.length){
+    document.getElementById('reviewLearn').style.display='block';
+    document.getElementById('reviewLearnList').innerHTML = learnItems.map(r=>`
+      <div class="review-item">
+        <div><div class="ri-word">${r.word}</div><div class="ri-def">${r.meaning.substring(0,80)}${r.meaning.length>80?'…':''}</div></div>
+        <span class="ri-badge badge-learn">review</span>
+      </div>`).join('');
+  }
+
+  if(knowItems.length){
+    document.getElementById('reviewKnow').style.display='block';
+    document.getElementById('reviewKnowList').innerHTML = knowItems.map(r=>`
+      <div class="review-item">
+        <div><div class="ri-word">${r.word}</div><div class="ri-def">${r.meaning.substring(0,80)}${r.meaning.length>80?'…':''}</div></div>
+        <span class="ri-badge badge-know">✓ knew</span>
+      </div>`).join('');
+  }
+}
+
+function restart(){ show('setupScreen'); }
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+initSetup();
+</script>
+</body>
+</html>
