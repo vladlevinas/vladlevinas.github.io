@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Vocabulary — Vladimiras Levinas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #fafaf8;
+    --bg2:      #ffffff;
+    --bg3:      #f4f4f1;
+    --border:   #e8e8e3;
+    --border2:  #d0d0c8;
+    --text:     #181814;
+    --muted:    #72726a;
+    --dim:      #aeaea4;
+    --shadow:   0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg:0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+
+    /* category palette */
+    --c1: #1a5fb4; --c1l: #edf2fb; --c1b: #b6ceee;   /* opening */
+    --c2: #1e7c4a; --c2l: #eaf5ef; --c2b: #a8d9bc;   /* strength */
+    --c3: #9a3a00; --c3l: #fdf0e8; --c3b: #f5c8a0;   /* achievement */
+    --c4: #6235b5; --c4l: #f2eefb; --c4b: #c9b8f0;   /* leadership */
+    --c5: #b5750a; --c5l: #fdf6e3; --c5b: #f0d48a;   /* problem */
+    --c6: #0e7d8a; --c6l: #e8f7f9; --c6b: #9ad8df;   /* teamwork */
+    --c7: #c0313a; --c7l: #fdedef; --c7b: #f0b0b5;   /* closing */
+    --c8: #3a6b10; --c8l: #edf5e4; --c8b: #b5d89a;   /* growth */
+
+    --radius: 8px;
+    --radius-pill: 20px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* subtle linen texture */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' x='0' y='0' fill='%23c8c8be' opacity='0.18'/%3E%3Crect width='1' height='1' x='2' y='2' fill='%23c8c8be' opacity='0.12'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { max-width: 960px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  .site-header {
+    padding: 52px 0 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--c1);
+    margin-bottom: 14px;
+  }
+
+  .site-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5vw, 46px);
+    font-weight: 400; line-height: 1.1;
+    color: var(--text); margin-bottom: 10px;
+  }
+
+  .site-header h1 em {
+    font-style: italic; color: var(--c1);
+  }
+
+  .sub {
+    font-size: 14px; color: var(--muted);
+    max-width: 560px; line-height: 1.6;
+    margin-top: 8px;
+  }
+
+  .header-chips {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; padding: 4px 12px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    color: var(--muted);
+  }
+
+  /* ── SEARCH ── */
+  .search-bar {
+    padding: 20px 0 0;
+  }
+
+  .search-wrap {
+    position: relative; max-width: 420px;
+  }
+
+  .search-icon {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--dim); font-size: 14px; pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    font-family: 'Lato', sans-serif;
+    font-size: 13px; color: var(--text);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    outline: none;
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .search-input:focus {
+    border-color: var(--border2);
+    box-shadow: var(--shadow), 0 0 0 3px rgba(26,95,180,0.08);
+  }
+
+  .search-input::placeholder { color: var(--dim); }
+
+  /* ── FILTER TABS ── */
+  .filter-bar {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(250,250,248,0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    margin-bottom: 32px;
+  }
+
+  .filter-tabs {
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  }
+
+  .filter-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--dim);
+    margin-right: 4px; letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .ftab {
+    padding: 5px 13px; font-size: 12px; font-weight: 700;
+    font-family: 'Lato', sans-serif;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    cursor: pointer; background: var(--bg2);
+    color: var(--muted); transition: all 0.15s;
+    letter-spacing: 0.1px;
+  }
+
+  .ftab:hover { border-color: var(--border2); color: var(--text); }
+  .ftab.active { color: var(--text); border-color: var(--border2); background: var(--bg3); font-weight: 700; }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 40px;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 400; color: var(--text);
+    flex: 1;
+  }
+
+  .section-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--dim);
+  }
+
+  /* ── CONTENT GRID ── */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .content-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── WORD CLOUD ── */
+  .word-cloud {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding: 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .word-pill {
+    padding: 5px 13px;
+    border-radius: var(--radius-pill);
+    font-size: 13px; font-weight: 400;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.14s;
+    user-select: none;
+  }
+
+  .word-pill:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .word-pill.highlighted { outline: 2px solid currentColor; outline-offset: 1px; }
+
+  /* ── PHRASE CARDS ── */
+  .phrase-col {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .phrase-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    position: relative;
+  }
+
+  .phrase-card:hover {
+    border-color: var(--border2);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .phrase-card.copied {
+    background: var(--bg3);
+  }
+
+  .phrase-text {
+    font-size: 13.5px; color: var(--text);
+    line-height: 1.55; font-style: italic;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .phrase-note {
+    font-size: 11px; color: var(--muted);
+    margin-top: 6px; font-style: normal;
+    font-family: 'Lato', sans-serif;
+  }
+
+  .copy-hint {
+    position: absolute; top: 10px; right: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; color: var(--dim);
+    opacity: 0; transition: opacity 0.15s;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .phrase-card:hover .copy-hint { opacity: 1; }
+
+  /* ── DO/DON'T GRID ── */
+  .dodont-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 640px) { .dodont-grid { grid-template-columns: 1fr; } }
+
+  .dodont-col { display: flex; flex-direction: column; gap: 0; }
+
+  .dodont-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 14px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    border: 1px solid transparent;
+  }
+
+  .do-header   { background: #eaf5ef; color: #1e7c4a; border-color: #a8d9bc; }
+  .dont-header { background: #fdedef; color: #c0313a; border-color: #f0b0b5; }
+
+  .dodont-item {
+    padding: 10px 14px;
+    font-size: 13px; color: var(--text); line-height: 1.5;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dodont-item:last-child {
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+
+  .dodont-item.do-item   { border-left-color: #a8d9bc; }
+  .dodont-item.dont-item { border-left-color: #f0b0b5; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px);
+    background: var(--text); color: #fff;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    padding: 8px 18px; border-radius: var(--radius-pill);
+    opacity: 0; transition: all 0.2s;
+    pointer-events: none; z-index: 100;
+    white-space: nowrap;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    margin-top: 60px; padding: 24px 0 40px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 12px;
+  }
+
+  .site-footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--dim);
+  }
+
+  .site-footer a {
+    color: var(--c1); text-decoration: none;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+  }
+
+  .hidden { display: none !important; }
+
+  /* highlight search match */
+  mark {
+    background: #fff3b0; color: inherit;
+    border-radius: 2px; padding: 0 1px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header">
+    <div class="eyebrow">Interview Vocabulary Reference</div>
+    <h1>Words &amp; Phrases<br><em>That Land</em></h1>
+    <p class="sub">Power words, STAR transitions, impact phrases, and what to say — and never say — in a senior engineering interview.</p>
+    <div class="header-chips">
+      <span class="chip">Senior DevOps / Platform</span>
+      <span class="chip">All interview stages</span>
+      <span class="chip">Click any phrase to copy</span>
+    </div>
+    <div class="search-bar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search words or phrases…" autocomplete="off">
+      </div>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <div class="filter-tabs" id="filterTabs">
+      <span class="filter-label">Show:</span>
+      <button class="ftab active" data-filter="all">All</button>
+      <button class="ftab" data-filter="opening">Opening</button>
+      <button class="ftab" data-filter="strength">Strengths</button>
+      <button class="ftab" data-filter="achievement">Achievement</button>
+      <button class="ftab" data-filter="leadership">Leadership</button>
+      <button class="ftab" data-filter="problem">Problem solving</button>
+      <button class="ftab" data-filter="teamwork">Teamwork</button>
+      <button class="ftab" data-filter="growth">Growth</button>
+      <button class="ftab" data-filter="closing">Closing</button>
+      <button class="ftab" data-filter="dodont">Do / Don't</button>
+    </div>
+  </div>
+
+  <main id="main"></main>
+
+  <div class="site-footer">
+    <p>doc.thedevops.dev · Vilnius, Lithuania · 2026</p>
+    <a href="https://doc.thedevops.dev" target="_blank">doc.thedevops.dev ↗</a>
+  </div>
+
+</div>
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+const DATA = [
+
+  // ── OPENING ──────────────────────────────────────────────────────────────────
+  {
+    id: "opening",
+    icon: "👋",
+    title: "Opening & introductions",
+    cat: "opening",
+    accent: ["--c1", "--c1l", "--c1b"],
+    words: [
+      "Thank you for the opportunity",
+      "I appreciate your time",
+      "Excited to learn more",
+      "I've done my research",
+      "Pleased to be here",
+      "Looking forward to this conversation",
+      "I've been following your work",
+      "I admire your company's approach to",
+      "What drew me to this role",
+      "I understand the challenge you're facing",
+    ],
+    phrases: [
+      { text: "I've spent some time researching your platform and I have a few observations I'd love to share.", note: "Opens with initiative — shows you came prepared." },
+      { text: "Before we dive in, could you tell me more about the current state of the infrastructure? It'll help me give you the most relevant context.", note: "Reframes the interview as a two-way conversation." },
+      { text: "I've been doing this kind of work for 18 years, but I'm still genuinely curious about how your team approaches it.", note: "Balances confidence with intellectual humility." },
+      { text: "My background is in fintech and government infrastructure, so regulated, high-stakes environments are my natural habitat.", note: "Sets context in first 30 seconds." },
+    ]
+  },
+
+  // ── STRENGTHS ────────────────────────────────────────────────────────────────
+  {
+    id: "strength",
+    icon: "💪",
+    title: "Describing strengths",
+    cat: "strength",
+    accent: ["--c2", "--c2l", "--c2b"],
+    words: [
+      "End-to-end ownership",
+      "Production-grade",
+      "Hands-on",
+      "Battle-tested",
+      "Self-sufficient",
+      "Systematic",
+      "Pragmatic",
+      "Accountable",
+      "Deliberate",
+      "Precise",
+      "Disciplined",
+      "Principled",
+      "Methodical",
+      "Reliable",
+      "Adaptive",
+      "Rigorous",
+      "Proven",
+      "Technically deep",
+      "Operationally minded",
+      "Platform-first",
+    ],
+    phrases: [
+      { text: "I don't just build things — I own them through their full lifecycle, including the 2am incidents.", note: "Shows operational depth, not just delivery." },
+      { text: "My instinct is always to understand the system before touching it. I've learned that unsanctioned changes in fragile environments are how you cause the incident you were trying to prevent.", note: "Demonstrates discipline under pressure." },
+      { text: "I bring engineering judgment that comes from real consequences — regulated environments, real SLAs, real clients.", note: "Quantifies experience without naming titles." },
+      { text: "I'm self-sufficient end-to-end. I can take a problem from architecture decision to production deployment to incident postmortem without needing to hand it off.", note: "Senior-level autonomy signal." },
+      { text: "I've built things that are still running in production years later. That's the bar I hold myself to.", note: "Implies quality and longevity, not just shipping." },
+    ]
+  },
+
+  // ── ACHIEVEMENT ──────────────────────────────────────────────────────────────
+  {
+    id: "achievement",
+    icon: "🏆",
+    title: "Quantifying achievement",
+    cat: "achievement",
+    accent: ["--c3", "--c3l", "--c3b"],
+    words: [
+      "Reduced from X to Y",
+      "Eliminated entirely",
+      "Cut by 40%",
+      "Prevented a breach",
+      "Delivered on deadline",
+      "Zero SLA breaches",
+      "Saved X engineer-days",
+      "Adopted by the team",
+      "Reused across engagements",
+      "Published as a reference",
+      "Became the standard",
+      "Still in production",
+      "No recurrence",
+      "Measurable outcome",
+      "Permanent fix",
+      "Quantifiable impact",
+    ],
+    phrases: [
+      { text: "The result wasn't just fixing the immediate problem — it became the template we used on every subsequent engagement.", note: "Shows leverage: one solution multiplied." },
+      { text: "I measured success not by whether it shipped, but by whether it was still running correctly six months later.", note: "Signals ownership mindset over delivery mindset." },
+      { text: "We reduced quarterly prep from days to hours. That's not an estimate — we measured it before and after.", note: "Credibility through specificity." },
+      { text: "The architecture I designed handled the regulatory requirement, and then we reused the same pattern for three subsequent mandates.", note: "One solution, multiple returns." },
+      { text: "Three engineers I mentored moved into senior roles. I measure mentoring success by whether people stop needing me — that's the real signal.", note: "Unusual but memorable metric for people development." },
+    ]
+  },
+
+  // ── LEADERSHIP ───────────────────────────────────────────────────────────────
+  {
+    id: "leadership",
+    icon: "🧭",
+    title: "Leadership & ownership",
+    cat: "leadership",
+    accent: ["--c4", "--c4l", "--c4b"],
+    words: [
+      "Took ownership",
+      "Stepped in",
+      "Drove alignment",
+      "Set the standard",
+      "Established the process",
+      "Built consensus",
+      "Led without authority",
+      "Defined the strategy",
+      "Architected the solution",
+      "Made the call",
+      "Owned the outcome",
+      "Accountable end-to-end",
+      "Engineering judgment",
+      "Platform ownership",
+      "Technical leadership",
+      "Influence not mandate",
+    ],
+    phrases: [
+      { text: "I don't wait to be assigned a problem. If I see a gap with real consequences, I step in and own it.", note: "Ownership without being asked." },
+      { text: "Organic adoption always outlasts mandated adoption. I built the case and let engineers choose.", note: "Leadership through trust, not control." },
+      { text: "I made myself redundant in that system within three months. That's how I measure whether I've actually solved a problem.", note: "Mature handoff mindset." },
+      { text: "The most effective thing I did wasn't write the code — it was write the ADR so the next engineer understood why.", note: "Institutional knowledge as leadership." },
+      { text: "I could have pushed harder, but I wanted the team to own the decision. My job was to give them the information they needed to make the right call themselves.", note: "Influencing without dominating." },
+    ]
+  },
+
+  // ── PROBLEM SOLVING ──────────────────────────────────────────────────────────
+  {
+    id: "problem",
+    icon: "🔍",
+    title: "Problem solving",
+    cat: "problem",
+    accent: ["--c5", "--c5l", "--c5b"],
+    words: [
+      "Root cause",
+      "Isolated the issue",
+      "Systematic approach",
+      "First principles",
+      "Hypothesis-driven",
+      "Time-boxed",
+      "Proof of concept",
+      "Risk assessment",
+      "Blast radius",
+      "Prioritized",
+      "Documented trade-offs",
+      "Staged rollout",
+      "Validated assumption",
+      "Reproducible",
+      "Postmortem",
+      "Prevention-focused",
+    ],
+    phrases: [
+      { text: "My first instinct wasn't to fix — it was to understand. I spent 20 minutes mapping the problem before touching anything.", note: "Discipline before action." },
+      { text: "I separated what was actually broken from what was at risk of breaking — they require completely different responses.", note: "Triage intelligence." },
+      { text: "I built a time-boxed PoC with pre-defined success criteria. Two weeks, specific metrics, clear decision gate at the end.", note: "Structured experimentation." },
+      { text: "The fix wasn't the hard part. The hard part was writing the postmortem so it could never happen the same way again.", note: "Prevention over repair." },
+      { text: "I presented the trade-offs honestly rather than advocating for my preferred solution. The client needed to own the decision.", note: "Intellectual integrity." },
+      { text: "I documented the risk in writing before proceeding. If something went wrong, the decision trail would be clear.", note: "Professional accountability." },
+    ]
+  },
+
+  // ── TEAMWORK ─────────────────────────────────────────────────────────────────
+  {
+    id: "teamwork",
+    icon: "🤝",
+    title: "Collaboration & teamwork",
+    cat: "teamwork",
+    accent: ["--c6", "--c6l", "--c6b"],
+    words: [
+      "Cross-functional",
+      "Aligned stakeholders",
+      "Built trust",
+      "Shared context",
+      "Collaborative design",
+      "Active listening",
+      "Empathy-driven",
+      "Common ground",
+      "Mutual respect",
+      "Transparent communication",
+      "Feedback loop",
+      "Psychological safety",
+      "Inclusive process",
+      "Co-created",
+    ],
+    phrases: [
+      { text: "I stopped pushing and started listening. The resistance wasn't about the technology — it was about job security.", note: "Insight into human dynamics behind technical conflict." },
+      { text: "I made their domain bigger, not smaller. That's how you turn resistors into advocates.", note: "Win-win framing for stakeholder management." },
+      { text: "I invited the most skeptical engineers into the working group first. If they shape the solution, they'll own it.", note: "Involvement as buy-in strategy." },
+      { text: "I prefer to disagree in private and commit in public. Once a decision is made, I back it fully.", note: "Team cohesion over being right." },
+      { text: "I give direct feedback — and I make it clear from day one that I expect the same in return. That's how you build a team that actually improves.", note: "Creates a culture of candor." },
+    ]
+  },
+
+  // ── GROWTH MINDSET ───────────────────────────────────────────────────────────
+  {
+    id: "growth",
+    icon: "🌱",
+    title: "Growth & learning",
+    cat: "growth",
+    accent: ["--c8", "--c8l", "--c8b"],
+    words: [
+      "Continuously learning",
+      "Built to understand, not just use",
+      "Hands-on exploration",
+      "Production experiments",
+      "Writing forces clarity",
+      "Deliberate practice",
+      "Staying ahead of the curve",
+      "Depth over breadth",
+      "2-year horizon thinking",
+      "Curious by design",
+      "Learn by building",
+      "Self-directed",
+      "Open to being wrong",
+      "Feedback-hungry",
+    ],
+    phrases: [
+      { text: "I learn by building. Reading about Kubernetes is not the same as diagnosing a production incident at 1am.", note: "Hands-on credibility." },
+      { text: "I write about the things I'm learning. It forces me to understand them well enough to be challenged on them.", note: "Writing as intellectual rigor." },
+      { text: "I go deep on things that will matter in two years, not everything that's trending this week.", note: "Strategic learning vs reactive learning." },
+      { text: "My homelab isn't a toy — it's where I run production-grade experiments before they become production requirements.", note: "Pre-emptive skill building." },
+      { text: "I treated the regulation like an engineering spec. Precise, testable, verifiable. Once I framed it that way, the learning accelerated.", note: "Applying engineering discipline to non-engineering domains." },
+    ]
+  },
+
+  // ── CLOSING ──────────────────────────────────────────────────────────────────
+  {
+    id: "closing",
+    icon: "🎯",
+    title: "Closing strong",
+    cat: "closing",
+    accent: ["--c7", "--c7l", "--c7b"],
+    words: [
+      "Mutually beneficial",
+      "Next steps",
+      "Timeline",
+      "What does success look like",
+      "How can I add value quickly",
+      "What's the biggest challenge",
+      "What would you want to see",
+      "I'm genuinely interested",
+      "Follow-up",
+      "Thank you for your time",
+    ],
+    phrases: [
+      { text: "Before we close, I want to be direct: I'm genuinely interested in this role. What would make you confident I'm the right person?", note: "Invites direct feedback and shows conviction." },
+      { text: "What's the hardest problem on your platform right now? I'd like to understand whether my background is actually relevant to it.", note: "Turns closing into a diagnostic conversation." },
+      { text: "If I joined tomorrow, what would you want me to focus on in the first 30 days?", note: "Shows readiness to deliver, not just impress." },
+      { text: "What does the best version of this hire look like 12 months from now?", note: "Anchors the conversation on outcomes, not process." },
+      { text: "Is there anything in our conversation today that you'd like me to clarify or expand on?", note: "Humble close — invites objections before they become silent rejections." },
+      { text: "Thank you — I appreciated the depth of this conversation. I'll follow up with the specific examples we discussed.", note: "Ends with a commitment, not just courtesy." },
+    ]
+  },
+
+  // ── DO / DON'T ───────────────────────────────────────────────────────────────
+  {
+    id: "dodont",
+    icon: "⚖️",
+    title: "Say this, not that",
+    cat: "dodont",
+    accent: ["--c1", "--c1l", "--c1b"],
+    pairs: [
+      { do: "I took ownership of the problem and drove it to resolution.", dont: "I was involved in fixing that issue." },
+      { do: "I designed the architecture and owned the implementation end-to-end.", dont: "I helped build that system." },
+      { do: "I identified the risk 6 weeks before it caused an SLA breach.", dont: "I noticed there might be an issue." },
+      { do: "I pushed back with a documented risk assessment and proposed an alternative.", dont: "I disagreed but went along with it." },
+      { do: "The result reduced quarterly prep from days to hours — we measured it.", dont: "It made things much faster." },
+      { do: "I made myself redundant in that system within three months.", dont: "I documented it so others could take over." },
+      { do: "I'm looking for a role where the hardest problems are still ahead.", dont: "I want a new challenge." },
+      { do: "I'm targeting [X–Y range] based on market data for this level and scope.", dont: "I'm flexible / whatever is fair." },
+      { do: "I was wrong, and here's the process change I introduced as a result.", dont: "There were some mistakes made." },
+      { do: "Three engineers I mentored moved into senior roles.", dont: "I mentored junior team members." },
+    ]
+  }
+
+];
+
+// ── RENDER ──────────────────────────────────────────────────────────────────────
+
+let activeFilter = "all";
+let searchTerm = "";
+
+function hex(v) {
+  const map = {
+    "--c1":"#1a5fb4","--c1l":"#edf2fb","--c1b":"#b6ceee",
+    "--c2":"#1e7c4a","--c2l":"#eaf5ef","--c2b":"#a8d9bc",
+    "--c3":"#9a3a00","--c3l":"#fdf0e8","--c3b":"#f5c8a0",
+    "--c4":"#6235b5","--c4l":"#f2eefb","--c4b":"#c9b8f0",
+    "--c5":"#b5750a","--c5l":"#fdf6e3","--c5b":"#f0d48a",
+    "--c6":"#0e7d8a","--c6l":"#e8f7f9","--c6b":"#9ad8df",
+    "--c7":"#c0313a","--c7l":"#fdedef","--c7b":"#f0b0b5",
+    "--c8":"#3a6b10","--c8l":"#edf5e4","--c8b":"#b5d89a",
+  };
+  return map[v] || v;
+}
+
+function highlight(text) {
+  if (!searchTerm) return text;
+  const re = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, "gi");
+  return text.replace(re, "<mark>$1</mark>");
+}
+
+function matchesSearch(text) {
+  if (!searchTerm) return true;
+  return text.toLowerCase().includes(searchTerm.toLowerCase());
+}
+
+function renderSection(sec) {
+  const [cMain, cLight, cBorder] = sec.accent.map(hex);
+
+  if (sec.cat === "dodont") {
+    // filter pairs
+    const pairs = sec.pairs.filter(p =>
+      !searchTerm || matchesSearch(p.do) || matchesSearch(p.dont)
+    );
+    if (!pairs.length && searchTerm) return "";
+
+    const rows = pairs.map(p => `
+      <div class="dodont-item do-item">${highlight(p.do)}</div>
+    `).join("") + `</div><div class="dodont-col">
+      <div class="dodont-header dont-header">✗ Don't say</div>` +
+      pairs.map(p => `
+      <div class="dodont-item dont-item">${highlight(p.dont)}</div>
+    `).join("");
+
+    return `
+      <section class="section" data-cat="${sec.cat}" id="sec-${sec.id}">
+        <div class="section-head">
+          <div class="section-icon" style="background:${cLight};border:1px solid ${cBorder};">${sec.icon}</div>
+          <span class="section-title">${sec.title}</span>
+          <span class="section-count">${pairs.length} pairs</span>
+        </div>
+        <div class="dodont-grid">
+          <div class="dodont-col">
+            <div class="dodont-header do-header">✓ Say this</div>
+            ${pairs.map(p => `<div class="dodont-item do-item">${highlight(p.do)}</div>`).join("")}
+          </div>
+          <div class="dodont-col">
+            <div class="dodont-header dont-header">✗ Not this</div>
+            ${pairs.map(p => `<div class="dodont-item dont-item">${highlight(p.dont)}</div>`).join("")}
+          </div>
+        </div>
+      </section>`;
+  }
+
+  // filter words & phrases
+  const words   = sec.words  ? sec.words.filter(w => !searchTerm || matchesSearch(w)) : [];
+  const phrases = sec.phrases? sec.phrases.filter(p => !searchTerm || matchesSearch(p.text) || matchesSearch(p.note)) : [];
+
+  if (!words.length && !phrases.length && searchTerm) return "";
+
+  const wordHtml = words.length ? `
+    <div class="word-cloud" style="border-color:${cBorder};">
+      ${words.map(w => `
+        <span class="word-pill" style="background:${cLight};color:${cMain};border-color:${cBorder};"
+          onclick="copyText('${w.replace(/'/g,"\\'")}', this)">${highlight(w)}</span>
+      `).join("")}
+    </div>` : "";
+
+  const half = Math.ceil(phrases.length / 2);
+  const col1 = phrases.slice(0, half);
+  const col2 = phrases.slice(half);
+
+  const phraseHtml = phrases.length ? `
+    <div class="content-grid" style="margin-top:${words.length?'12px':'0'};">
+      <div class="phrase-col">
+        ${col1.map(p => `
+          <div class="phrase-card" onclick="copyText(\`${p.text.replace(/`/g,'\\`')}\`, this)">
+            <span class="copy-hint">copy</span>
+            <div class="phrase-text">${highlight(p.text)}</div>
+            <div class="phrase-note">${highlight(p.note)}</div>
+          </div>`).join("")}
+      </div>
+      <div class="phrase-col">
+        ${col2.map(p => `
+          <div class="phrase-card" onclick="copyText(\`${p.text.replace(/`/g,'\\`')}\`, this)">
+            <span class="copy-hint">copy</span>
+            <div class="phrase-text">${highlight(p.text)}</div>
+            <div class="phrase-note">${highlight(p.note)}</div>
+          </div>`).join("")}
+      </div>
+    </div>` : "";
+
+  const total = words.length + phrases.length;
+
+  return `
+    <section class="section" data-cat="${sec.cat}" id="sec-${sec.id}">
+      <div class="section-head">
+        <div class="section-icon" style="background:${cLight};border:1px solid ${cBorder};">${sec.icon}</div>
+        <span class="section-title">${sec.title}</span>
+        <span class="section-count">${total} items</span>
+      </div>
+      ${wordHtml}
+      ${phraseHtml}
+    </section>`;
+}
+
+function render() {
+  const main = document.getElementById("main");
+  const filtered = DATA.filter(s =>
+    activeFilter === "all" || s.cat === activeFilter
+  );
+  const html = filtered.map(renderSection).filter(Boolean).join("");
+  main.innerHTML = html || `<p style="padding:40px 0;color:var(--dim);text-align:center;font-family:'DM Mono',monospace;font-size:13px;">No results for "${searchTerm}"</p>`;
+}
+
+// ── COPY ──────────────────────────────────────────────────────────────────────
+
+function copyText(text, el) {
+  navigator.clipboard.writeText(text).then(() => {
+    if (el) { el.classList.add("copied"); setTimeout(() => el.classList.remove("copied"), 800); }
+    const toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 1800);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
+    const toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 1800);
+  });
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+
+document.getElementById("filterTabs").addEventListener("click", e => {
+  const t = e.target.closest(".ftab"); if (!t) return;
+  activeFilter = t.dataset.filter;
+  document.querySelectorAll(".ftab").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  render();
+});
+
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+
+document.getElementById("searchInput").addEventListener("input", e => {
+  searchTerm = e.target.value.trim();
+  if (searchTerm) { activeFilter = "all"; document.querySelectorAll(".ftab").forEach(x => x.classList.remove("active")); document.querySelector('.ftab[data-filter="all"]').classList.add("active"); }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
