@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Prep Hub — Vladimiras Levinas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital,wght@0,400;1,400&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f8f8f6;
+  --bg2:      #ffffff;
+  --bg3:      #f1f1ed;
+  --border:   #e4e4de;
+  --border2:  #cacac0;
+  --text:     #161612;
+  --muted:    #686860;
+  --dim:      #aeaea4;
+  --shadow:   0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 6px 20px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg:0 20px 60px rgba(0,0,0,0.12), 0 6px 18px rgba(0,0,0,0.07);
+  --r: 14px;
+  --r-sm: 8px;
+  --r-pill: 999px;
+
+  /* card accents */
+  --c1:  #1a52e0; --c1l: #eef2ff; --c1b: #bfcbfd;
+  --c2:  #0e7a52; --c2l: #edf9f3; --c2b: #86dcba;
+  --c3:  #9b3a00; --c3l: #fff4ec; --c3b: #f5c8a0;
+  --c4:  #6b24c4; --c4l: #f3eeff; --c4b: #c8aef8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* dot-grid texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, #c4c4ba 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ambient glow */
+body::after {
+  content: '';
+  position: fixed;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 500px;
+  background: radial-gradient(ellipse, rgba(26,82,224,0.07) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+.page { max-width: 920px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+/* ── HEADER ── */
+header {
+  padding: 64px 0 52px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 56px;
+}
+
+@media (max-width: 640px) { header { grid-template-columns: 1fr; } }
+
+.header-left {}
+
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--c1);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--c1);
+  display: inline-block;
+}
+
+header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(32px, 5.5vw, 52px);
+  font-weight: 400; line-height: 1.08;
+  letter-spacing: -0.5px;
+}
+
+header h1 em { font-style: italic; color: var(--c1); }
+
+.header-sub {
+  font-size: 14px; color: var(--muted);
+  max-width: 440px; margin-top: 14px; line-height: 1.7;
+}
+
+.header-right {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+}
+
+.profile-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow);
+}
+
+.profile-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--c1l);
+  border: 1.5px solid var(--c1b);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500; color: var(--c1);
+}
+
+.profile-name {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  line-height: 1.2;
+}
+
+.profile-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--dim);
+}
+
+.progress-pill {
+  padding: 6px 14px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--muted);
+  box-shadow: var(--shadow);
+}
+
+.progress-pill span { color: var(--c2); font-weight: 500; }
+
+/* ── SECTION TITLE ── */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: var(--border);
+}
+
+/* ── TOOL CARDS ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+@media (max-width: 580px) { .cards-grid { grid-template-columns: 1fr; } }
+
+.tool-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px 26px 24px;
+  box-shadow: var(--shadow-md);
+  text-decoration: none; color: inherit;
+  display: flex; flex-direction: column;
+  gap: 0;
+  position: relative; overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  cursor: pointer;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-accent);
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border2);
+}
+
+.tool-card:hover::before { opacity: 1; }
+
+/* card accent colors */
+.tool-card:nth-child(1) { --card-accent: var(--c1); }
+.tool-card:nth-child(2) { --card-accent: var(--c2); }
+.tool-card:nth-child(3) { --card-accent: var(--c3); }
+.tool-card:nth-child(4) { --card-accent: var(--c4); }
+
+.card-icon-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.card-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.card-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+  margin-top: 4px;
+}
+
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; font-weight: 400; line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.card-title em { font-style: italic; }
+
+.card-desc {
+  font-size: 13px; color: var(--muted);
+  line-height: 1.65; flex: 1;
+  margin-bottom: 20px;
+}
+
+.card-tags {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  padding: 3px 9px; border-radius: var(--r-pill);
+  border: 1px solid;
+}
+
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: auto;
+}
+
+.card-stat {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+}
+
+.card-cta {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  transition: gap 0.2s;
+}
+
+.tool-card:hover .card-cta { gap: 10px; }
+
+.arrow {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  transition: transform 0.2s;
+}
+
+.tool-card:hover .arrow { transform: translateX(3px); }
+
+/* card-specific colors */
+.card-c1 .card-icon { background: var(--c1l); }
+.card-c1 .card-title em { color: var(--c1); }
+.card-c1 .tag { color: var(--c1); background: var(--c1l); border-color: var(--c1b); }
+.card-c1 .card-cta { color: var(--c1); }
+.card-c1 .arrow { background: var(--c1l); color: var(--c1); }
+
+.card-c2 .card-icon { background: var(--c2l); }
+.card-c2 .card-title em { color: var(--c2); }
+.card-c2 .tag { color: var(--c2); background: var(--c2l); border-color: var(--c2b); }
+.card-c2 .card-cta { color: var(--c2); }
+.card-c2 .arrow { background: var(--c2l); color: var(--c2); }
+
+.card-c3 .card-icon { background: var(--c3l); }
+.card-c3 .card-title em { color: var(--c3); }
+.card-c3 .tag { color: var(--c3); background: var(--c3l); border-color: var(--c3b); }
+.card-c3 .card-cta { color: var(--c3); }
+.card-c3 .arrow { background: var(--c3l); color: var(--c3); }
+
+.card-c4 .card-icon { background: var(--c4l); }
+.card-c4 .card-title em { color: var(--c4); }
+.card-c4 .tag { color: var(--c4); background: var(--c4l); border-color: var(--c4b); }
+.card-c4 .card-cta { color: var(--c4); }
+.card-c4 .arrow { background: var(--c4l); color: var(--c4); }
+
+/* ── CHECKLIST ── */
+.checklist-section { margin-bottom: 56px; }
+
+.checklist-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 580px) { .checklist-grid { grid-template-columns: 1fr; } }
+
+.check-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.check-item:hover { border-color: var(--border2); }
+.check-item.done { background: #f5fdf8; border-color: #b0dfc2; }
+
+.check-box {
+  width: 20px; height: 20px;
+  border-radius: 6px; border: 1.5px solid var(--border2);
+  flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  font-size: 11px; color: transparent;
+}
+
+.check-item.done .check-box {
+  background: var(--c2); border-color: var(--c2); color: #fff;
+}
+
+.check-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.check-item.done .check-text { color: var(--muted); text-decoration: line-through; }
+
+/* ── TIPS STRIP ── */
+.tips-strip {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px 26px;
+  box-shadow: var(--shadow);
+  margin-bottom: 56px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.tip-item { display: flex; gap: 12px; align-items: flex-start; }
+
+.tip-ico {
+  font-size: 18px; flex-shrink: 0;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg3); border-radius: 8px;
+}
+
+.tip-body {}
+.tip-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.tip-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 0 40px;
+  display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 12px;
+}
+
+footer p {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+}
+
+footer a {
+  color: var(--c1); text-decoration: none;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+}
+
+footer a:hover { text-decoration: underline; }
+
+/* entry animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tool-card { animation: fadeUp 0.4s ease both; }
+.tool-card:nth-child(1) { animation-delay: 0.05s; }
+.tool-card:nth-child(2) { animation-delay: 0.12s; }
+.tool-card:nth-child(3) { animation-delay: 0.19s; }
+.tool-card:nth-child(4) { animation-delay: 0.26s; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <div class="eyebrow">Interview Preparation System</div>
+      <h1>Your Complete<br><em>Interview Kit</em></h1>
+      <p class="header-sub">Four tools, one mission — walk into every interview prepared, confident, and articulate.</p>
+    </div>
+    <div class="header-right">
+      <div class="profile-chip">
+        <div class="profile-avatar">VL</div>
+        <div>
+          <div class="profile-name">Vladimiras Levinas</div>
+          <div class="profile-role">Lead DevOps · 18+ yrs</div>
+        </div>
+      </div>
+      <div class="progress-pill">4 tools · <span>ready to use</span></div>
+    </div>
+  </header>
+
+  <!-- TOOL CARDS -->
+  <div class="section-label">Tools</div>
+  <div class="cards-grid">
+
+    <!-- 1. Interview Prep (Q&A) -->
+    <a class="tool-card card-c1" href="interview-prep.html">
+      <div class="card-icon-row">
+        <div class="card-icon">📋</div>
+        <div class="card-num">01</div>
+      </div>
+      <div class="card-title">Behavioral<br><em>Questions</em></div>
+      <div class="card-desc">30 STAR-format answers across 9 categories — problem solving, leadership, collaboration, tough questions and more. Filter by interview stage: HR, hiring manager, or exec round.</div>
+      <div class="card-tags">
+        <span class="tag">30 questions</span>
+        <span class="tag">STAR format</span>
+        <span class="tag">Stage filter</span>
+        <span class="tag">9 categories</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">HR · HM · Exec rounds</div>
+        <div class="card-cta">
+          Open <div class="arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 2. Mock Interview -->
+    <a class="tool-card card-c2" href="mock-interview.html">
+      <div class="card-icon-row">
+        <div class="card-icon">⏱️</div>
+        <div class="card-num">02</div>
+      </div>
+      <div class="card-title">Mock Interview<br><em>Simulator</em></div>
+      <div class="card-desc">Live timer, real questions, self-rating after each answer. Configure stage, category, number of questions, and time limit. Results breakdown at the end of every session.</div>
+      <div class="card-tags">
+        <span class="tag">Live timer</span>
+        <span class="tag">Self-rating</span>
+        <span class="tag">Session results</span>
+        <span class="tag">STAR hints</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">90 sec recommended</div>
+        <div class="card-cta">
+          Open <div class="arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 3. Vocabulary Reference -->
+    <a class="tool-card card-c3" href="interview-vocabulary.html">
+      <div class="card-icon-row">
+        <div class="card-icon">📖</div>
+        <div class="card-num">03</div>
+      </div>
+      <div class="card-title">Words &amp;<br><em>Phrases</em></div>
+      <div class="card-desc">150+ interview power words, full phrases, and usage examples organised by category. Clickable — copy any phrase to clipboard. Includes Do / Don't swaps for the most common mistakes.</div>
+      <div class="card-tags">
+        <span class="tag">150+ items</span>
+        <span class="tag">Click to copy</span>
+        <span class="tag">Do / Don't</span>
+        <span class="tag">Search</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">8 categories</div>
+        <div class="card-cta">
+          Open <div class="arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 4. Vocabulary Trainer -->
+    <a class="tool-card card-c4" href="vocabulary-trainer.html">
+      <div class="card-icon-row">
+        <div class="card-icon">🃏</div>
+        <div class="card-num">04</div>
+      </div>
+      <div class="card-title">Vocabulary<br><em>Trainer</em></div>
+      <div class="card-desc">Flashcards, quiz, and match modes for learning interview words with synonyms and antonyms. Self-paced with results tracking — know vs need-to-learn breakdown after every session.</div>
+      <div class="card-tags">
+        <span class="tag">Flashcards</span>
+        <span class="tag">Quiz</span>
+        <span class="tag">Match</span>
+        <span class="tag">Synonyms</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">60+ vocabulary cards</div>
+        <div class="card-cta">
+          Open <div class="arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- PREPARATION CHECKLIST -->
+  <div class="checklist-section">
+    <div class="section-label">Pre-interview checklist</div>
+    <div class="checklist-grid" id="checklist">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Run mock interview (5 questions, 90 sec, all categories)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Practice vocabulary flashcards (20 cards, quiz mode)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Customize "Why this role?" answer for the specific company</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Research company tech stack and align with your experience</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Prepare salary range based on market data for target city</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Review Do/Don't phrases — avoid weak language</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Prepare 2-3 closing questions for the interviewer</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Check camera, microphone, lighting, and internet connection</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Have CV printed / on screen and notepad ready</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Get avg mock score ≥ 4/5 before the real interview</div></div>
+    </div>
+  </div>
+
+  <!-- TIPS STRIP -->
+  <div class="section-label">Quick tips</div>
+  <div class="tips-strip">
+    <div class="tip-item">
+      <div class="tip-ico">⏱️</div>
+      <div class="tip-body">
+        <div class="tip-title">90-second rule</div>
+        <div class="tip-desc">STAR answers should be 90–120 sec. Longer kills attention. Shorter loses impact.</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-ico">🎯</div>
+      <div class="tip-body">
+        <div class="tip-title">Customize one answer</div>
+        <div class="tip-desc">"Why this role?" must be unique per company. All others can be standard.</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-ico">📊</div>
+      <div class="tip-body">
+        <div class="tip-title">Numbers win</div>
+        <div class="tip-desc">Every answer needs at least one measurable result. "Faster" is weak. "4x faster" lands.</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-ico">🔁</div>
+      <div class="tip-body">
+        <div class="tip-title">Daily practice</div>
+        <div class="tip-desc">10 min vocabulary + 1 mock run per day. Muscle memory beats last-minute cramming.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>doc.thedevops.dev &nbsp;·&nbsp; Vilnius, Lithuania &nbsp;·&nbsp; 2026</p>
+    <a href="https://doc.thedevops.dev" target="_blank">doc.thedevops.dev ↗</a>
+  </footer>
+
+</div>
+
+<script>
+function toggleCheck(el) {
+  el.classList.toggle('done');
+  // persist in localStorage
+  const items = document.querySelectorAll('.check-item');
+  const state = [...items].map(i => i.classList.contains('done'));
+  try { localStorage.setItem('iv-checklist', JSON.stringify(state)); } catch(e){}
+}
+
+// restore state
+try {
+  const saved = JSON.parse(localStorage.getItem('iv-checklist') || '[]');
+  const items = document.querySelectorAll('.check-item');
+  saved.forEach((done, i) => { if(done && items[i]) items[i].classList.add('done'); });
+} catch(e){}
+</script>
+</body>
+</html>
