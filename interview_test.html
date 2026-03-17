@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Interview Simulator — Vladimiras Levinas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f8f8f6;
+  --bg2:      #ffffff;
+  --bg3:      #f2f2ef;
+  --border:   #e4e4df;
+  --border2:  #c8c8c0;
+  --text:     #181815;
+  --muted:    #6a6a62;
+  --dim:      #aeaea4;
+  --accent:   #1a56db;
+  --accent-l: #eff4ff;
+  --accent-b: #bfcefd;
+  --green:    #0f766e;
+  --green-l:  #f0fdf9;
+  --green-b:  #99e6d8;
+  --amber:    #b45309;
+  --amber-l:  #fffbeb;
+  --amber-b:  #fcd34d;
+  --red:      #b91c1c;
+  --red-l:    #fef2f2;
+  --red-b:    #fca5a5;
+  --shadow:   0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.05);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+  --r: 10px;
+  --r-sm: 6px;
+  --r-pill: 24px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26,86,219,0.06) 0%, transparent 70%);
+  pointer-events:none;
+  z-index:0;
+}
+
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ══ SETUP SCREEN ══════════════════════════════════════════════════════════ */
+.setup-header { padding: 52px 0 36px; text-align: center; }
+
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.setup-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 400; line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.setup-header h1 em { font-style: italic; color: var(--accent); }
+
+.setup-header p {
+  color: var(--muted); font-size: 14px;
+  max-width: 480px; margin: 0 auto;
+}
+
+.setup-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+
+.setup-card h3 {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 16px;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.opt-btn {
+  padding: 10px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'Sora', sans-serif;
+  font-size: 12px; font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.opt-btn:hover { border-color: var(--border2); color: var(--text); }
+
+.opt-btn.selected {
+  background: var(--accent-l);
+  border-color: var(--accent-b);
+  color: var(--accent);
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.cat-btn {
+  padding: 10px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'Sora', sans-serif;
+  font-size: 12px; font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 8px;
+  text-align: left;
+}
+
+.cat-btn:hover { border-color: var(--border2); color: var(--text); }
+.cat-btn.selected { background: var(--accent-l); border-color: var(--accent-b); color: var(--accent); }
+.cat-btn .ci { font-size: 14px; }
+
+.start-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 8px;
+  box-shadow: 0 4px 14px rgba(26,86,219,0.3);
+}
+
+.start-btn:hover { background: #1648c0; box-shadow: 0 6px 20px rgba(26,86,219,0.4); transform: translateY(-1px); }
+.start-btn:active { transform: translateY(0); }
+.start-btn:disabled { background: var(--dim); box-shadow: none; cursor: not-allowed; transform: none; }
+
+/* ══ INTERVIEW SCREEN ══════════════════════════════════════════════════════ */
+.iv-header {
+  padding: 24px 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+  gap: 16px;
+}
+
+.progress-info {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.q-counter {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; color: var(--muted);
+}
+
+.progress-bar-wrap {
+  width: 120px; height: 4px;
+  background: var(--border);
+  border-radius: 2px; overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* TIMER */
+.timer-wrap { text-align: center; }
+
+.timer-ring {
+  position: relative;
+  width: 64px; height: 64px;
+}
+
+.timer-ring svg {
+  position: absolute; top: 0; left: 0;
+  transform: rotate(-90deg);
+}
+
+.timer-ring .track { fill: none; stroke: var(--border); stroke-width: 3; }
+.timer-ring .fill  { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
+
+.timer-label {
+  position: absolute;
+  inset: 0; display: flex;
+  align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 14px; font-weight: 500;
+  color: var(--text);
+}
+
+.stage-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  padding: 3px 10px; border-radius: var(--r-pill);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.stage-hr   { background: var(--accent-l); color: var(--accent); border: 1px solid var(--accent-b); }
+.stage-hm   { background: var(--amber-l);  color: var(--amber);  border: 1px solid var(--amber-b); }
+.stage-exec { background: #f5f3ff;          color: #6d28d9;        border: 1px solid #c4b5fd; }
+
+/* QUESTION CARD */
+.q-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px 28px 24px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 20px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.q-category {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.q-cat-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+}
+
+.q-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(18px, 3vw, 22px);
+  font-weight: 400; line-height: 1.35;
+  color: var(--text);
+}
+
+/* CONTROLS */
+.controls {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.ctrl-btn {
+  padding: 10px 20px;
+  border-radius: var(--r);
+  font-family: 'Sora', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--muted);
+  box-shadow: var(--shadow);
+}
+
+.ctrl-btn:hover { border-color: var(--border2); color: var(--text); }
+
+.ctrl-btn.primary {
+  background: var(--accent);
+  color: #fff; border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(26,86,219,0.25);
+}
+
+.ctrl-btn.primary:hover { background: #1648c0; }
+
+.ctrl-btn.success {
+  background: var(--green);
+  color: #fff; border-color: var(--green);
+}
+
+.ctrl-btn.danger {
+  background: var(--bg2);
+  color: var(--red); border-color: var(--red-b);
+}
+
+/* NOTES */
+.notes-wrap { margin-bottom: 20px; }
+
+.notes-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 8px;
+}
+
+.notes-area {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px 14px;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px; line-height: 1.6;
+  color: var(--text);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  resize: vertical; outline: none;
+  transition: border-color 0.15s;
+  box-shadow: var(--shadow);
+}
+
+.notes-area:focus { border-color: var(--accent-b); box-shadow: var(--shadow), 0 0 0 3px rgba(26,86,219,0.07); }
+.notes-area::placeholder { color: var(--dim); }
+
+/* HINT PANEL */
+.hint-panel {
+  background: var(--accent-l);
+  border: 1px solid var(--accent-b);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.hint-panel.open { display: block; }
+
+.hint-head {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.hint-star {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 6px 12px;
+}
+
+.hint-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--accent);
+  padding-top: 2px;
+}
+
+.hint-val {
+  font-size: 12px; color: var(--text);
+  line-height: 1.6;
+}
+
+/* SELF RATING */
+.rating-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  display: none;
+}
+
+.rating-wrap.open { display: block; animation: fadeIn 0.25s ease; }
+
+@keyframes fadeIn {
+  from{opacity:0;transform:translateY(6px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.rating-title {
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 14px; color: var(--text);
+}
+
+.stars {
+  display: flex; gap: 8px; margin-bottom: 14px;
+}
+
+.star {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+}
+
+.star:hover, .star.active {
+  background: var(--amber-l);
+  border-color: var(--amber-b);
+  transform: scale(1.1);
+}
+
+.rating-labels {
+  display: flex; justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.next-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 3px 10px rgba(26,86,219,0.25);
+}
+
+.next-btn:hover { background: #1648c0; }
+.next-btn:disabled { background: var(--dim); box-shadow: none; cursor: not-allowed; }
+
+/* ══ RESULTS SCREEN ══════════════════════════════════════════════════════════ */
+.results-header {
+  padding: 48px 0 32px;
+  text-align: center;
+}
+
+.results-header h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 400; margin-bottom: 8px;
+}
+
+.results-header h2 em { font-style: italic; color: var(--accent); }
+
+.score-ring-wrap {
+  display: flex; justify-content: center;
+  margin: 28px 0;
+}
+
+.score-ring {
+  position: relative;
+  width: 120px; height: 120px;
+}
+
+.score-ring svg {
+  position: absolute; top: 0; left: 0;
+  transform: rotate(-90deg);
+}
+
+.score-ring .tr { fill: none; stroke: var(--border); stroke-width: 6; }
+.score-ring .fi { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+
+.score-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+
+.score-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px; line-height: 1;
+  color: var(--text);
+}
+
+.score-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.stat-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px; line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* BREAKDOWN */
+.breakdown {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 20px;
+}
+
+.breakdown-head {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--dim);
+}
+
+.breakdown-row {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 16px; align-items: center;
+}
+
+.breakdown-row:last-child { border-bottom: none; }
+
+.br-q { font-size: 13px; color: var(--text); line-height: 1.4; }
+
+.br-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+  white-space: nowrap;
+}
+
+.br-stars { display: flex; gap: 3px; }
+.br-star { font-size: 13px; }
+.br-star.empty { opacity: 0.2; }
+
+/* score colors */
+.score-green { color: var(--green); }
+.score-amber { color: var(--amber); }
+.score-red   { color: var(--red); }
+
+.restart-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 4px 14px rgba(26,86,219,0.3);
+  margin-bottom: 40px;
+}
+
+.restart-btn:hover { background: #1648c0; transform: translateY(-1px); }
+
+/* ── MISC ── */
+.divider {
+  border: none; border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+.time-warning { stroke: var(--amber) !important; }
+.time-danger  { stroke: var(--red) !important; }
+
+.status-msg {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+  text-align: center; padding: 8px 0;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ══ SETUP ══════════════════════════════════════════════════════════════════ -->
+<div class="screen active" id="setupScreen">
+  <div class="setup-header">
+    <div class="eyebrow">Interview Simulator</div>
+    <h1>Mock Interview<br><em>Training Mode</em></h1>
+    <p>Real questions, real timer, real self-assessment. Practice until the answers come without thinking.</p>
+  </div>
+
+  <div class="setup-card">
+    <h3>Interview stage</h3>
+    <div class="option-grid" id="stageOpts">
+      <button class="opt-btn selected" data-val="all">All stages</button>
+      <button class="opt-btn" data-val="hr">HR screen</button>
+      <button class="opt-btn" data-val="hm">Hiring manager</button>
+      <button class="opt-btn" data-val="exec">Exec / final</button>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <h3>Question categories</h3>
+    <div class="cat-grid" id="catOpts">
+      <button class="cat-btn selected" data-val="all"><span class="ci">🎯</span>All categories</button>
+      <button class="cat-btn" data-val="problem"><span class="ci">🔍</span>Problem solving</button>
+      <button class="cat-btn" data-val="comm"><span class="ci">💬</span>Communication</button>
+      <button class="cat-btn" data-val="collab"><span class="ci">🤝</span>Collaboration</button>
+      <button class="cat-btn" data-val="fit"><span class="ci">🎯</span>Experience & fit</button>
+      <button class="cat-btn" data-val="tough"><span class="ci">⚡</span>Tough questions</button>
+      <button class="cat-btn" data-val="lead"><span class="ci">🧭</span>Leadership</button>
+      <button class="cat-btn" data-val="growth"><span class="ci">🌱</span>Growth mindset</button>
+      <button class="cat-btn" data-val="culture"><span class="ci">🏛</span>Culture & style</button>
+      <button class="cat-btn" data-val="sit"><span class="ci">⚙️</span>Situational</button>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <h3>Number of questions</h3>
+    <div class="option-grid" id="countOpts">
+      <button class="opt-btn" data-val="3">3 questions</button>
+      <button class="opt-btn selected" data-val="5">5 questions</button>
+      <button class="opt-btn" data-val="8">8 questions</button>
+      <button class="opt-btn" data-val="all">All questions</button>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <h3>Time per answer</h3>
+    <div class="option-grid" id="timeOpts">
+      <button class="opt-btn" data-val="60">60 sec</button>
+      <button class="opt-btn selected" data-val="90">90 sec ✓</button>
+      <button class="opt-btn" data-val="120">120 sec</button>
+      <button class="opt-btn" data-val="0">No limit</button>
+    </div>
+  </div>
+
+  <button class="start-btn" id="startBtn" onclick="startInterview()">Start mock interview →</button>
+</div>
+
+<!-- ══ INTERVIEW ══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="interviewScreen">
+
+  <div class="iv-header">
+    <div class="progress-info">
+      <span class="q-counter" id="qCounter">1 / 5</span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="timer-wrap" id="timerWrap">
+      <div class="timer-ring" id="timerRing">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle class="track" cx="32" cy="32" r="28"/>
+          <circle class="fill" id="timerArc" cx="32" cy="32" r="28"
+            stroke-dasharray="175.93"
+            stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-label" id="timerLabel">—</div>
+      </div>
+    </div>
+
+    <div id="stageBadge"></div>
+  </div>
+
+  <div class="q-card" id="qCard">
+    <div class="q-category" id="qCat">
+      <span class="q-cat-dot"></span>
+      <span id="qCatText">Category</span>
+    </div>
+    <div class="q-text" id="qText">Question appears here</div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" onclick="toggleHint()">💡 Show hint</button>
+    <button class="ctrl-btn" onclick="skipQuestion()">Skip →</button>
+    <button class="ctrl-btn primary" id="answerBtn" onclick="showRating()">I answered — rate myself</button>
+  </div>
+
+  <div class="hint-panel" id="hintPanel">
+    <div class="hint-head">Answer framework (STAR)</div>
+    <div class="hint-star" id="hintContent"></div>
+  </div>
+
+  <div class="notes-wrap">
+    <div class="notes-label">Your notes (key points)</div>
+    <textarea class="notes-area" id="notesArea" placeholder="Jot down the key points of your answer — situation, action, result…"></textarea>
+  </div>
+
+  <div class="rating-wrap" id="ratingWrap">
+    <div class="rating-title">How well did you answer?</div>
+    <div class="stars" id="starsRow">
+      <div class="star" data-v="1" onclick="setStar(1)">⭐</div>
+      <div class="star" data-v="2" onclick="setStar(2)">⭐</div>
+      <div class="star" data-v="3" onclick="setStar(3)">⭐</div>
+      <div class="star" data-v="4" onclick="setStar(4)">⭐</div>
+      <div class="star" data-v="5" onclick="setStar(5)">⭐</div>
+    </div>
+    <div class="rating-labels">
+      <span>Struggled</span>
+      <span>Decent</span>
+      <span>Nailed it</span>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next question →</button>
+  </div>
+
+</div>
+
+<!-- ══ RESULTS ════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="resultsScreen">
+
+  <div class="results-header">
+    <div class="eyebrow">Session complete</div>
+    <h2>Interview<br><em>Results</em></h2>
+  </div>
+
+  <div class="score-ring-wrap">
+    <div class="score-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle class="tr" cx="60" cy="60" r="52"/>
+        <circle class="fi" id="scoreArc" cx="60" cy="60" r="52"
+          stroke-dasharray="326.73"
+          stroke-dashoffset="326.73"/>
+      </svg>
+      <div class="score-center">
+        <div class="score-num" id="scoreNum">—</div>
+        <div class="score-label">avg score</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-val" id="statQ">—</div>
+      <div class="stat-lbl">Questions</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="statSkip">—</div>
+      <div class="stat-lbl">Skipped</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="statTime">—</div>
+      <div class="stat-lbl">Avg time</div>
+    </div>
+  </div>
+
+  <div class="breakdown" id="breakdown"></div>
+
+  <button class="restart-btn" onclick="restart()">← New session</button>
+
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const QUESTIONS = [
+  {cat:"problem",stages:["hr","hm"],q:"Tell me about a time you had to solve a complex technical problem under pressure.",sit:"CESOP pipeline failure 48hrs before EU deadline — schema validation errors in cross-border transaction data.",task:"Fix without delaying submission; maintain regulatory data integrity.",action:"Isolated XPath transformation bug. Rewrote stored proc, added Python validation layer, tested with synthetic data. Drafted manual extension contingency.",result:"Submitted on time. Validation framework became standard — reduced prep from days to hours."},
+  {cat:"problem",stages:["hm"],q:"Describe a situation where you had to make a technical decision with incomplete information.",sit:"No benchmarks for SAP IQ in Docker when evaluating ETL containerization for Respublika Bank (2017).",task:"Decide: containers or legacy, with client SLAs at stake.",action:"2-week time-boxed PoC. Pre-defined metrics: query perf, resource use, failover. Presented trade-offs with clear recommendation and documented risk.",result:"4+ years production, zero SLA breaches. PoC approach became standard."},
+  {cat:"problem",stages:["hm","exec"],q:"Give an example of when you identified a problem before it became critical.",sit:"Grafana latency trending wrong over 3 months on Kazakhstan gov platform — still within SLA.",task:"Find root cause before breach on a billion-record system.",action:"Found SAP IQ table fragmentation. Redesigned maintenance, added fragmentation alerting, introduced monthly capacity reviews.",result:"Prevented SLA breach ~6 weeks out. Client adopted the cadence permanently."},
+  {cat:"comm",stages:["hr","hm"],q:"Tell me about a time you had to explain a complex technical concept to a non-technical stakeholder.",sit:"Ministry client expected 2-week patch; needed 3-month overhaul.",task:"Communicate architectural risk in business terms without losing credibility.",action:"One-page visual: risk mapped to downtime, data loss, compliance exposure. Business risk framing, not technical. Two options with clear recommendation.",result:"Ministry approved full scope + budget. Became internal reference case."},
+  {cat:"comm",stages:["hm"],q:"Describe a time when you had to deliver difficult news or push back on a decision.",sit:"PM wanted 48hr microservice deploy for demo. No health checks, no rollback.",task:"Block production risk without blocking business objective.",action:"Reframed: mapped risks vs 5-day timeline. Proposed staging demo + 72hr soak before production. Documented risk in writing.",result:"Demo worked on staging. Production clean 4 days later. Risk doc became deployment gate template."},
+  {cat:"comm",stages:["hm"],q:"Give an example of a time you documented something that improved team operations.",sit:"On-call engineer made wrong rollback decision during incident — no runbook. 4-hour outage extended.",task:"Fix the process, not blame the person.",action:"Postmortem → runbook library: decision trees, rollback procedures, escalation paths. ADR templates for platform changes.",result:"Next incident resolved 60% faster. Engineers onboarded in half the time. Adopted on 3 client engagements."},
+  {cat:"collab",stages:["hm"],q:"Tell me about a time you worked with a difficult stakeholder or team member.",sit:"DBA team resisted containerization at Respublika Bank — built legacy system, saw containers as threat.",task:"Deliver project without lasting conflict.",action:"Stopped pushing. 1:1s surfaced job security concern. Redesigned handoff: DBAs owned schema management and query optimization in containers.",result:"DBAs became advocates. Senior DBA co-presented to CTO. Zero team conflict."},
+  {cat:"collab",stages:["hm"],q:"Describe your approach to mentoring or developing other engineers.",sit:"At DBITS LT, onboarding juniors into complex client environments where mistakes have real consequences.",task:"Build independent engineers, not instruction-followers.",action:"Read → shadow → lead → own model. Code reviews with written explanations. Gave 70% solvable problems — growth without public failure.",result:"3 engineers moved to senior roles. 1 became a lead. Measured by how rarely they came to me."},
+  {cat:"collab",stages:["hm","exec"],q:"Tell me about a time you drove alignment across teams with different priorities.",sit:"DBITS LT: each team had divergent IaC patterns. Cross-project onboarding was slow.",task:"Create shared standards without bureaucracy.",action:"3-session working group with senior engineers. Identified common vs flexible. Shared Terraform module library + CI/CD templates. One command scaffold.",result:"Setup time: days → hours. New engineers productive 40% faster. Module library grew organically."},
+  {cat:"fit",stages:["hr","hm"],q:"Why are you interested in this role, and how does it align with your experience?",sit:"Company works in [fintech / cloud-native / AI infra] — exactly where 18 years of my work has been.",task:"Forward-looking alignment question.",action:"Owned hard problems: regulated environments, platforms that scale, infrastructure without easy restarts. Built EU compliance automation at Walletto. National-scale gov platforms at DBITS. Looking for hard problems still ahead, not maintenance mode. My AI infra work — LLM inference + MCP on K3s — is directly relevant.",result:"Customize bracketed text per interview."},
+  {cat:"fit",stages:["hm"],q:"What's your greatest professional achievement?",sit:"CESOP at Walletto — or the Kazakhstan national-scale platforms.",task:"End-to-end EU compliance system with no playbook.",action:"Read the regulation, designed data model, wrote stored procs, built XML pipeline + XPath transform, created Python validation, delivered to EU regulator. Every layer was mine.",result:"Days → hours for quarterly prep. Same architecture reused for MMR-SASK. Published as internal reference."},
+  {cat:"fit",stages:["hr","hm"],q:"Tell me about a time you failed and what you learned.",sit:"Early DBITS LT: deployed monitoring agent update to production without staged rollout. 6-hour memory leak.",task:"Restore service.",action:"Rolled back in 40 min. Postmortem: bypassed change management because I was confident. Presented it without deflecting.",result:"Mandatory staged rollouts for all tooling changes. Still in place years later. Stopped trusting confidence as substitute for process."},
+  {cat:"tough",stages:["hr","hm","exec"],q:"Why should we hire you?",sit:"N/A — direct value question.",task:"Make the case without hedging.",action:"18 years owning platforms in fintech, banking, gov at national scale. Written compliance pipelines, designed data models, debugged SAP IQ at 2am, built runbooks. Self-sufficient end-to-end. AI infra: not learning on the job — running LLM inference, MCP, GPU scheduling in production now.",result:"Engineering judgment from real consequences — regulated environments, real SLAs, real clients."},
+  {cat:"tough",stages:["hr","hm"],q:"Why are you leaving your current company?",sit:"N/A — motivation question.",task:"Frame as moving toward, not away.",action:"Walletto: strong environment, real delivery. But platform stabilizing. Finding myself in maintenance mode more than architecture mode. Looking for roles where hard problems are still ahead — platform needs designing, not just operating.",result:"Optimizing for scope and judgment, not title or compensation."},
+  {cat:"tough",stages:["hr","hm"],q:"What are your weaknesses?",sit:"N/A — self-awareness question.",task:"Give a real weakness with a real management story.",action:"1. Impatience with theater-process — bypassed change mgmt once, paid for it. Now distinguish process that protects vs process that exists. 2. Direct to point of bluntness — learned to modulate tone by audience.",result:"Rather be honest than pretend to be universally diplomatic."},
+  {cat:"tough",stages:["hr","hm","exec"],q:"What are your salary expectations?",sit:"N/A — negotiation question.",task:"Anchor high, ask their range.",action:"Targeting [X–Y range] based on market data for this level in [city]. Open to total package conversation — equity, flexibility, trajectory. Counter-question: what's your budgeted range?",result:"Never say 'flexible' or 'whatever is fair.'"},
+  {cat:"lead",stages:["hm","exec"],q:"Tell me about a time you took ownership of something that wasn't officially your responsibility.",sit:"DBITS LT: DBA-owned backup system had no real owner. Partial restore failure in audit.",task:"Step in without conflict, fix permanently.",action:"Volunteered for backup architecture review. Rebuilt: automated SAP IQ backups, encryption, integrity validation, PITR. Wrote runbook, trained DBAs, quarterly restore tests. Made myself redundant in 3 months.",result:"No backup failures in subsequent audits. Runbook adopted for 2 other systems."},
+  {cat:"lead",stages:["hm","exec"],q:"Describe a time you had to lead without authority — influencing people who didn't report to you.",sit:"DBITS LT: needed voluntary IaC framework adoption across teams. No mandate, some senior engineers with strong opinions.",task:"Get adoption without authority.",action:"Presented as problem to solve together. Invited skeptics first. Their input shaped final design. Published first module with their names. First adopter: 2 days → 2 hours.",result:"All teams adopted voluntarily in 6 months. They maintained and extended it."},
+  {cat:"lead",stages:["hm"],q:"How do you prioritize when everything is urgent?",sit:"N/A — judgment question.",task:"Show a framework, not just instinct.",action:"Distinguish urgent as feeling vs fact. 10 min: what's broken vs what's at risk of breaking. Incidents: impact × time-to-breach. Project work: make priority visible and communicate it. Push back on false urgency.",result:"Invisible prioritization causes trust problems."},
+  {cat:"lead",stages:["exec"],q:"What's your philosophy on technical debt?",sit:"N/A — strategic thinking question.",task:"Show business trade-off understanding.",action:"Debt is a tool, not failure. Problem: unacknowledged debt, no repayment plan. Every shortcut gets an ADR with trade-off + target date. Distinguish compounding debt (pay proactively) vs stable debt (can wait).",result:"Choice with owners, not mess with amnesia."},
+  {cat:"growth",stages:["hr","hm"],q:"How do you stay current in a field that changes as fast as DevOps and AI infrastructure?",sit:"N/A — learning approach question.",task:"Demonstrate concrete learning practice.",action:"Learn by building, not reading. Homelab K3s: production-grade experiments. Running Ollama, MCP, GPU scheduling before they became requirements. Blog at doc.thedevops.dev forces understanding deep enough to be challenged. Selective: go deep on 2-year horizon topics, not weekly trends.",result:"eBPF observability, AI infra primitives, platform engineering patterns."},
+  {cat:"growth",stages:["hm","exec"],q:"Tell me about a time you had to learn something completely new under pressure.",sit:"CESOP at Walletto: zero prior regulatory experience. 3-month deadline.",task:"Become expert enough to design, build, deliver.",action:"Read the actual directive end-to-end. Mapped to data model. Built synthetic test harness before touching production. Treated it as engineering spec: precise, testable, verifiable.",result:"On-time delivery. Architecture reused for MMR-SASK. Compliance officer called it most rigorous implementation she'd seen."},
+  {cat:"growth",stages:["hr","hm"],q:"Where do you want to be technically in 2 years?",sit:"N/A — ambition question.",task:"Ground it in concrete skills, not titles.",action:"Intersection of platform engineering and AI infra at production scale. GPU clusters, multi-tenant LLM inference, AI workload observability. MCP ecosystem — tooling that makes AI agents useful in infra ops. Shaped how it's done, not catching up.",result:"Most teams can deploy a model. Very few can operate it with payment-service rigor."},
+  {cat:"culture",stages:["hr","hm"],q:"How do you prefer to work — independently or collaboratively?",sit:"N/A — working style question.",task:"Show nuance, not a generic answer.",action:"Both by phase. Architecture: whiteboard + 1-2 sharp people. Deep implementation: alone with focus time. Protect context-switching cost. Async execution, sync decisions. Direct communication — 10 min call > 3-day thread.",result:"Give direct feedback, expect same in return."},
+  {cat:"culture",stages:["hr"],q:"How do you handle ambiguity or unclear requirements?",sit:"N/A — initiative question.",task:"Show you don't get stuck.",action:"Ambiguity = input problem, not a blocker. One question: what does 'done' look like in production? Write assumptions explicitly, share, start building. Concrete proposal flushes disagreement faster than abstract discussion. Build smallest thing that can be wrong.",result:"Worst response to ambiguity is paralysis."},
+  {cat:"culture",stages:["hm","exec"],q:"Tell me about a time you disagreed with a decision made by leadership and what you did.",sit:"DBITS LT: manager cut Prometheus/Grafana stack to reduce costs on gov engagement.",task:"Push back without confrontation.",action:"Didn't complain — built case. Documented 3 incidents where stack detected issues before SLA breach. Estimated cost if undetected. Proposed leaner alternative: stripped-down Prometheus, critical dashboards only.",result:"Decision reversed for critical systems. Compromise was better than original — forced discipline about what to monitor."},
+  {cat:"culture",stages:["exec"],q:"How do you build trust with a new team quickly?",sit:"N/A — onboarding maturity question.",task:"Show you don't charge in and break things.",action:"Show up before speaking up. 2-3 weeks: watch decisions, find pain, identify informal authorities. Don't propose changes until understanding why things are the way they are. Find one annoying thing to fix quickly, fix it without asking permission. Make working style explicit early.",result:"Surprises erode trust. Consistency builds it."},
+  {cat:"sit",stages:["hm"],q:"You join a team and discover the infrastructure is in much worse shape than described. What do you do?",sit:"N/A — judgment question.",task:"Assess before acting.",action:"Don't panic, don't rewrite. Week 1: map what's there — running, critical, fragile, and what team already knows is broken. Week 2: risk register, not blame doc. Three tiers: fix-before-incident / fix-before-growth-blocker / can-wait. Present to manager.",result:"Unsanctioned refactoring in fragile systems causes the incident you were preventing."},
+  {cat:"sit",stages:["hm","exec"],q:"How would you approach building an observability culture in a team that doesn't have one?",sit:"N/A — cultural change question.",task:"Start with pain, not tooling.",action:"Find last 3 incidents: detect time, diagnose time, fix time. That tells you where leverage is. Make first improvement visible and fast — one Grafana dashboard showing what everyone was manually checking.",result:"Tooling mandated from above gets ignored. Tooling that solves real pain gets adopted and extended."},
+  {cat:"sit",stages:["hr","hm"],q:"A critical deployment fails in production at 11pm. Walk me through how you handle it.",sit:"N/A — incident management question.",task:"Show calm, structured response.",action:"First: blast radius, not root cause. Rollback if path is clean — ArgoCD sync to previous commit. Restore before investigating. Incident channel open immediately: timeline, action, ETA. No silence. Postmortem within 24hrs.",result:"Postmortem is about what the system allowed, not who did it."},
+  {cat:"sit",stages:["exec"],q:"How do you make the case for investing in platform engineering to non-technical leadership?",sit:"N/A — business communication question.",task:"Translate platform work into risk and velocity language.",action:"Don't say Kubernetes. Say: safe deployments, fast delivery, compliance confidence. Quantify: '3 engineer-days/quarter on manual setup → 2-week investment removes it permanently.' Make work visible: monthly one-pager — what we shipped, incidents prevented, what's now possible.",result:"Visibility is stakeholder management, not self-promotion."}
+];
+
+const CAT_LABELS = {
+  problem:"Problem solving", comm:"Communication", collab:"Collaboration",
+  fit:"Experience & fit", tough:"Tough questions", lead:"Leadership",
+  growth:"Growth mindset", culture:"Culture & style", sit:"Situational"
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let cfg = { stage:"all", cat:"all", count:5, time:90 };
+let session = { questions:[], current:0, results:[], timerInterval:null, elapsed:0, startTime:null };
+let currentRating = 0;
+let hintOpen = false;
+
+// ── SETUP ─────────────────────────────────────────────────────────────────────
+function initSetupButtons() {
+  function single(id, key) {
+    document.getElementById(id).querySelectorAll('[data-val]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(id).querySelectorAll('[data-val]').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        cfg[key] = btn.dataset.val === 'all' ? 'all' : (isNaN(btn.dataset.val) ? btn.dataset.val : (btn.dataset.val === '0' ? 0 : Number(btn.dataset.val)));
+      });
+    });
+  }
+  single('stageOpts','stage');
+  single('catOpts','cat');
+  single('countOpts','count');
+  single('timeOpts','time');
+}
+
+function startInterview() {
+  // filter questions
+  let pool = QUESTIONS.filter(q =>
+    (cfg.stage === 'all' || q.stages.includes(cfg.stage)) &&
+    (cfg.cat === 'all' || q.cat === cfg.cat)
+  );
+
+  if (!pool.length) { alert('No questions match this combination. Try different filters.'); return; }
+
+  // shuffle
+  pool = pool.sort(() => Math.random() - 0.5);
+
+  // limit
+  if (cfg.count !== 'all' && pool.length > cfg.count) pool = pool.slice(0, cfg.count);
+
+  session.questions = pool;
+  session.current = 0;
+  session.results = [];
+
+  show('interviewScreen');
+  loadQuestion();
+}
+
+// ── INTERVIEW ─────────────────────────────────────────────────────────────────
+function loadQuestion() {
+  const q = session.questions[session.current];
+  if (!q) { showResults(); return; }
+
+  currentRating = 0;
+  hintOpen = false;
+
+  // progress
+  document.getElementById('qCounter').textContent = `${session.current + 1} / ${session.questions.length}`;
+  const pct = (session.current / session.questions.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  // stage badge
+  const sb = document.getElementById('stageBadge');
+  const stages = q.stages.map(s => {
+    const cls = s === 'hr' ? 'stage-hr' : s === 'hm' ? 'stage-hm' : 'stage-exec';
+    return `<span class="stage-badge ${cls}" style="margin-left:4px;">${s.toUpperCase()}</span>`;
+  }).join('');
+  sb.innerHTML = `<div style="display:flex;gap:4px;align-items:center;">${stages}</div>`;
+
+  // question
+  document.getElementById('qCatText').textContent = CAT_LABELS[q.cat] || q.cat;
+  document.getElementById('qText').textContent = q.q;
+
+  // hint
+  document.getElementById('hintPanel').classList.remove('open');
+  const hc = document.getElementById('hintContent');
+  hc.innerHTML = [
+    ['Situation', q.sit],
+    ['Task', q.task],
+    ['Action', q.action],
+    ['Result', q.result],
+  ].map(([k,v]) => `<span class="hint-key">${k}</span><span class="hint-val">${v}</span>`).join('');
+
+  // notes
+  document.getElementById('notesArea').value = '';
+
+  // rating
+  document.getElementById('ratingWrap').classList.remove('open');
+  document.getElementById('nextBtn').disabled = true;
+  document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+
+  // timer
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(session.timerInterval);
+  session.elapsed = 0;
+  session.startTime = Date.now();
+
+  const total = cfg.time;
+  const arc = document.getElementById('timerArc');
+  const label = document.getElementById('timerLabel');
+  const circ = 175.93;
+
+  if (total === 0) {
+    label.textContent = '∞';
+    arc.style.strokeDashoffset = '0';
+    document.getElementById('timerWrap').style.opacity = '0.3';
+    session.timerInterval = setInterval(() => { session.elapsed = Math.round((Date.now() - session.startTime) / 1000); }, 1000);
+    return;
+  }
+
+  document.getElementById('timerWrap').style.opacity = '1';
+  arc.style.stroke = 'var(--accent)';
+
+  const tick = () => {
+    session.elapsed = Math.round((Date.now() - session.startTime) / 1000);
+    const remaining = Math.max(0, total - session.elapsed);
+    label.textContent = remaining + 's';
+
+    const offset = circ * (session.elapsed / total);
+    arc.style.strokeDashoffset = Math.min(offset, circ);
+
+    const pct = session.elapsed / total;
+    if (pct >= 1) {
+      arc.style.stroke = 'var(--red)';
+      label.textContent = '0s';
+    } else if (pct >= 0.75) {
+      arc.style.stroke = 'var(--red)';
+    } else if (pct >= 0.5) {
+      arc.style.stroke = 'var(--amber)';
+    } else {
+      arc.style.stroke = 'var(--accent)';
+    }
+  };
+
+  tick();
+  session.timerInterval = setInterval(tick, 500);
+}
+
+function stopTimer() {
+  clearInterval(session.timerInterval);
+  session.elapsed = Math.round((Date.now() - session.startTime) / 1000);
+}
+
+function toggleHint() {
+  hintOpen = !hintOpen;
+  document.getElementById('hintPanel').classList.toggle('open', hintOpen);
+}
+
+function showRating() {
+  stopTimer();
+  document.getElementById('ratingWrap').classList.add('open');
+  document.getElementById('ratingWrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function setStar(v) {
+  currentRating = v;
+  document.querySelectorAll('.star').forEach((s, i) => {
+    s.classList.toggle('active', i < v);
+  });
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  const q = session.questions[session.current];
+  session.results.push({
+    q: q.q,
+    cat: q.cat,
+    rating: currentRating,
+    elapsed: session.elapsed,
+    skipped: false
+  });
+  session.current++;
+  loadQuestion();
+}
+
+function skipQuestion() {
+  stopTimer();
+  const q = session.questions[session.current];
+  session.results.push({
+    q: q.q,
+    cat: q.cat,
+    rating: 0,
+    elapsed: session.elapsed,
+    skipped: true
+  });
+  session.current++;
+  loadQuestion();
+}
+
+// ── RESULTS ───────────────────────────────────────────────────────────────────
+function showResults() {
+  clearInterval(session.timerInterval);
+  show('resultsScreen');
+
+  const res = session.results;
+  const answered = res.filter(r => !r.skipped);
+  const skipped = res.filter(r => r.skipped).length;
+  const avg = answered.length ? (answered.reduce((s,r) => s + r.rating, 0) / answered.length) : 0;
+  const avgTime = answered.length ? Math.round(answered.reduce((s,r) => s + r.elapsed, 0) / answered.length) : 0;
+
+  // score ring
+  const scoreNum = document.getElementById('scoreNum');
+  const arc = document.getElementById('scoreArc');
+  const circ = 326.73;
+  const pct = avg / 5;
+
+  scoreNum.textContent = avg.toFixed(1);
+  scoreNum.className = 'score-num ' + (avg >= 4 ? 'score-green' : avg >= 3 ? 'score-amber' : 'score-red');
+  arc.style.stroke = avg >= 4 ? 'var(--green)' : avg >= 3 ? 'var(--amber)' : 'var(--red)';
+  setTimeout(() => { arc.style.strokeDashoffset = circ * (1 - pct); }, 100);
+
+  document.getElementById('statQ').textContent = res.length;
+  document.getElementById('statSkip').textContent = skipped;
+  document.getElementById('statTime').textContent = avgTime + 's';
+
+  // breakdown
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = `<div class="breakdown-head">Question breakdown</div>` +
+    res.map(r => {
+      const stars = [1,2,3,4,5].map(i =>
+        `<span class="br-star ${i <= r.rating ? '' : 'empty'}">⭐</span>`
+      ).join('');
+      const badge = r.skipped
+        ? `<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);">skipped</span>`
+        : `<div class="br-stars">${stars}</div>`;
+      return `
+        <div class="breakdown-row">
+          <div class="br-q">${r.q}</div>
+          <div class="br-time">${r.elapsed}s</div>
+          ${badge}
+        </div>`;
+    }).join('');
+}
+
+function restart() {
+  show('setupScreen');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+initSetupButtons();
+</script>
+</body>
+</html>
