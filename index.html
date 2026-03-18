@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Prep Hub — Vladimiras Levinas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital,wght@0,400;1,400&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f8f8f6;
+  --bg2:      #ffffff;
+  --bg3:      #f1f1ed;
+  --border:   #e4e4de;
+  --border2:  #cacac0;
+  --text:     #161612;
+  --muted:    #686860;
+  --dim:      #aeaea4;
+  --shadow:   0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 6px 20px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg:0 20px 60px rgba(0,0,0,0.12), 0 6px 18px rgba(0,0,0,0.07);
+  --r: 14px;
+  --r-sm: 8px;
+  --r-pill: 999px;
+
+  /* card accents */
+  --c1:  #1a52e0; --c1l: #eef2ff; --c1b: #bfcbfd;
+  --c2:  #0e7a52; --c2l: #edf9f3; --c2b: #86dcba;
+  --c3:  #9b3a00; --c3l: #fff4ec; --c3b: #f5c8a0;
+  --c4:  #6b24c4; --c4l: #f3eeff; --c4b: #c8aef8;
+  --c5:  #0e7a7a; --c5l: #edfbfb; --c5b: #86d8d8;
+  --c6:  #e8001c; --c6l: #fff0f2; --c6b: #fdb0ba;
+}
+
+/* ── PITCH MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(22,22,18,0.55);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.22), 0 8px 24px rgba(0,0,0,0.10);
+  width: 100%; max-width: 680px;
+  max-height: 90vh; overflow-y: auto;
+  transform: translateY(20px);
+  transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+
+.modal-head {
+  padding: 24px 26px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.modal-head-left {}
+.modal-eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--c5); margin-bottom: 4px;
+}
+.modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; font-weight: 400; line-height: 1.2;
+}
+.modal-title em { font-style: italic; color: var(--c5); }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--border);
+  font-size: 16px; cursor: pointer; color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; flex-shrink: 0;
+}
+.modal-close:hover { background: var(--border); color: var(--text); }
+
+.modal-body { padding: 24px 26px; }
+
+/* step tabs */
+.step-tabs { display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--border); border-radius: var(--r-sm); overflow: hidden; }
+.step-tab {
+  flex: 1; padding: 10px 8px; text-align: center;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .8px;
+  color: var(--dim); cursor: pointer;
+  background: var(--bg3); border: none;
+  border-right: 1px solid var(--border);
+  transition: all .15s;
+}
+.step-tab:last-child { border-right: none; }
+.step-tab:hover { color: var(--text); background: var(--bg2); }
+.step-tab.active { background: var(--c5l); color: var(--c5); font-weight: 500; }
+
+.step-panel { display: none; }
+.step-panel.active { display: block; animation: fadeUp .2s ease; }
+
+/* pitch blocks */
+.pitch-block {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.pitch-block-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--c5); margin-bottom: 6px;
+}
+.pitch-block-text {
+  font-size: 13.5px; color: var(--text); line-height: 1.7;
+}
+.pitch-block-hint { font-size: 11px; color: var(--dim); margin-top: 6px; }
+
+/* timer ring in modal */
+.pitch-timer-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+.pitch-ring { position: relative; width: 100px; height: 100px; }
+.pitch-ring svg { position: absolute; top:0;left:0; transform: rotate(-90deg); }
+.pitch-ring .pt { fill:none; stroke: var(--border); stroke-width:5; }
+.pitch-ring .pf { fill:none; stroke-width:5; stroke-linecap:round; transition: stroke-dashoffset 1s linear, stroke .3s; }
+.pitch-ring-label {
+  position: absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:'DM Mono',monospace;
+}
+.pitch-time { font-size: 22px; font-weight:500; color: var(--text); line-height:1; }
+.pitch-time-lbl { font-size: 9px; color: var(--dim); text-transform:uppercase; letter-spacing:.5px; margin-top:2px; }
+
+.pitch-controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:20px; }
+.pbtn {
+  padding: 10px 22px; border-radius: var(--r-sm);
+  font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all .15s; border: 1px solid var(--border);
+  background: var(--bg2); color: var(--muted); box-shadow: var(--shadow);
+}
+.pbtn:hover { border-color: var(--border2); color: var(--text); }
+.pbtn.go { background: var(--c5); color: #fff; border-color: var(--c5); box-shadow: 0 2px 10px rgba(14,122,122,.28); }
+.pbtn.go:hover { background: #0a6060; }
+.pbtn.stop { background: var(--bg2); color: #c53030; border-color: #fca5a5; }
+
+/* feedback bar */
+.feedback-bar {
+  padding: 10px 14px; border-radius: var(--r-sm);
+  font-size: 12px; line-height: 1.5;
+  margin-top: 12px; display: none;
+}
+.feedback-bar.show { display: block; animation: fadeUp .2s ease; }
+.fb-good  { background: #edf9f3; border:1px solid #86dcba; color: #0e7a52; }
+.fb-warn  { background: #fff8ed; border:1px solid #fbbf6a; color: #a85900; }
+.fb-over  { background: #fff1f1; border:1px solid #fcaaaa; color: #bf1b1b; }
+
+/* editable pitch textarea */
+.pitch-textarea {
+  width:100%; min-height: 120px;
+  padding: 12px 14px; font-family: 'Outfit',sans-serif;
+  font-size: 13px; line-height: 1.7; color: var(--text);
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); resize: vertical; outline: none;
+  transition: border-color .15s;
+  box-shadow: var(--shadow);
+}
+.pitch-textarea:focus { border-color: var(--c5b); box-shadow: var(--shadow), 0 0 0 3px rgba(14,122,122,.08); }
+.pitch-textarea::placeholder { color: var(--dim); }
+.word-count { font-family:'DM Mono',monospace; font-size:10px; color:var(--dim); text-align:right; margin-top:4px; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* dot-grid texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, #c4c4ba 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ambient glow */
+body::after {
+  content: '';
+  position: fixed;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 500px;
+  background: radial-gradient(ellipse, rgba(26,82,224,0.07) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+.page { max-width: 920px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+/* ── HEADER ── */
+header {
+  padding: 64px 0 52px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 56px;
+}
+
+@media (max-width: 640px) { header { grid-template-columns: 1fr; } }
+
+.header-left {}
+
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--c1);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--c1);
+  display: inline-block;
+}
+
+header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(32px, 5.5vw, 52px);
+  font-weight: 400; line-height: 1.08;
+  letter-spacing: -0.5px;
+}
+
+header h1 em { font-style: italic; color: var(--c1); }
+
+.header-sub {
+  font-size: 14px; color: var(--muted);
+  max-width: 440px; margin-top: 14px; line-height: 1.7;
+}
+
+.header-right {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+}
+
+.profile-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow);
+}
+
+.profile-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--c1l);
+  border: 1.5px solid var(--c1b);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500; color: var(--c1);
+}
+
+.profile-name {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  line-height: 1.2;
+}
+
+.profile-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--dim);
+}
+
+.progress-pill {
+  padding: 6px 14px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--muted);
+  box-shadow: var(--shadow);
+}
+
+.progress-pill span { color: var(--c2); font-weight: 500; }
+
+/* ── SECTION TITLE ── */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: var(--border);
+}
+
+/* ── TOOL CARDS ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+@media (max-width: 580px) { .cards-grid { grid-template-columns: 1fr; } }
+
+.tool-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px 26px 24px;
+  box-shadow: var(--shadow-md);
+  text-decoration: none; color: inherit;
+  display: flex; flex-direction: column;
+  gap: 0;
+  position: relative; overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  cursor: pointer;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-accent);
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border2);
+}
+
+.tool-card:hover::before { opacity: 1; }
+
+/* card accent colors */
+.tool-card:nth-child(1) { --card-accent: var(--c1); }
+.tool-card:nth-child(2) { --card-accent: var(--c2); }
+.tool-card:nth-child(3) { --card-accent: var(--c3); }
+.tool-card:nth-child(4) { --card-accent: var(--c4); }
+.tool-card:nth-child(5) { --card-accent: var(--c5); }
+.tool-card:nth-child(6) { --card-accent: var(--c6); }
+
+.card-icon-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.card-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.card-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+  margin-top: 4px;
+}
+
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; font-weight: 400; line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.card-title em { font-style: italic; }
+
+.card-desc {
+  font-size: 13px; color: var(--muted);
+  line-height: 1.65; flex: 1;
+  margin-bottom: 20px;
+}
+
+.card-tags {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  padding: 3px 9px; border-radius: var(--r-pill);
+  border: 1px solid;
+}
+
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: auto;
+}
+
+.card-stat {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+}
+
+.card-cta {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  transition: gap 0.2s;
+}
+
+.tool-card:hover .card-cta { gap: 10px; }
+
+.arrow {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  transition: transform 0.2s;
+}
+
+.tool-card:hover .arrow { transform: translateX(3px); }
+
+/* card-specific colors */
+.card-c1 .card-icon { background: var(--c1l); }
+.card-c1 .card-title em { color: var(--c1); }
+.card-c1 .tag { color: var(--c1); background: var(--c1l); border-color: var(--c1b); }
+.card-c1 .card-cta { color: var(--c1); }
+.card-c1 .arrow { background: var(--c1l); color: var(--c1); }
+
+.card-c2 .card-icon { background: var(--c2l); }
+.card-c2 .card-title em { color: var(--c2); }
+.card-c2 .tag { color: var(--c2); background: var(--c2l); border-color: var(--c2b); }
+.card-c2 .card-cta { color: var(--c2); }
+.card-c2 .arrow { background: var(--c2l); color: var(--c2); }
+
+.card-c3 .card-icon { background: var(--c3l); }
+.card-c3 .card-title em { color: var(--c3); }
+.card-c3 .tag { color: var(--c3); background: var(--c3l); border-color: var(--c3b); }
+.card-c3 .card-cta { color: var(--c3); }
+.card-c3 .arrow { background: var(--c3l); color: var(--c3); }
+
+.card-c4 .card-icon { background: var(--c4l); }
+.card-c4 .card-title em { color: var(--c4); }
+.card-c4 .tag { color: var(--c4); background: var(--c4l); border-color: var(--c4b); }
+.card-c4 .card-cta { color: var(--c4); }
+.card-c4 .arrow { background: var(--c4l); color: var(--c4); }
+
+.card-c5 .card-icon { background: var(--c5l); }
+.card-c5 .card-title em { color: var(--c5); }
+.card-c5 .tag { color: var(--c5); background: var(--c5l); border-color: var(--c5b); }
+.card-c5 .card-cta { color: var(--c5); }
+.card-c5 .arrow { background: var(--c5l); color: var(--c5); }
+
+.card-c6 .card-icon { background: var(--c6l); }
+.card-c6 .card-title em { color: var(--c6); }
+.card-c6 .tag { color: var(--c6); background: var(--c6l); border-color: var(--c6b); }
+.card-c6 .card-cta { color: var(--c6); }
+.card-c6 .arrow { background: var(--c6l); color: var(--c6); }
+
+/* ── CHECKLIST ── */
+.checklist-section { margin-bottom: 56px; }
+
+.checklist-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 580px) { .checklist-grid { grid-template-columns: 1fr; } }
+
+.check-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.check-item:hover { border-color: var(--border2); }
+.check-item.done { background: #f5fdf8; border-color: #b0dfc2; }
+
+.check-box {
+  width: 20px; height: 20px;
+  border-radius: 6px; border: 1.5px solid var(--border2);
+  flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  font-size: 11px; color: transparent;
+}
+
+.check-item.done .check-box {
+  background: var(--c2); border-color: var(--c2); color: #fff;
+}
+
+.check-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.check-item.done .check-text { color: var(--muted); text-decoration: line-through; }
+
+/* ── TIPS STRIP ── */
+.tips-strip {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px 26px;
+  box-shadow: var(--shadow);
+  margin-bottom: 56px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.tip-item { display: flex; gap: 12px; align-items: flex-start; }
+
+.tip-ico {
+  font-size: 18px; flex-shrink: 0;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg3); border-radius: 8px;
+}
+
+.tip-body {}
+.tip-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.tip-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 0 40px;
+  display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 12px;
+}
+
+footer p {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+}
+
+footer a {
+  color: var(--c1); text-decoration: none;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+}
+
+footer a:hover { text-decoration: underline; }
+
+/* entry animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tool-card { animation: fadeUp 0.4s ease both; }
+.tool-card:nth-child(1) { animation-delay: 0.05s; }
+.tool-card:nth-child(2) { animation-delay: 0.12s; }
+.tool-card:nth-child(3) { animation-delay: 0.19s; }
+.tool-card:nth-child(4) { animation-delay: 0.26s; }
+.tool-card:nth-child(5) { animation-delay: 0.33s; }
+.tool-card:nth-child(6) { animation-delay: 0.40s; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <div class="eyebrow">Interview Preparation System</div>
+      <h1>Your Complete<br><em>Interview Kit</em></h1>
+      <p class="header-sub">Five tools + company intelligence — walk into every interview prepared, confident, and articulate.</p>
+    </div>
+    <div class="header-right">
+      <div class="profile-chip">
+        <div class="profile-avatar">VL</div>
+        <div>
+          <div class="profile-name">Vladimiras Levinas</div>
+          <div class="profile-role">Lead DevOps · 18+ yrs</div>
+        </div>
+      </div>
+      <div class="progress-pill">5 tools + 1 analysis · <span>ready to use</span></div>
+    </div>
+  </header>
+
+  <!-- TOOL CARDS -->
+  <div class="section-label">Tools</div>
+  <div class="cards-grid">
+
+    <!-- 1. Interview Prep (Q&A) -->
+    <a class="tool-card card-c1" href="interview-prep.html">
+      <div class="card-icon-row">
+        <div class="card-icon">📋</div>
+        <div class="card-num">01</div>
+      </div>
+      <div class="card-title">Behavioral<br><em>Questions</em></div>
+      <div class="card-desc">30 STAR-format answers across 9 categories — problem solving, leadership, collaboration, tough questions and more. Filter by interview stage: HR, hiring manager, or exec round.</div>
+      <div class="card-tags">
+        <span class="tag">30 questions</span>
+        <span class="tag">STAR format</span>
+        <span class="tag">Stage filter</span>
+        <span class="tag">9 categories</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">HR · HM · Exec rounds</div>
+        <div class="card-cta">
+          Open <div class="arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 2. Mock Interview -->
+    <a class="tool-card card-c2" href="mock-interview.html">
+      <div class="card-icon-row">
+        <div class="card-icon">⏱️</div>
+        <div class="card-num">02</div>
+      </div>
+      <div class="card-title">Mock Interview<br><em>Simulator</em></div>
+      <div class="card-desc">Live timer, real questions, self-rating after each answer. Configure stage, category, number of questions, and time limit. Results breakdown at the end of every session.</div>
+      <div class="card-tags">
+        <span class="tag">Live timer</span>
+        <span class="tag">Self-rating</span>
+        <span class="tag">Session results</span>
+        <span class="tag">STAR hints</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">90 sec recommended</div>
+        <div class="card-cta">
+          Open <div class="arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 3. Vocabulary Reference -->
+    <a class="tool-card card-c3" href="interview-vocabulary.html">
+      <div class="card-icon-row">
+        <div class="card-icon">📖</div>
+        <div class="card-num">03</div>
+      </div>
+      <div class="card-title">Words &amp;<br><em>Phrases</em></div>
+      <div class="card-desc">150+ interview power words, full phrases, and usage examples organised by category. Clickable — copy any phrase to clipboard. Includes Do / Don't swaps for the most common mistakes.</div>
+      <div class="card-tags">
+        <span class="tag">150+ items</span>
+        <span class="tag">Click to copy</span>
+        <span class="tag">Do / Don't</span>
+        <span class="tag">Search</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">8 categories</div>
+        <div class="card-cta">
+          Open <div class="arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 4. Vocabulary Trainer -->
+    <a class="tool-card card-c4" href="vocabulary-trainer.html">
+      <div class="card-icon-row">
+        <div class="card-icon">🃏</div>
+        <div class="card-num">04</div>
+      </div>
+      <div class="card-title">Vocabulary<br><em>Trainer</em></div>
+      <div class="card-desc">Flashcards, quiz, and match modes for learning interview words with synonyms and antonyms. Self-paced with results tracking — know vs need-to-learn breakdown after every session.</div>
+      <div class="card-tags">
+        <span class="tag">Flashcards</span>
+        <span class="tag">Quiz</span>
+        <span class="tag">Match</span>
+        <span class="tag">Synonyms</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">60+ vocabulary cards</div>
+        <div class="card-cta">
+          Open <div class="arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 5. Elevator Pitch -->
+    <a class="tool-card card-c5" href="#" onclick="openPitch(event)" style="grid-column: 1 / -1;">
+      <div class="card-icon-row">
+        <div class="card-icon">🎤</div>
+        <div class="card-num">05 · built-in</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+        <div>
+          <div class="card-title">Elevator<br><em>Pitch Trainer</em></div>
+          <div class="card-desc">Practice your 60-second self-introduction with a live countdown timer. Built on a 4-part structure: Who you are → What you do → What makes you different → What you want. Edit your pitch, run it, get instant feedback on timing.</div>
+        </div>
+        <div>
+          <div class="card-tags" style="margin-bottom:16px;">
+            <span class="tag">Live 60s timer</span>
+            <span class="tag">4-part structure</span>
+            <span class="tag">Editable pitch</span>
+            <span class="tag">Timing feedback</span>
+            <span class="tag">Word count</span>
+          </div>
+          <div class="card-footer" style="border:none;padding:0;margin:0;">
+            <div class="card-stat">Opens inline — no separate file</div>
+            <div class="card-cta">Launch <div class="arrow">→</div></div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- PITCH MODAL -->
+  <div class="modal-overlay" id="pitchModal" onclick="closePitchOutside(event)">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-head-left">
+          <div class="modal-eyebrow">Tool 05</div>
+          <div class="modal-title">Elevator <em>Pitch Trainer</em></div>
+        </div>
+        <button class="modal-close" onclick="closePitch()">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Step tabs -->
+        <div class="step-tabs">
+          <button class="step-tab active" onclick="switchStep(0)">Structure</button>
+          <button class="step-tab" onclick="switchStep(1)">Your pitch</button>
+          <button class="step-tab" onclick="switchStep(2)">Practice</button>
+        </div>
+
+        <!-- Step 0: Structure -->
+        <div class="step-panel active" id="step0">
+          <div class="pitch-block">
+            <div class="pitch-block-label">Part 1 · Who you are (10 sec)</div>
+            <div class="pitch-block-text">I'm Vladimiras — a Lead DevOps Engineer with 18 years building mission-critical infrastructure in fintech, banking, and regulated government environments.</div>
+            <div class="pitch-block-hint">State name + title + industry. No fluff. One sentence.</div>
+          </div>
+          <div class="pitch-block">
+            <div class="pitch-block-label">Part 2 · What you do (20 sec)</div>
+            <div class="pitch-block-text">I design and operate production Kubernetes platforms, GitOps pipelines, and compliance automation systems — the infrastructure that keeps regulated services running at scale. Most recently I built the EU payment compliance reporting system at Walletto from scratch and ran national-scale data platforms for government clients in Kazakhstan.</div>
+            <div class="pitch-block-hint">2-3 concrete things. Always with context — regulated, national-scale, from scratch.</div>
+          </div>
+          <div class="pitch-block">
+            <div class="pitch-block-label">Part 3 · What makes you different (20 sec)</div>
+            <div class="pitch-block-text">What sets me apart is end-to-end ownership — I don't just maintain platforms, I architect them, build the runbooks, debug the 2am incidents, and hand them off properly. I'm also running production AI infrastructure on my own K3s cluster: LLM inference, MCP server integrations, GPU scheduling. That's not a line on a CV — that's operational experience before it became a requirement.</div>
+            <div class="pitch-block-hint">Your real differentiator. Not soft skills — evidence of depth.</div>
+          </div>
+          <div class="pitch-block">
+            <div class="pitch-block-label">Part 4 · What you want (10 sec)</div>
+            <div class="pitch-block-text">I'm looking for a senior platform or DevOps lead role where the hard problems are still ahead — where I can own architecture decisions, not just execute someone else's plan.</div>
+            <div class="pitch-block-hint">One clear sentence. What kind of role, what kind of challenge.</div>
+          </div>
+          <div style="margin-top:16px;text-align:center;">
+            <button class="pbtn go" onclick="switchStep(1)">Build my pitch →</button>
+          </div>
+        </div>
+
+        <!-- Step 1: Edit pitch -->
+        <div class="step-panel" id="step1">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Edit your pitch below. Aim for <strong>120–150 words</strong> — that's roughly 60 seconds spoken at a natural pace.</p>
+          <textarea class="pitch-textarea" id="pitchText" oninput="updateWordCount()" placeholder="Write your elevator pitch here…">I'm Vladimiras — a Lead DevOps Engineer with 18 years building mission-critical infrastructure in fintech, banking, and regulated government environments.
+
+I design and operate production Kubernetes platforms, GitOps pipelines, and compliance automation systems. Most recently I built the EU payment compliance reporting system at Walletto from scratch and ran national-scale data platforms for government clients in Kazakhstan.
+
+What sets me apart is end-to-end ownership — I architect platforms, write the runbooks, debug the 2am incidents, and hand them off properly. I'm also running production AI infrastructure on my own K3s cluster: LLM inference, MCP server integrations, GPU scheduling — operational experience before it became a job requirement.
+
+I'm looking for a senior platform or DevOps lead role where the hard problems are still ahead and I can own architecture decisions, not just execute someone else's plan.</textarea>
+          <div class="word-count" id="wordCount">— words</div>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="pbtn" onclick="switchStep(0)">← Structure</button>
+            <button class="pbtn go" onclick="switchStep(2)">Practice with timer →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Practice -->
+        <div class="step-panel" id="step2">
+          <div class="pitch-timer-wrap">
+            <div class="pitch-ring">
+              <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle class="pt" cx="50" cy="50" r="44"/>
+                <circle class="pf" id="pitchArc" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="0"/>
+              </svg>
+              <div class="pitch-ring-label">
+                <div class="pitch-time" id="pitchTime">60</div>
+                <div class="pitch-time-lbl">seconds</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pitch-controls">
+            <button class="pbtn go" id="pitchStartBtn" onclick="startPitch()">▶ Start timer</button>
+            <button class="pbtn stop" id="pitchStopBtn" onclick="stopPitch()" style="display:none;">■ Stop</button>
+            <button class="pbtn" onclick="resetPitch()">↺ Reset</button>
+          </div>
+
+          <!-- read-only pitch display -->
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;margin-bottom:12px;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Your pitch</div>
+            <div id="pitchDisplay" style="font-size:13.5px;line-height:1.8;color:var(--text);font-family:'DM Serif Display',serif;font-style:italic;white-space:pre-wrap;"></div>
+          </div>
+
+          <div class="feedback-bar" id="pitchFeedback"></div>
+
+          <div style="margin-top:16px;">
+            <button class="pbtn" onclick="switchStep(1)">← Edit pitch</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPANY INTELLIGENCE -->
+  <div class="section-label" style="margin-top:8px;">Company intelligence</div>
+
+  <div class="cards-grid" style="margin-bottom:56px;">
+    <a class="tool-card card-c6" href="nortal-analysis.html" style="grid-column:1/-1;">
+      <div class="card-icon-row">
+        <div class="card-icon" style="font-size:20px;">🏢</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="card-num">Target company</div>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--c6l);color:var(--c6);border:1px solid var(--c6b);">NORTAL</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;">
+        <div>
+          <div class="card-title">Company Analysis<br><em>&amp; Interview Intel</em></div>
+          <div class="card-desc">Deep-dive on Nortal: company facts, 4 cultural pillars, your fit score vs their requirements, and a custom vocabulary built from their actual language. Includes phrases, questions to ask them, and what never to say.</div>
+        </div>
+        <div>
+          <div class="card-tags" style="margin-bottom:16px;">
+            <span class="tag">Company facts</span>
+            <span class="tag">Culture pillars</span>
+            <span class="tag">Fit score</span>
+            <span class="tag">Nortal vocabulary</span>
+            <span class="tag">8 tailored phrases</span>
+            <span class="tag">5 questions for them</span>
+            <span class="tag">Avoid list</span>
+          </div>
+          <div class="card-footer" style="border:none;padding:0;margin:0;">
+            <div class="card-stat">Est. 2000 · Tallinn · 2700+ people · AI Lab in Vilnius</div>
+            <div class="card-cta">Open intel <div class="arrow">→</div></div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="checklist-section">
+    <div class="section-label">Pre-interview checklist</div>
+    <div class="checklist-grid" id="checklist">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Run mock interview (5 questions, 90 sec, all categories)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Practice vocabulary flashcards (20 cards, quiz mode)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Customize "Why this role?" answer for the specific company</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Research company tech stack and align with your experience</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Prepare salary range based on market data for target city</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Review Do/Don't phrases — avoid weak language</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Prepare 2-3 closing questions for the interviewer</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Check camera, microphone, lighting, and internet connection</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Have CV printed / on screen and notepad ready</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">Get avg mock score ≥ 4/5 before the real interview</div></div>
+    </div>
+  </div>
+
+  <!-- TIPS STRIP -->
+  <div class="section-label">Quick tips</div>
+  <div class="tips-strip">
+    <div class="tip-item">
+      <div class="tip-ico">⏱️</div>
+      <div class="tip-body">
+        <div class="tip-title">90-second rule</div>
+        <div class="tip-desc">STAR answers should be 90–120 sec. Longer kills attention. Shorter loses impact.</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-ico">🎯</div>
+      <div class="tip-body">
+        <div class="tip-title">Customize one answer</div>
+        <div class="tip-desc">"Why this role?" must be unique per company. All others can be standard.</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-ico">📊</div>
+      <div class="tip-body">
+        <div class="tip-title">Numbers win</div>
+        <div class="tip-desc">Every answer needs at least one measurable result. "Faster" is weak. "4x faster" lands.</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-ico">🔁</div>
+      <div class="tip-body">
+        <div class="tip-title">Daily practice</div>
+        <div class="tip-desc">10 min vocabulary + 1 mock run per day. Muscle memory beats last-minute cramming.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>doc.thedevops.dev &nbsp;·&nbsp; Vilnius, Lithuania &nbsp;·&nbsp; 2026</p>
+    <a href="https://doc.thedevops.dev" target="_blank">doc.thedevops.dev ↗</a>
+  </footer>
+
+</div>
+
+<script>
+// ── CHECKLIST ────────────────────────────────────────────────────────────────
+function toggleCheck(el) {
+  el.classList.toggle('done');
+  const items = document.querySelectorAll('.check-item');
+  const state = [...items].map(i => i.classList.contains('done'));
+  try { localStorage.setItem('iv-checklist', JSON.stringify(state)); } catch(e){}
+}
+try {
+  const saved = JSON.parse(localStorage.getItem('iv-checklist') || '[]');
+  const items = document.querySelectorAll('.check-item');
+  saved.forEach((done, i) => { if(done && items[i]) items[i].classList.add('done'); });
+} catch(e){}
+
+// ── PITCH MODAL ──────────────────────────────────────────────────────────────
+function openPitch(e) {
+  e.preventDefault();
+  document.getElementById('pitchModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  updateWordCount();
+  updatePitchDisplay();
+}
+function closePitch() {
+  document.getElementById('pitchModal').classList.remove('open');
+  document.body.style.overflow = '';
+  stopPitch();
+}
+function closePitchOutside(e) {
+  if(e.target === document.getElementById('pitchModal')) closePitch();
+}
+
+// ── STEP TABS ────────────────────────────────────────────────────────────────
+function switchStep(n) {
+  document.querySelectorAll('.step-tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+  if(n===2){ updatePitchDisplay(); resetPitch(); }
+}
+
+// ── WORD COUNT ───────────────────────────────────────────────────────────────
+function updateWordCount() {
+  const txt = document.getElementById('pitchText').value.trim();
+  const words = txt ? txt.split(/\s+/).length : 0;
+  const el = document.getElementById('wordCount');
+  let color = 'var(--dim)';
+  let note = '';
+  if(words < 100) { color='var(--amber)'; note=' — too short (aim 120–150)'; }
+  else if(words > 170) { color='var(--red)'; note=' — too long (aim 120–150)'; }
+  else if(words >= 120 && words <= 150) { color='var(--green)'; note=' ✓ good length'; }
+  el.innerHTML = `<span style="color:${color}">${words} words${note}</span>`;
+}
+
+function updatePitchDisplay() {
+  const txt = document.getElementById('pitchText').value;
+  document.getElementById('pitchDisplay').textContent = txt;
+}
+
+// ── PITCH TIMER ──────────────────────────────────────────────────────────────
+let pitchInterval = null;
+let pitchElapsed = 0;
+const PITCH_TOTAL = 60;
+const CIRC = 276.46;
+
+function startPitch() {
+  if(pitchInterval) return;
+  updatePitchDisplay();
+  pitchElapsed = 0;
+  document.getElementById('pitchStartBtn').style.display = 'none';
+  document.getElementById('pitchStopBtn').style.display = 'inline-flex';
+  document.getElementById('pitchFeedback').classList.remove('show');
+
+  const arc   = document.getElementById('pitchArc');
+  const label = document.getElementById('pitchTime');
+  arc.style.stroke = 'var(--c5)';
+
+  const startMs = Date.now();
+
+  pitchInterval = setInterval(() => {
+    pitchElapsed = Math.round((Date.now() - startMs) / 1000);
+    const remaining = Math.max(0, PITCH_TOTAL - pitchElapsed);
+    label.textContent = remaining;
+
+    const pct = pitchElapsed / PITCH_TOTAL;
+    arc.style.strokeDashoffset = Math.min(CIRC * pct, CIRC);
+
+    if(pct >= 1)      arc.style.stroke = 'var(--red)';
+    else if(pct>=.8)  arc.style.stroke = 'var(--red)';
+    else if(pct>=.6)  arc.style.stroke = 'var(--amber)';
+    else              arc.style.stroke = 'var(--c5)';
+
+    if(pitchElapsed >= PITCH_TOTAL + 10) stopPitch();
+  }, 250);
+}
+
+function stopPitch() {
+  if(!pitchInterval) return;
+  clearInterval(pitchInterval); pitchInterval = null;
+  document.getElementById('pitchStartBtn').style.display = 'inline-flex';
+  document.getElementById('pitchStopBtn').style.display = 'none';
+  showPitchFeedback(pitchElapsed);
+}
+
+function resetPitch() {
+  if(pitchInterval) { clearInterval(pitchInterval); pitchInterval = null; }
+  pitchElapsed = 0;
+  document.getElementById('pitchTime').textContent = '60';
+  document.getElementById('pitchArc').style.strokeDashoffset = '0';
+  document.getElementById('pitchArc').style.stroke = 'var(--c5)';
+  document.getElementById('pitchStartBtn').style.display = 'inline-flex';
+  document.getElementById('pitchStopBtn').style.display = 'none';
+  document.getElementById('pitchFeedback').classList.remove('show');
+}
+
+function showPitchFeedback(elapsed) {
+  const fb = document.getElementById('pitchFeedback');
+  fb.classList.remove('fb-good','fb-warn','fb-over');
+  let cls, msg;
+
+  if(elapsed < 35) {
+    cls = 'fb-warn';
+    msg = `⚡ Too fast — ${elapsed}s. You rushed it. Aim for 50–65 seconds. Slow down, let key phrases land.`;
+  } else if(elapsed <= 65) {
+    cls = 'fb-good';
+    msg = `✓ Perfect — ${elapsed}s. That's the target zone. Confident delivery at that pace reads as senior-level.`;
+  } else if(elapsed <= 80) {
+    cls = 'fb-warn';
+    msg = `⚠ A little long — ${elapsed}s. Trim 10–15 seconds. Cut one detail from Part 2 or Part 3.`;
+  } else {
+    cls = 'fb-over';
+    msg = `✗ Too long — ${elapsed}s. You've lost the room. Shorten the pitch by 30 seconds minimum.`;
+  }
+
+  fb.className = `feedback-bar show ${cls}`;
+  fb.textContent = msg;
+}
+</script>
+</body>
+</html>
