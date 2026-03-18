@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nortal — Company Analysis & Interview Vocabulary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital,wght@0,400;1,400&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f8f8f6;--bg2:#fff;--bg3:#f2f2ee;--bg4:#eaeae5;
+  --border:#e3e3dd;--border2:#c5c5bc;
+  --text:#161612;--muted:#676760;--dim:#aeaea4;
+  --shadow:0 1px 4px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 6px 20px rgba(0,0,0,0.09),0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg:0 16px 48px rgba(0,0,0,0.12),0 4px 12px rgba(0,0,0,0.06);
+  /* Nortal brand */
+  --nortal:#e8001c;--nortal-l:#fff0f2;--nortal-b:#fdb0ba;
+  /* accents */
+  --c1:#1a52e0;--c1l:#eef2ff;--c1b:#bfcbfd;
+  --c2:#0e7a52;--c2l:#edf9f3;--c2b:#86dcba;
+  --c3:#9b3a00;--c3l:#fff4ec;--c3b:#f5c8a0;
+  --c4:#6b24c4;--c4l:#f3eeff;--c4b:#c8aef8;
+  --c5:#0e7a7a;--c5l:#edfbfb;--c5b:#86d8d8;
+  --r:12px;--r-sm:8px;--r-pill:999px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#c4c4ba 1px,transparent 1px);background-size:28px 28px;opacity:.22;pointer-events:none;z-index:0;}
+.page{max-width:960px;margin:0 auto;padding:0 26px;position:relative;z-index:1;}
+
+/* NAV TABS */
+.sticky-nav{position:sticky;top:0;z-index:30;background:rgba(248,248,246,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 0;margin-bottom:40px;}
+.nav-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.ntab{padding:7px 16px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:var(--r-pill);cursor:pointer;background:var(--bg2);color:var(--muted);transition:all .15s;box-shadow:var(--shadow);}
+.ntab:hover{border-color:var(--border2);color:var(--text);}
+.ntab.active{background:var(--nortal);border-color:var(--nortal);color:#fff;box-shadow:0 2px 8px rgba(232,0,28,.28);}
+
+/* HEADER */
+.site-header{padding:52px 0 40px;border-bottom:1px solid var(--border);margin-bottom:40px;}
+.header-top{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;}
+@media(max-width:600px){.header-top{grid-template-columns:1fr;}}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--nortal);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:24px;height:1px;background:var(--nortal);}
+h1{font-family:'DM Serif Display',serif;font-size:clamp(30px,5vw,46px);font-weight:400;line-height:1.1;margin-bottom:10px;}
+h1 em{font-style:italic;color:var(--nortal);}
+.sub{font-size:14px;color:var(--muted);max-width:500px;line-height:1.7;margin-top:8px;}
+
+.nortal-badge{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-md);}
+.nortal-logo{width:44px;height:44px;background:var(--nortal);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:#fff;letter-spacing:1px;}
+.nortal-info{font-size:12px;}
+.nortal-name{font-weight:600;font-size:14px;color:var(--text);line-height:1.2;}
+.nortal-meta{color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;margin-top:2px;}
+
+/* SECTION LABEL */
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* SECTION BLOCKS */
+.section-block{margin-bottom:48px;scroll-margin-top:70px;}
+
+/* FACT GRID */
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px;}
+.fact-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px 16px;box-shadow:var(--shadow);}
+.fact-num{font-family:'DM Serif Display',serif;font-size:28px;color:var(--nortal);line-height:1;margin-bottom:4px;}
+.fact-lbl{font-size:12px;color:var(--muted);}
+
+/* INSIGHT CARDS */
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:580px){.insight-grid{grid-template-columns:1fr;}}
+.insight-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);}
+.insight-icon{font-size:20px;margin-bottom:10px;}
+.insight-title{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text);}
+.insight-body{font-size:13px;color:var(--muted);line-height:1.65;}
+.insight-card.full{grid-column:1/-1;}
+
+/* PILLAR CARDS */
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:480px){.pillars{grid-template-columns:1fr;}}
+.pillar{background:var(--nortal-l);border:1px solid var(--nortal-b);border-radius:var(--r);padding:16px 18px;}
+.pillar-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--nortal);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.pillar-title{font-size:14px;font-weight:600;color:var(--nortal);margin-bottom:4px;}
+.pillar-desc{font-size:12px;color:var(--muted);line-height:1.55;}
+
+/* MATCH SCORE */
+.match-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+.match-row:last-child{border-bottom:none;}
+.match-label{flex:1;font-size:13px;color:var(--text);}
+.match-bar-wrap{width:160px;height:8px;background:var(--border);border-radius:4px;overflow:hidden;flex-shrink:0;}
+.match-bar{height:100%;border-radius:4px;transition:width 1s ease;}
+.match-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);width:32px;text-align:right;flex-shrink:0;}
+.match-green{background:var(--c2);}
+.match-amber{background:#f0a429;}
+.match-red{background:#c53030;}
+
+/* WORD SECTION */
+.word-cloud{display:flex;flex-wrap:wrap;gap:8px;padding:18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:14px;}
+.word-pill{padding:6px 14px;border-radius:var(--r-pill);font-size:13px;cursor:pointer;border:1px solid transparent;transition:all .14s;user-select:none;font-weight:500;}
+.word-pill:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+
+.wc1{background:var(--nortal-l);color:var(--nortal);border-color:var(--nortal-b);}
+.wc2{background:var(--c1l);color:var(--c1);border-color:var(--c1b);}
+.wc3{background:var(--c2l);color:var(--c2);border-color:var(--c2b);}
+.wc4{background:var(--c3l);color:var(--c3);border-color:var(--c3b);}
+.wc5{background:var(--c4l);color:var(--c4);border-color:var(--c4b);}
+.wc6{background:var(--c5l);color:var(--c5);border-color:var(--c5b);}
+
+/* PHRASE LIST */
+.phrase-list{display:flex;flex-direction:column;gap:10px;}
+.phrase-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;box-shadow:var(--shadow);cursor:pointer;transition:all .15s;position:relative;}
+.phrase-item:hover{border-color:var(--border2);box-shadow:var(--shadow-md);}
+.phrase-item.copied{background:var(--c2l);}
+.phrase-cat{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin-bottom:6px;}
+.phrase-text{font-family:'DM Serif Display',serif;font-size:14px;font-style:italic;color:var(--text);line-height:1.6;margin-bottom:5px;}
+.phrase-why{font-size:12px;color:var(--muted);line-height:1.5;}
+.copy-hint{position:absolute;top:12px;right:14px;font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);opacity:0;transition:opacity .15s;text-transform:uppercase;letter-spacing:.5px;}
+.phrase-item:hover .copy-hint{opacity:1;}
+
+/* AVOID TABLE */
+.avoid-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.avoid-table th{background:var(--bg3);padding:10px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);text-align:left;border-bottom:1px solid var(--border);}
+.avoid-table td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:top;}
+.avoid-table tr:last-child td{border-bottom:none;}
+.say-col{color:var(--c2);font-weight:500;}
+.avoid-col{color:#c53030;text-decoration:line-through;opacity:.7;}
+
+/* RED FLAG / GREEN FLAG */
+.flags-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:520px){.flags-grid{grid-template-columns:1fr;}}
+.flag-col{}
+.flag-head{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:8px 14px;border-radius:var(--r-sm) var(--r-sm) 0 0;border:1px solid;}
+.green-head{background:var(--c2l);color:var(--c2);border-color:var(--c2b);}
+.red-head{background:var(--nortal-l);color:var(--nortal);border-color:var(--nortal-b);}
+.flag-item{padding:10px 14px;font-size:13px;color:var(--text);line-height:1.5;border:1px solid var(--border);border-top:none;}
+.flag-item:last-child{border-radius:0 0 var(--r-sm) var(--r-sm);}
+
+/* QUESTIONS */
+.q-list{display:flex;flex-direction:column;gap:10px;}
+.q-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:0;box-shadow:var(--shadow);overflow:hidden;}
+.q-head{padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;}
+.q-badge-sm{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;border-radius:var(--r-pill);border:1px solid;white-space:nowrap;flex-shrink:0;}
+.q-text-sm{font-size:13.5px;font-weight:500;color:var(--text);flex:1;line-height:1.4;}
+.q-chev{color:var(--dim);font-size:11px;transition:transform .2s;flex-shrink:0;}
+.q-item.open .q-chev{transform:rotate(180deg);}
+.q-body-sm{display:none;padding:14px 18px;border-top:1px solid var(--border);background:var(--bg3);}
+.q-item.open .q-body-sm{display:block;}
+.q-answer{font-family:'DM Serif Display',serif;font-style:italic;font-size:13.5px;line-height:1.8;color:var(--text);margin-bottom:10px;}
+.q-tip-sm{font-size:12px;color:var(--c3);background:var(--c3l);border:1px solid var(--c3b);padding:8px 12px;border-radius:var(--r-sm);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:#fff;font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:var(--r-pill);opacity:0;transition:all .2s;pointer-events:none;z-index:200;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:22px 0 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:60px;}
+footer p{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);}
+footer a{color:var(--c1);text-decoration:none;font-family:'DM Mono',monospace;font-size:11px;}
+footer a:hover{text-decoration:underline;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.insight-card,.fact-box,.pillar,.phrase-item{animation:fadeUp .3s ease both;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-top">
+    <div>
+      <div class="eyebrow">Company Intelligence Report</div>
+      <h1>Nortal —<br><em>Know Before You Go</em></h1>
+      <p class="sub">Analysis of Nortal's business, culture, tech focus, and the exact words and phrases to use in your interview.</p>
+    </div>
+    <div class="nortal-badge">
+      <div class="nortal-logo">N</div>
+      <div class="nortal-info">
+        <div class="nortal-name">Nortal AS</div>
+        <div class="nortal-meta">Est. 2000 · Tallinn, Estonia<br>Lithuania · 2700+ people globally</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <div class="nav-tabs">
+    <button class="ntab active" onclick="scrollTo('facts')">Company facts</button>
+    <button class="ntab" onclick="scrollTo('culture')">Culture & values</button>
+    <button class="ntab" onclick="scrollTo('fit')">Your fit</button>
+    <button class="ntab" onclick="scrollTo('words')">Key words</button>
+    <button class="ntab" onclick="scrollTo('phrases')">Phrases</button>
+    <button class="ntab" onclick="scrollTo('questions')">Questions for them</button>
+    <button class="ntab" onclick="scrollTo('avoid')">Avoid saying</button>
+  </div>
+</div>
+
+<!-- 1. COMPANY FACTS -->
+<div class="section-block" id="facts">
+  <div class="section-label">Company overview</div>
+
+  <div class="fact-grid">
+    <div class="fact-box"><div class="fact-num">2000</div><div class="fact-lbl">Founded in Tartu, Estonia as Webmedia</div></div>
+    <div class="fact-box"><div class="fact-num">2700+</div><div class="fact-lbl">Employees across 4 continents</div></div>
+    <div class="fact-box"><div class="fact-num">60+</div><div class="fact-lbl">Countries where solutions deployed</div></div>
+    <div class="fact-box"><div class="fact-num">15</div><div class="fact-lbl">Home markets incl. Lithuania, UAE, UK, US</div></div>
+    <div class="fact-box"><div class="fact-num">€100M+</div><div class="fact-lbl">Annual revenue, $54M raised in 2024</div></div>
+    <div class="fact-box"><div class="fact-num">100%</div><div class="fact-lbl">Employee-owned since 2016</div></div>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="insight-icon">🏛️</div>
+      <div class="insight-title">Origin: e-Estonia pioneers</div>
+      <div class="insight-body">Nortal built much of Estonia's legendary e-government infrastructure — e-tax, e-census, digital identity. This is foundational to their identity. They are not a generic IT shop — they believe technology can fundamentally reshape how governments and societies work.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">🤝</div>
+      <div class="insight-title">100% employee-owned</div>
+      <div class="insight-body">Since 2016, Nortal has no external investors — owned entirely by its people. This is rare and matters culturally: decisions are made by engineers and leaders who have skin in the game. Long-term thinking beats short-term quarterly pressure.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">🇱🇹</div>
+      <div class="insight-title">Lithuania is strategic, not just a satellite</div>
+      <div class="insight-body">Vilnius is one of Nortal's key delivery centres — 80% hands-on engineers working on Fortune 100 clients in the US, Germany, Finland, Sweden. Lithuania is described as a "strategic division," not a support hub. Your work will be visible globally.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">🤖</div>
+      <div class="insight-title">AI Lab in Lithuania — right now</div>
+      <div class="insight-body">Nortal is launching an AI Lab in Lithuania, funded by the €50M bond issued in 2024. They're actively building AI-powered delivery and enterprise AI solutions. This is directly relevant to your self-hosted LLM and MCP infrastructure work.</div>
+    </div>
+    <div class="insight-card full">
+      <div class="insight-icon">🚀</div>
+      <div class="insight-title">2024–2025: Aggressive expansion phase</div>
+      <div class="insight-body">Nortal acquired 3DOT Solutions (UK cybersecurity/defence), Nearsure (650+ LatAm engineers, now rebranded as Nortal), and Questers (Bulgaria). They issued €50M in bonds. Appointed a former Royal Navy Rear Admiral as UK CEO. This is a company in rapid, ambitious growth — not a stable maintenance company. They need people who can build at scale, not just operate.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;">
+    <div class="insight-grid">
+      <div class="insight-card">
+        <div class="insight-icon">🛡️</div>
+        <div class="insight-title">Defence & cybersecurity push</div>
+        <div class="insight-body">Major 2025 strategic focus. Hired senior defence industry veterans. Acquired 3DOT Solutions. UK CEO is a former Royal Navy Rear Admiral. If you have any compliance/regulated environment experience, tie it here.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon">🌍</div>
+        <div class="insight-title">Core sectors: public sector & enterprise</div>
+        <div class="insight-body">Healthcare, government, fintech, energy, manufacturing, defence. All regulated, all high-stakes. This maps perfectly to your background in fintech and government platforms. These clients demand the same rigor you've been operating under.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. CULTURE & VALUES -->
+<div class="section-block" id="culture">
+  <div class="section-label">Culture & values</div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-num">Pillar 01</div>
+      <div class="pillar-title">Commit to delivering value</div>
+      <div class="pillar-desc">Not just shipping code — delivering outcomes that matter to clients and society. They reject projects they can't win. Quality over volume.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">Pillar 02</div>
+      <div class="pillar-title">Take ownership and initiative</div>
+      <div class="pillar-desc">They want engineers who don't wait to be told. Self-starters who see a problem and fix it. This is the core trait they hire for at senior level.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">Pillar 03</div>
+      <div class="pillar-title">Empower yourself and others</div>
+      <div class="pillar-desc">Invest in your own growth and enable those around you. Mentoring, knowledge sharing, team leadership — all expected, not optional.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">Pillar 04</div>
+      <div class="pillar-title">Own your future and growth</div>
+      <div class="pillar-desc">Personal development plans, global mentorship, unlimited access to top education platforms. They expect you to drive your own career, not wait for a manager to plan it.</div>
+    </div>
+  </div>
+
+  <div class="insight-grid" style="margin-top:14px;">
+    <div class="insight-card">
+      <div class="insight-icon">🎯</div>
+      <div class="insight-title">Key hiring traits (their words)</div>
+      <div class="insight-body">Creativity, ambition, responsibility for final value. Persistent problem solving. Active communication that converts technology into business value. High bar for quality. Not "we need bodies" — "we accept projects that have tech-positive impact on society."</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">🏆</div>
+      <div class="insight-title">Awards that matter</div>
+      <div class="insight-body">Best of Consulting, Best Workplace, Most Wanted Company (Germany), Top Company 2023, 4.5/5 on Kununu (above industry average), Exporter of the Year (Estonia). The culture awards are genuine — employee retention is 3 years vs 2.5 industry average.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. YOUR FIT SCORE -->
+<div class="section-block" id="fit">
+  <div class="section-label">Your alignment with Nortal</div>
+
+  <div class="insight-card full" style="margin-bottom:16px;padding:22px 24px;">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:14px;">Match analysis — Vladimiras vs Nortal requirements</div>
+    <div id="matchRows">
+      <div class="match-row"><span class="match-label">Regulated / high-stakes environments</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:98%"></div></div><span class="match-pct">98%</span></div>
+      <div class="match-row"><span class="match-label">End-to-end platform ownership</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:97%"></div></div><span class="match-pct">97%</span></div>
+      <div class="match-row"><span class="match-label">AI / ML infrastructure (their AI Lab focus)</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:95%"></div></div><span class="match-pct">95%</span></div>
+      <div class="match-row"><span class="match-label">Public sector / government projects</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:95%"></div></div><span class="match-pct">95%</span></div>
+      <div class="match-row"><span class="match-label">Kubernetes / cloud-native platforms</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:96%"></div></div><span class="match-pct">96%</span></div>
+      <div class="match-row"><span class="match-label">Compliance automation (CESOP / regulatory)</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:94%"></div></div><span class="match-pct">94%</span></div>
+      <div class="match-row"><span class="match-label">GitOps / CI-CD / delivery automation</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:97%"></div></div><span class="match-pct">97%</span></div>
+      <div class="match-row"><span class="match-label">Mentoring & team leadership</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:90%"></div></div><span class="match-pct">90%</span></div>
+      <div class="match-row"><span class="match-label">Observability & SRE practices</span><div class="match-bar-wrap"><div class="match-bar match-green" style="width:95%"></div></div><span class="match-pct">95%</span></div>
+      <div class="match-row"><span class="match-label">Enterprise CRM/ERP stack (Salesforce, ServiceNow)</span><div class="match-bar-wrap"><div class="match-bar match-amber" style="width:35%"></div></div><span class="match-pct">35%</span></div>
+    </div>
+  </div>
+
+  <div class="flags-grid">
+    <div class="flag-col">
+      <div class="flag-head green-head">✓ Strong alignment points</div>
+      <div class="flag-item">Built government-scale data platforms (Nortal's core business)</div>
+      <div class="flag-item">18 years in regulated, high-stakes environments they serve</div>
+      <div class="flag-item">Production AI infra — directly relevant to their Lithuania AI Lab</div>
+      <div class="flag-item">CESOP / regulatory compliance automation at Walletto</div>
+      <div class="flag-item">Ownership mindset — matches Pillar 02 perfectly</div>
+      <div class="flag-item">Employee-owned culture = long-term thinkers. That's you.</div>
+      <div class="flag-item">Vilnius-based — Lithuania is a strategic delivery centre</div>
+    </div>
+    <div class="flag-col">
+      <div class="flag-head red-head">⚠ Gaps to prepare for</div>
+      <div class="flag-item">Salesforce / ServiceNow / Microsoft D365 — not your stack. Acknowledge gap, show platform learning speed.</div>
+      <div class="flag-item">Consulting delivery model — may differ from product/internal platform ownership. Prepare for multi-client framing.</div>
+      <div class="flag-item">Adobe / CRM ecosystem — peripheral, but could come up in enterprise context.</div>
+      <div class="flag-item">Nearshore / distributed team management — be ready to discuss remote collaboration experience.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. WORDS TO USE -->
+<div class="section-block" id="words">
+  <div class="section-label">Words that resonate at Nortal</div>
+
+  <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Click any word to copy it. Grouped by what Nortal cares about most.</p>
+
+  <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--nortal);margin-bottom:8px;">🔴 Their core values — use these naturally</div>
+  <div class="word-cloud" style="margin-bottom:20px;">
+    <span class="word-pill wc1" onclick="copy('tech-positive impact')">tech-positive impact</span>
+    <span class="word-pill wc1" onclick="copy('delivering value')">delivering value</span>
+    <span class="word-pill wc1" onclick="copy('ownership')">ownership</span>
+    <span class="word-pill wc1" onclick="copy('initiative')">initiative</span>
+    <span class="word-pill wc1" onclick="copy('seamless solutions')">seamless solutions</span>
+    <span class="word-pill wc1" onclick="copy('empowering others')">empowering others</span>
+    <span class="word-pill wc1" onclick="copy('digital transformation')">digital transformation</span>
+    <span class="word-pill wc1" onclick="copy('future-ready')">future-ready</span>
+    <span class="word-pill wc1" onclick="copy('bold thinking')">bold thinking</span>
+    <span class="word-pill wc1" onclick="copy('high bar for quality')">high bar for quality</span>
+  </div>
+
+  <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--c1);margin-bottom:8px;">🔵 Platform & engineering language they use</div>
+  <div class="word-cloud" style="margin-bottom:20px;">
+    <span class="word-pill wc2" onclick="copy('cloud-native')">cloud-native</span>
+    <span class="word-pill wc2" onclick="copy('platform optimization')">platform optimization</span>
+    <span class="word-pill wc2" onclick="copy('AI-first delivery')">AI-first delivery</span>
+    <span class="word-pill wc2" onclick="copy('GitOps')">GitOps</span>
+    <span class="word-pill wc2" onclick="copy('observability')">observability</span>
+    <span class="word-pill wc2" onclick="copy('cyber resilience')">cyber resilience</span>
+    <span class="word-pill wc2" onclick="copy('GCP observability')">GCP observability</span>
+    <span class="word-pill wc2" onclick="copy('modern software development')">modern software development</span>
+    <span class="word-pill wc2" onclick="copy('infrastructure as code')">infrastructure as code</span>
+    <span class="word-pill wc2" onclick="copy('automation-first')">automation-first</span>
+    <span class="word-pill wc2" onclick="copy('scalable platform')">scalable platform</span>
+    <span class="word-pill wc2" onclick="copy('production-grade')">production-grade</span>
+    <span class="word-pill wc2" onclick="copy('domain-driven')">domain-driven</span>
+    <span class="word-pill wc2" onclick="copy('real-time decision-making')">real-time decision-making</span>
+  </div>
+
+  <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--c2);margin-bottom:8px;">🟢 Industries they serve — use their language</div>
+  <div class="word-cloud" style="margin-bottom:20px;">
+    <span class="word-pill wc3" onclick="copy('public sector digitalization')">public sector digitalization</span>
+    <span class="word-pill wc3" onclick="copy('e-government')">e-government</span>
+    <span class="word-pill wc3" onclick="copy('regulated environments')">regulated environments</span>
+    <span class="word-pill wc3" onclick="copy('healthcare technology')">healthcare technology</span>
+    <span class="word-pill wc3" onclick="copy('financial services')">financial services</span>
+    <span class="word-pill wc3" onclick="copy('defence and cyber')">defence and cyber</span>
+    <span class="word-pill wc3" onclick="copy('compliance automation')">compliance automation</span>
+    <span class="word-pill wc3" onclick="copy('data foundation')">data foundation</span>
+    <span class="word-pill wc3" onclick="copy('mission-critical systems')">mission-critical systems</span>
+    <span class="word-pill wc3" onclick="copy('enterprise-scale')">enterprise-scale</span>
+    <span class="word-pill wc3" onclick="copy('Fortune 100 delivery')">Fortune 100 delivery</span>
+  </div>
+
+  <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--c3);margin-bottom:8px;">🟠 AI & data — their growth focus</div>
+  <div class="word-cloud" style="margin-bottom:20px;">
+    <span class="word-pill wc4" onclick="copy('AI-ready infrastructure')">AI-ready infrastructure</span>
+    <span class="word-pill wc4" onclick="copy('LLM inference')">LLM inference</span>
+    <span class="word-pill wc4" onclick="copy('MCP integration')">MCP integration</span>
+    <span class="word-pill wc4" onclick="copy('generative AI')">generative AI</span>
+    <span class="word-pill wc4" onclick="copy('AI-powered delivery')">AI-powered delivery</span>
+    <span class="word-pill wc4" onclick="copy('data-driven transformation')">data-driven transformation</span>
+    <span class="word-pill wc4" onclick="copy('AI lab')">AI lab</span>
+    <span class="word-pill wc4" onclick="copy('GPU scheduling')">GPU scheduling</span>
+    <span class="word-pill wc4" onclick="copy('ML pipeline orchestration')">ML pipeline orchestration</span>
+    <span class="word-pill wc4" onclick="copy('self-hosted AI')">self-hosted AI</span>
+  </div>
+
+  <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--c4);margin-bottom:8px;">🟣 Consulting & delivery model words</div>
+  <div class="word-cloud" style="margin-bottom:20px;">
+    <span class="word-pill wc5" onclick="copy('end-to-end delivery')">end-to-end delivery</span>
+    <span class="word-pill wc5" onclick="copy('client-facing')">client-facing</span>
+    <span class="word-pill wc5" onclick="copy('stakeholder alignment')">stakeholder alignment</span>
+    <span class="word-pill wc5" onclick="copy('business value')">business value</span>
+    <span class="word-pill wc5" onclick="copy('tech into business outcomes')">tech into business outcomes</span>
+    <span class="word-pill wc5" onclick="copy('cross-functional delivery')">cross-functional delivery</span>
+    <span class="word-pill wc5" onclick="copy('nearshore team')">nearshore team</span>
+    <span class="word-pill wc5" onclick="copy('global delivery centre')">global delivery centre</span>
+    <span class="word-pill wc5" onclick="copy('consulting mindset')">consulting mindset</span>
+    <span class="word-pill wc5" onclick="copy('impactful projects')">impactful projects</span>
+  </div>
+</div>
+
+<!-- 5. PHRASES -->
+<div class="section-block" id="phrases">
+  <div class="section-label">Phrases tailored to Nortal (click to copy)</div>
+
+  <div class="phrase-list">
+
+    <div class="phrase-item" onclick="copyPhrase(this)">
+      <span class="copy-hint">copy</span>
+      <div class="phrase-cat">Why Nortal · Opening</div>
+      <div class="phrase-text">"I'm drawn to Nortal because you work at the intersection of technology and societal impact — government digitalization, healthcare infrastructure, regulated enterprise. That's exactly the kind of work I've been doing for 18 years. The difference at Nortal is scale and reach."</div>
+      <div class="phrase-why">Maps your background directly to their mission. "Societal impact" is their language — use it.</div>
+    </div>
+
+    <div class="phrase-item" onclick="copyPhrase(this)">
+      <span class="copy-hint">copy</span>
+      <div class="phrase-cat">Why Nortal · AI Lab angle</div>
+      <div class="phrase-text">"I read about the AI Lab you're launching in Lithuania. I've been running production AI infrastructure on my own K3s cluster for the past year — Ollama for LLM inference, MCP server integrations, GPU scheduling. I'm not learning that on the job. I want to bring that operational depth to what Nortal is building."</div>
+      <div class="phrase-why">Specific reference to their Lithuania initiative. Shows you researched and that your skills are directly applicable.</div>
+    </div>
+
+    <div class="phrase-item" onclick="copyPhrase(this)">
+      <span class="copy-hint">copy</span>
+      <div class="phrase-cat">Culture fit · Ownership pillar</div>
+      <div class="phrase-text">"Nortal's second cultural pillar — take ownership and initiative — is how I've operated throughout my career. At DBITS LT and Walletto, I didn't wait for problems to escalate. I stepped in when I saw a gap, owned it end-to-end, and made myself redundant in it. That's the only way I know how to work."</div>
+      <div class="phrase-why">Directly references their published cultural pillar. Shows you did your homework and it's genuine, not performed.</div>
+    </div>
+
+    <div class="phrase-item" onclick="copyPhrase(this)">
+      <span class="copy-hint">copy</span>
+      <div class="phrase-cat">Experience alignment · Government work</div>
+      <div class="phrase-text">"I've built national-scale data platforms for government clients in Kazakhstan — Ministry of Healthcare, Kazakhtelecom, Ministry of Emergency Situations. These are exactly the environments Nortal operates in: high SLAs, political accountability, zero tolerance for data loss. I understand what it means to own infrastructure where failure has consequences beyond a sprint."</div>
+      <div class="phrase-why">Public sector is Nortal's heritage and core. Your Kazakhstan work is a direct proof point.</div>
+    </div>
+
+    <div class="phrase-item" onclick="copyPhrase(this)">
+      <span class="copy-hint">copy</span>
+      <div class="phrase-cat">Experience alignment · Compliance & regulated</div>
+      <div class="phrase-text">"I designed and delivered the CESOP EU payment compliance system at Walletto from scratch — requirements analysis, SQL stored procedures, XML generation pipeline, Python validation framework, production submission. The same kind of regulatory rigor you need for public sector clients in healthcare, fintech, and government."</div>
+      <div class="phrase-why">Compliance automation is directly relevant to Nortal's regulated-sector clients.</div>
+    </div>
+
+    <div class="phrase-item" onclick="copyPhrase(this)">
+      <span class="copy-hint">copy</span>
+      <div class="phrase-cat">Consulting model · Adapting to multi-client</div>
+      <div class="phrase-text">"I've spent 17 years at DBITS LT working across multiple client engagements simultaneously — each with different tech stacks, different SLAs, different stakeholder cultures. I know how to context-switch, how to build reusable patterns that work across clients, and how to communicate technical risk in business terms to non-technical decision-makers."</div>
+      <div class="phrase-why">Nortal is a consulting firm. You need to show you can operate across multiple clients, not just one product.</div>
+    </div>
+
+    <div class="phrase-item" onclick="copyPhrase(this)">
+      <span class="copy-hint">copy</span>
+      <div class="phrase-cat">Growth mindset · Pillar 04</div>
+      <div class="phrase-text">"I invest heavily in staying ahead of the curve — not through courses, but through building. My blog at doc.thedevops.dev documents what I'm learning in production. I was running LLM inference on Kubernetes before it became a job description. Nortal's culture of owning your growth aligns with how I already operate."</div>
+      <div class="phrase-why">References Pillar 04. Also promotes your blog — give them a verifiable signal of depth.</div>
+    </div>
+
+    <div class="phrase-item" onclick="copyPhrase(this)">
+      <span class="copy-hint">copy</span>
+      <div class="phrase-cat">Closing · Employee ownership angle</div>
+      <div class="phrase-text">"The fact that Nortal is 100% employee-owned matters to me. It means the people making decisions are the same people who built the company — there's no external pressure to cut corners for a quarterly number. That kind of long-term orientation is where I do my best work."</div>
+      <div class="phrase-why">Shows you understand and value one of Nortal's most distinctive characteristics. Very few candidates will mention this.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 6. QUESTIONS FOR THEM -->
+<div class="section-block" id="questions">
+  <div class="section-label">Questions to ask Nortal (shows real interest)</div>
+
+  <div class="q-list">
+    <div class="q-item" onclick="toggleQ(this)">
+      <div class="q-head">
+        <span class="q-badge-sm" style="background:var(--nortal-l);color:var(--nortal);border-color:var(--nortal-b);">AI Lab</span>
+        <span class="q-text-sm">What's the current state of the Lithuania AI Lab — what are you building first, and where does infrastructure ownership sit?</span>
+        <span class="q-chev">▼</span>
+      </div>
+      <div class="q-body-sm">
+        <div class="q-answer">"I've read about the AI Lab you're launching here in Vilnius. What's the current focus — are you building internal tooling, client-facing AI products, or both? And where does the infrastructure ownership sit — within the lab team, or shared platform?"</div>
+        <div class="q-tip-sm">Shows you did your research. Signals you're thinking about where you'd fit operationally, not just conceptually.</div>
+      </div>
+    </div>
+
+    <div class="q-item" onclick="toggleQ(this)">
+      <div class="q-head">
+        <span class="q-badge-sm" style="background:var(--c1l);color:var(--c1);border-color:var(--c1b);">Strategy</span>
+        <span class="q-text-sm">How does Nortal differentiate between a good client engagement and a great one — and how does the platform/DevOps function contribute?</span>
+        <span class="q-chev">▼</span>
+      </div>
+      <div class="q-body-sm">
+        <div class="q-answer">"Nortal has a policy of only taking on projects you're confident you can deliver. In practice, what separates a project that goes into the case study from one that just meets the contract? And how does the infrastructure and platform layer contribute to that differentiation?"</div>
+        <div class="q-tip-sm">Shows you understand the consulting model and are thinking about how to be exceptional, not just competent.</div>
+      </div>
+    </div>
+
+    <div class="q-item" onclick="toggleQ(this)">
+      <div class="q-head">
+        <span class="q-badge-sm" style="background:var(--c2l);color:var(--c2);border-color:var(--c2b);">Lithuania</span>
+        <span class="q-text-sm">How does the Lithuania delivery centre engage with global clients — is it autonomous or a satellite?</span>
+        <span class="q-chev">▼</span>
+      </div>
+      <div class="q-body-sm">
+        <div class="q-answer">"I know Lithuania handles Fortune 100 client work across the US, Germany, Finland. In practice, how autonomous is the Vilnius team in technical decision-making — do you own architecture decisions locally, or are you executing direction from other offices?"</div>
+        <div class="q-tip-sm">Tests whether this is a real engineering role or staff augmentation. Important for understanding how much ownership you'll actually have.</div>
+      </div>
+    </div>
+
+    <div class="q-item" onclick="toggleQ(this)">
+      <div class="q-head">
+        <span class="q-badge-sm" style="background:var(--c4l);color:var(--c4);border-color:var(--c4b);">Culture</span>
+        <span class="q-text-sm">What does the engineering leadership structure look like — how are technical decisions made on a client engagement?</span>
+        <span class="q-chev">▼</span>
+      </div>
+      <div class="q-body-sm">
+        <div class="q-answer">"You're employee-owned, which suggests a relatively flat decision-making culture. On a typical platform or DevOps engagement, who has the final call on architectural decisions — the lead engineer, an internal CTO function, or is it driven by the client?"</div>
+        <div class="q-tip-sm">Reveals the real power structure. At senior level, you need to know if your judgment will be trusted or overridden.</div>
+      </div>
+    </div>
+
+    <div class="q-item" onclick="toggleQ(this)">
+      <div class="q-head">
+        <span class="q-badge-sm" style="background:var(--c3l);color:var(--c3);border-color:var(--c3b);">Growth</span>
+        <span class="q-text-sm">What would success look like for this role 12 months in?</span>
+        <span class="q-chev">▼</span>
+      </div>
+      <div class="q-body-sm">
+        <div class="q-answer">"If I joined and we were having this conversation 12 months from now — what would you want to be able to say I'd contributed? What problem would ideally be solved that isn't solved today?"</div>
+        <div class="q-tip-sm">Classic but powerful. Shows you're results-oriented and want to deliver, not just settle in. Also gives you intelligence on what they actually need.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. AVOID -->
+<div class="section-block" id="avoid">
+  <div class="section-label">Never say this at Nortal</div>
+
+  <table class="avoid-table">
+    <thead>
+      <tr>
+        <th>Say this</th>
+        <th>Not this</th>
+        <th>Why it matters at Nortal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="say-col">"I want to contribute to tech-positive impact at scale."</td>
+        <td class="avoid-col">"I'm looking for a stable job with good benefits."</td>
+        <td style="font-size:12px;color:var(--muted);">Nortal explicitly rejects projects that don't align with their "why." Stability seekers don't fit.</td>
+      </tr>
+      <tr>
+        <td class="say-col">"I've built government-scale infrastructure in regulated environments."</td>
+        <td class="avoid-col">"I've worked on some enterprise projects."</td>
+        <td style="font-size:12px;color:var(--muted);">Nortal's clients are governments and Fortune 100s. Be specific and match the weight of the work.</td>
+      </tr>
+      <tr>
+        <td class="say-col">"I take end-to-end ownership and make myself redundant."</td>
+        <td class="avoid-col">"I'm a team player who follows direction."</td>
+        <td style="font-size:12px;color:var(--muted);">Their Pillar 02 is "take ownership and initiative." Followers don't match this culture.</td>
+      </tr>
+      <tr>
+        <td class="say-col">"I convert technology into measurable business value."</td>
+        <td class="avoid-col">"I focus on the technical side, not the business side."</td>
+        <td style="font-size:12px;color:var(--muted);">Nortal's hiring criteria explicitly includes "converting technology into actual business value."</td>
+      </tr>
+      <tr>
+        <td class="say-col">"I'm excited by the AI Lab and want to bring production AI ops experience."</td>
+        <td class="avoid-col">"I'm interested in learning AI on the job."</td>
+        <td style="font-size:12px;color:var(--muted);">They're building an AI Lab, not a training program. They need people who can lead, not follow.</td>
+      </tr>
+      <tr>
+        <td class="say-col">"I've operated across multiple client engagements with different tech contexts."</td>
+        <td class="avoid-col">"I prefer a consistent environment where I know the stack."</td>
+        <td style="font-size:12px;color:var(--muted);">Consulting means constant context-switching. Showing preference for stability signals wrong fit.</td>
+      </tr>
+      <tr>
+        <td class="say-col">"I invest in my own growth — here's what I'm building right now."</td>
+        <td class="avoid-col">"I'm looking for training and mentorship opportunities."</td>
+        <td style="font-size:12px;color:var(--muted);">Pillar 04 is "own your future." They offer resources, but expect you to drive your growth, not request it.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  <p>Nortal Analysis · Vladimiras Levinas · 2026</p>
+  <a href="index.html">← Back to hub</a>
+</footer>
+
+</div>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+function scrollTo(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function toggleQ(el){
+  el.classList.toggle('open');
+}
+
+function copy(text){
+  navigator.clipboard.writeText(text).catch(()=>{});
+  showToast('"' + text + '"');
+}
+
+function copyPhrase(el){
+  const text = el.querySelector('.phrase-text').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    el.classList.add('copied');
+    setTimeout(()=>el.classList.remove('copied'),700);
+  }).catch(()=>{});
+  showToast('Phrase copied');
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg.length > 40 ? 'Copied to clipboard' : msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+// animate match bars on scroll
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.match-bar').forEach(b=>{
+        const w = b.style.width;
+        b.style.width='0';
+        setTimeout(()=>b.style.width=w,100);
+      });
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+const mr = document.getElementById('matchRows');
+if(mr) obs.observe(mr);
+</script>
+</body>
+</html>
