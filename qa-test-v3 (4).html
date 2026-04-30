@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Team Lead — Тест валидации</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:#f4f6f9; --surface:#ffffff; --surface2:#f0f2f6; --border:#dde2ea;
+  --text:#111827; --text-muted:#6b7280; --text-light:#9ca3af;
+  --accent:#1d4ed8; --accent-soft:#dbeafe; --accent-hover:#1e40af;
+  --green:#059669; --green-soft:#d1fae5;
+  --red:#dc2626; --red-soft:#fee2e2;
+  --yellow:#d97706; --yellow-soft:#fef3c7;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,.10);
+  --radius:12px; --radius-sm:8px;
+  --font:'Sora',sans-serif; --mono:'IBM Plex Mono',monospace;
+  --transition:.18s ease;
+}
+[data-theme="dark"] {
+  --bg:#0f1117; --surface:#1a1d27; --surface2:#232636; --border:#2e3347;
+  --text:#f1f3f9; --text-muted:#8b92a5; --text-light:#5a6278;
+  --accent:#3b82f6; --accent-soft:#1e3a5f; --accent-hover:#60a5fa;
+  --green:#10b981; --green-soft:#064e3b;
+  --red:#ef4444; --red-soft:#450a0a;
+  --yellow:#f59e0b; --yellow-soft:#451a03;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:0 4px 16px rgba(0,0,0,.4);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background var(--transition),color var(--transition);line-height:1.6}
+button{font-family:var(--font);cursor:pointer;border:none;outline:none}
+input{font-family:var(--font)}
+
+/* LAYOUT */
+.page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-md);width:100%;max-width:800px;padding:36px 42px;position:relative}
+
+/* BRAND */
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.brand-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.85rem;font-weight:700;flex-shrink:0}
+.brand-label{font-size:.76rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+
+/* THEME TOGGLE */
+.theme-btn{position:fixed;top:18px;right:18px;width:40px;height:40px;background:var(--surface);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-sm);z-index:200;transition:background var(--transition)}
+.theme-btn:hover{border-color:var(--accent)}
+.lang-btn{position:fixed;top:18px;right:66px;width:40px;height:40px;background:var(--surface);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;font-family:var(--mono);color:var(--text-muted);box-shadow:var(--shadow-sm);z-index:200;cursor:pointer;transition:all var(--transition)}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* TYPOGRAPHY */
+.start-title{font-size:1.65rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-.02em}
+.start-subtitle{font-size:.9rem;color:var(--text-muted);margin-bottom:24px}
+
+/* RULES GRID */
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.rule-chip{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:flex-start;gap:9px}
+.rule-chip .ri{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.rule-chip p{font-size:.78rem;color:var(--text-muted);line-height:1.4}
+.rule-chip strong{color:var(--text);display:block;font-size:.82rem;margin-bottom:1px}
+
+/* SETTINGS BLOCK */
+.settings-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:20px}
+.settings-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:14px}
+.settings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.setting-item label{display:block;font-size:.76rem;font-weight:600;color:var(--text-muted);margin-bottom:5px}
+.setting-item input[type=number]{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--mono);font-size:.88rem;transition:border-color var(--transition)}
+.setting-item input[type=number]:focus{outline:none;border-color:var(--accent)}
+.setting-hint{font-size:.7rem;color:var(--text-light);margin-top:3px}
+.auto-calc-note{font-size:.72rem;color:var(--accent);margin-top:3px}
+
+/* NAME INPUT */
+.name-section{margin-bottom:14px}
+.name-section label{display:block;font-size:.8rem;font-weight:600;color:var(--text-muted);margin-bottom:5px}
+.name-input{width:100%;padding:11px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.9rem;transition:border-color var(--transition)}
+.name-input:focus{outline:none;border-color:var(--accent)}
+.name-input.error-border{border-color:var(--red)}
+.name-input::placeholder{color:var(--text-light)}
+
+/* CANDIDATE STATUS MESSAGES */
+.candidate-msg{display:none;padding:12px 14px;border-radius:var(--radius-sm);margin-bottom:14px;font-size:.83rem;line-height:1.5}
+.candidate-msg.blocked{background:var(--red-soft);border:1px solid var(--red);color:var(--red)}
+.candidate-msg.interrupted{background:var(--yellow-soft);border:1px solid var(--yellow);color:var(--yellow)}
+.candidate-msg strong{display:block;margin-bottom:3px}
+.candidate-msg.visible{display:block}
+
+/* WARNING / INFO BOXES */
+.warning-box{background:var(--yellow-soft);border:1px solid var(--yellow);border-radius:var(--radius-sm);padding:11px 14px;font-size:.8rem;color:var(--yellow);margin-bottom:20px;display:flex;gap:8px;align-items:flex-start}
+.info-box{background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--radius-sm);padding:10px 14px;font-size:.78rem;color:var(--accent);margin-bottom:14px;display:flex;gap:8px}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:7px;padding:12px 26px;background:var(--accent);color:#fff;border-radius:var(--radius-sm);font-size:.88rem;font-weight:600;transition:background var(--transition),transform .1s;letter-spacing:.01em}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-secondary{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transition:all var(--transition)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:var(--red-soft);color:var(--red);border:1px solid var(--red);border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transition:all var(--transition)}
+.btn-danger:hover{background:var(--red);color:#fff}
+
+/* QUIZ HEADER */
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+.quiz-meta{font-size:.78rem;color:var(--text-muted);font-weight:500}
+.quiz-meta span{font-family:var(--mono);font-size:.84rem;color:var(--accent);font-weight:500}
+.cat-pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.69rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-top:5px}
+
+/* TIMERS */
+.timers-wrap{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.timer-ring{position:relative;width:44px;height:44px;flex-shrink:0}
+.timer-ring svg{transform:rotate(-90deg)}
+.timer-ring circle{fill:none;stroke-width:3.5;stroke-linecap:round}
+.timer-ring .track{stroke:var(--border)}
+.timer-ring .fill{stroke:var(--green);transition:stroke-dashoffset .9s linear,stroke .5s ease}
+.timer-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--mono);font-size:.76rem;font-weight:500;color:var(--text)}
+
+.total-timer{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.total-timer-lbl{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.total-timer-val{font-family:var(--mono);font-size:.96rem;font-weight:600;color:var(--text);transition:color .3s}
+.total-timer-val.warn{color:var(--yellow)}
+.total-timer-val.danger{color:var(--red)}
+
+/* PROGRESS */
+.progress-track{height:4px;background:var(--surface2);border-radius:999px;margin-bottom:20px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .4s ease}
+
+/* QUESTION */
+.question-text{font-size:1.05rem;font-weight:600;line-height:1.55;color:var(--text);margin-bottom:20px}
+.options-grid{display:grid;gap:9px}
+.opt-btn{width:100%;text-align:left;padding:13px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:.86rem;font-weight:400;line-height:1.5;transition:all var(--transition);display:flex;align-items:flex-start;gap:11px}
+.opt-btn .opt-letter{display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:5px;background:var(--surface2);border:1px solid var(--border);font-size:.7rem;font-weight:700;font-family:var(--mono);color:var(--text-muted);flex-shrink:0;margin-top:1px;transition:all var(--transition)}
+.opt-btn:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);border-color:var(--accent);color:#fff}
+.opt-btn.correct{border-color:var(--green)!important;background:var(--green-soft)!important;color:var(--green)!important}
+.opt-btn.correct .opt-letter{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important}
+.opt-btn.wrong{border-color:var(--red)!important;background:var(--red-soft)!important;color:var(--red)!important}
+.opt-btn.wrong .opt-letter{background:var(--red)!important;border-color:var(--red)!important;color:#fff!important}
+.opt-btn:disabled{cursor:default}
+
+/* EXPLANATION / TIMEOUT */
+.explanation-box{display:none;margin-top:14px;padding:13px 15px;border-radius:var(--radius-sm);border-left:3px solid var(--accent);background:var(--surface2);font-size:.8rem;color:var(--text-muted);line-height:1.6}
+.explanation-box.visible{display:block;animation:fadeIn .22s ease}
+.explanation-box strong{color:var(--accent);display:block;margin-bottom:3px;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}
+.timeout-box{display:none;margin-top:14px;padding:11px 15px;border-radius:var(--radius-sm);border:1px solid var(--red);background:var(--red-soft);color:var(--red);font-size:.82rem;font-weight:500}
+.timeout-box.visible{display:block;animation:fadeIn .22s ease}
+.total-timeout-box{display:none;margin-top:14px;padding:11px 15px;border-radius:var(--radius-sm);border:1px solid var(--yellow);background:var(--yellow-soft);color:var(--yellow);font-size:.85rem;font-weight:600}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* RESULT SCREEN */
+.result-hero{text-align:center;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.result-score-big{font-size:3.8rem;font-weight:700;color:var(--accent);line-height:1;font-family:var(--mono);letter-spacing:-.04em}
+.result-score-big sup{font-size:1.4rem;font-weight:400}
+.result-level{display:inline-block;margin-top:9px;padding:5px 14px;border-radius:999px;font-size:.8rem;font-weight:600;letter-spacing:.04em}
+.level-low{background:var(--red-soft);color:var(--red)}
+.level-base{background:var(--yellow-soft);color:var(--yellow)}
+.level-good{background:var(--accent-soft);color:var(--accent)}
+.level-lead{background:var(--green-soft);color:var(--green)}
+.result-name{font-size:.9rem;color:var(--text-muted);margin-top:7px}
+.result-name strong{color:var(--text)}
+
+.result-meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.meta-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
+.meta-box .mk{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:2px}
+.meta-box .mv{font-family:var(--mono);font-size:.9rem;font-weight:600;color:var(--text)}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 11px;text-align:center}
+.stat-box .sv{font-size:1.4rem;font-weight:700;font-family:var(--mono);display:block}
+.stat-box .sk{font-size:.69rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-top:2px}
+.sv-correct{color:var(--green)}
+.sv-wrong{color:var(--red)}
+.sv-timeout{color:var(--yellow)}
+.sv-time{color:var(--accent)}
+
+.review-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px}
+.review-list{display:grid;gap:9px;max-height:460px;overflow-y:auto;padding-right:3px}
+.review-list::-webkit-scrollbar{width:4px}
+.review-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.review-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 15px}
+.review-item.ri-correct{border-left:3px solid var(--green)}
+.review-item.ri-wrong{border-left:3px solid var(--red)}
+.review-item.ri-timeout{border-left:3px solid var(--yellow)}
+.ri-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:7px}
+.ri-q{font-size:.83rem;font-weight:600;line-height:1.4;color:var(--text)}
+.ri-status{flex-shrink:0;font-size:.67rem;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.rs-correct{background:var(--green-soft);color:var(--green)}
+.rs-wrong{background:var(--red-soft);color:var(--red)}
+.rs-timeout{background:var(--yellow-soft);color:var(--yellow)}
+.ri-answers{font-size:.76rem;color:var(--text-muted);display:grid;gap:3px;margin-bottom:6px}
+.ri-answers span{display:flex;gap:5px;flex-wrap:wrap}
+.ri-answers .lbl{font-weight:600;color:var(--text);white-space:nowrap}
+.ri-expl{font-size:.74rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:6px;margin-top:3px;line-height:1.5}
+
+.export-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--border)}
+.actions-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;width:100%;max-width:560px;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.modal-title{font-size:1.05rem;font-weight:700;margin-bottom:16px;color:var(--text)}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted);line-height:1}
+.modal-result{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-top:14px;font-size:.82rem;line-height:1.7}
+.modal-result strong{color:var(--text)}
+
+/* ADMIN PANEL */
+.admin-wrap{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:150}
+.admin-toggle-btn{width:100%;padding:9px 20px;text-align:center;font-size:.75rem;color:var(--text-light);cursor:pointer;background:none;border:none;font-family:var(--font);letter-spacing:.05em;transition:color var(--transition)}
+.admin-toggle-btn:hover{color:var(--text-muted)}
+.admin-panel{padding:16px 20px;background:var(--surface2);border-top:1px solid var(--border)}
+.admin-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.admin-row input{flex:1;min-width:140px;padding:8px 11px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem}
+.admin-row input:focus{outline:none;border-color:var(--accent)}
+.admin-msg{margin-top:8px;font-size:.78rem;padding:7px 10px;border-radius:6px}
+.admin-msg.ok{background:var(--green-soft);color:var(--green)}
+.admin-msg.err{background:var(--red-soft);color:var(--red)}
+
+/* MOBILE */
+@media(max-width:640px){
+  .card{padding:22px 16px}
+  .rules-grid,.settings-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .result-meta-grid{grid-template-columns:1fr 1fr}
+  .start-title{font-size:1.35rem}
+  .question-text{font-size:.95rem}
+  .opt-btn{font-size:.82rem;padding:11px 12px}
+  .result-score-big{font-size:3rem}
+  .admin-row{flex-direction:column}
+}
+
+/* PRINT */
+@media print{
+  .theme-btn,.admin-wrap,.export-row,.actions-row{display:none!important}
+  .card{box-shadow:none;border:none;max-width:100%;padding:0}
+  .review-list{max-height:none;overflow:visible}
+}
+
+.adm-tab{padding:6px 13px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;font-size:.76rem;font-weight:600;background:transparent;border:1px solid transparent;border-bottom:none;color:var(--text-muted);cursor:pointer;font-family:var(--font);transition:color var(--transition)}
+.adm-tab:hover{color:var(--text)}
+.adm-tab-active{background:var(--surface);border-color:var(--border);color:var(--accent)}
+</style>
+</head>
+<body>
+
+<button class="theme-btn" id="themeBtn" title="Тема">🌙</button>
+<button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+
+<!-- ═══════════ START SCREEN ═══════════ -->
+<div class="page" id="screenStart">
+<div class="card">
+  <div class="brand">
+    <div class="brand-icon">QA</div>
+    <span class="brand-label">Team Lead Validation Test</span>
+  </div>
+
+  <h1 class="start-title" id="startTitle">Тест QA Team Lead</h1>
+  <p class="start-subtitle" id="startSubtitle">60 вопросов по тест-дизайну, баг-менеджменту, автоматизации, метрикам и управлению командой.</p>
+
+  <div class="rules-grid">
+    <div class="rule-chip"><span class="ri">📋</span><div><strong>До 60 вопросов</strong><p>Практические ситуационные вопросы уровня Middle+/Senior/Lead</p></div></div>
+    <div class="rule-chip"><span class="ri">⏱️</span><div><strong>Два таймера</strong><p>На каждый вопрос и общий лимит времени теста</p></div></div>
+    <div class="rule-chip"><span class="ri">🔒</span><div><strong>Однократное прохождение</strong><p>Тест можно пройти один раз с одним именем на данном устройстве</p></div></div>
+    <div class="rule-chip"><span class="ri">📊</span><div><strong>Детальные результаты</strong><p>Разбор всех вопросов и экспорт в JSON / CSV / PDF</p></div></div>
+  </div>
+
+  <!-- Settings summary (read-only) -->
+  <div id="settingsSummary" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;margin-bottom:18px;font-size:.8rem;color:var(--text-muted);display:flex;gap:18px;flex-wrap:wrap">
+    <span>&#x2699; <strong id="summNumQ">30</strong> вопросов</span>
+    <span>&#x23F1; <strong id="summTimeQ">30</strong> сек</span>
+    <span>&#x1F550; <strong id="summTimeTotal">15</strong> мин</span>
+  </div>
+  <input type="hidden" id="settingNumQ" value="30">
+  <input type="hidden" id="settingTimeQ" value="30">
+  <input type="hidden" id="settingTimeTotal" value="15">
+
+  <!-- NAME -->  <!-- NAME -->
+  <div class="name-section">
+    <label id="nameLbl">Имя кандидата <span style="color:var(--red)">*</span></label>
+    <input class="name-input" id="candidateName" type="text" placeholder="Введите полное имя кандидата" maxlength="100" required>
+  </div>
+
+  <!-- CANDIDATE STATUS MESSAGE -->
+  <div class="candidate-msg blocked" id="msgBlocked">
+    <strong>🚫 Повторное прохождение невозможно</strong>
+    <span id="msgBlockedText">Кандидат с таким именем уже проходил тест.</span>
+  </div>
+  <div class="candidate-msg interrupted" id="msgInterrupted">
+    <strong>⚠️ Тест был прерван</strong>
+    Тест был начат ранее и не завершён. Повторное прохождение невозможно без сброса администратором.
+  </div>
+
+  <div class="info-box">
+    <span>ℹ️</span>
+    <span>Тест можно пройти только один раз с указанным именем. Повторное прохождение с тем же именем будет заблокировано на этом устройстве.</span>
+  </div>
+
+  <div class="warning-box">
+    <span>⚠️</span>
+    <span>После нажатия «Начать тест» поставить на паузу нельзя. Перезагрузка страницы во время теста будет считаться прерванием и заблокирует повторный доступ для данного имени.</span>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <button class="btn-primary" id="btnStart">▶ Начать тест</button>
+    <button class="btn-secondary" id="btnCheckCandidate">🔍 Проверить кандидата</button>
+    <button class="btn-danger" id="btnClearViewed" style="display:none">🗑 Очистить просмотренный результат</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ QUIZ SCREEN ═══════════ -->
+<div class="page" id="screenQuiz" style="display:none">
+<div class="card">
+  <div class="quiz-header">
+    <div>
+      <div class="quiz-meta">Вопрос <span id="qIndex">1</span> из <span id="qTotal">30</span></div>
+      <div class="cat-pill" id="qCategory">Категория</div>
+    </div>
+    <div class="timers-wrap">
+      <div class="total-timer">
+        <div class="total-timer-lbl">Общее</div>
+        <div class="total-timer-val" id="totalTimerVal">15:00</div>
+      </div>
+      <div class="timer-ring">
+        <svg width="44" height="44" viewBox="0 0 44 44">
+          <circle class="track" cx="22" cy="22" r="18"/>
+          <circle class="fill" id="timerCircle" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-num" id="timerNum">30</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div class="question-text" id="questionText"></div>
+  <div class="options-grid" id="optionsGrid"></div>
+
+  <div class="explanation-box" id="explanationBox">
+    <strong>💡 Пояснение</strong>
+    <span id="explanationText"></span>
+  </div>
+  <div class="timeout-box" id="timeoutBox">⏰ Время на вопрос истекло. Правильный ответ выделен зелёным.</div>
+  <div class="total-timeout-box" id="totalTimeoutBox">🚨 Общее время теста истекло. Тест завершается автоматически.</div>
+</div>
+</div>
+
+<!-- ═══════════ RESULT SCREEN ═══════════ -->
+<div class="page" id="screenResult" style="display:none">
+<div class="card" style="max-width:880px">
+  <div class="result-hero">
+    <div class="result-score-big" id="rScore">0<sup>%</sup></div>
+    <div class="result-level" id="rLevel">—</div>
+    <div class="result-name" id="rName"></div>
+  </div>
+
+  <div class="result-meta-grid">
+    <div class="meta-box"><div class="mk" id="rDateLbl">📅 Дата прохождения</div><div class="mv" id="rDate">—</div></div>
+    <div class="meta-box"><div class="mk" id="rNumQLbl">📋 Вопросов в тесте</div><div class="mv" id="rNumQ">—</div></div>
+    <div class="meta-box"><div class="mk" id="rTimeQLbl">⏱ Время на вопрос</div><div class="mv" id="rTimeQ">—</div></div>
+    <div class="meta-box"><div class="mk" id="rTotalLbl">🕐 Лимит теста</div><div class="mv" id="rTotalLimit">—</div></div>
+    <div class="meta-box"><div class="mk" id="rSpentLbl">⌛ Фактическое время</div><div class="mv" id="rTimeSpent">—</div></div>
+    <div class="meta-box"><div class="mk" id="rFinishLbl">🏁 Завершение</div><div class="mv" id="rFinishReason">Полное</div></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><span class="sv sv-correct" id="rCorrect">0</span><span class="sk">✓ Верно</span></div>
+    <div class="stat-box"><span class="sv sv-wrong" id="rWrong">0</span><span class="sk">✗ Неверно</span></div>
+    <div class="stat-box"><span class="sv sv-timeout" id="rTimeout">0</span><span class="sk">⏰ Таймаут</span></div>
+    <div class="stat-box"><span class="sv sv-time" id="rPercent">0%</span><span class="sk">📊 Результат</span></div>
+  </div>
+
+  <div class="review-title">Детальный разбор</div>
+  <div class="review-list" id="reviewList"></div>
+
+  <div class="export-row">
+    <button class="btn-secondary" id="btnExportJSON">⬇ JSON</button>
+    <button class="btn-secondary" id="btnExportCSV">⬇ CSV</button>
+    <button class="btn-secondary" id="btnPrint">🖨 Печать / PDF</button>
+  </div>
+
+  <div class="actions-row">
+    <button class="btn-secondary" id="btnBackToStart">← На главную</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ CHECK CANDIDATE MODAL ═══════════ -->
+<div class="modal-overlay" id="modalCheck" style="display:none" onclick="closeCheckModal(event)">
+<div class="modal-box" style="position:relative">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-title">🔍 Проверить кандидата</div>
+  <div style="display:flex;gap:9px;margin-bottom:8px">
+    <input class="name-input" id="checkName" type="text" placeholder="Введите имя кандидата" style="flex:1">
+    <button class="btn-primary" onclick="doCheckCandidate()" style="padding:10px 18px;font-size:.84rem">Найти</button>
+  </div>
+  <div id="checkResult"></div>
+
+  <div style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px">
+    <div style="font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px">Все кандидаты</div>
+    <div id="allCandidatesList" style="font-size:.8rem;max-height:220px;overflow-y:auto"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ ADMIN PANEL ═══════════ -->
+<div class="admin-wrap">
+  <button class="admin-toggle-btn" onclick="toggleAdmin()">&#x1F510; Панель администратора</button>
+  <div class="admin-panel" id="adminPanel" style="display:none">
+    <div id="adminAuthGate">
+      <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px">&#x1F511; Вход</div>
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;max-width:480px">
+        <input type="password" id="adminAuthPwd" placeholder="Пароль" style="flex:1;min-width:160px;padding:8px 11px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:var(--font)">
+        <button class="btn-primary" onclick="adminAuth()" style="padding:9px 18px;font-size:.82rem">Войти</button>
+      </div>
+      <div id="adminAuthErr" style="display:none;margin-top:6px;font-size:.76rem;color:var(--red)">&#x274C; Неверный пароль</div>
+    </div>
+    <div id="adminContent" style="display:none">
+      <div style="display:flex;gap:3px;margin-bottom:14px;border-bottom:2px solid var(--border)">
+        <button class="adm-tab adm-tab-active" id="atab-settings" onclick="aTab('settings')">&#x2699; Настройки</button>
+        <button class="adm-tab" id="atab-reset" onclick="aTab('reset')">&#x1F504; Сброс</button>
+        <button class="adm-tab" id="atab-history" onclick="aTab('history')">&#x1F4CA; История</button>
+      </div>
+      <!-- SETTINGS TAB -->
+      <div id="apane-settings">
+        <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:10px">Значения применяются для всех следующих прохождений.</div>
+        <div class="settings-grid" style="max-width:500px;margin-bottom:12px">
+          <div class="setting-item"><label style="font-size:.76rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Кол-во вопросов</label><input type="number" id="aNumQ" min="5" max="60" value="30" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--mono);font-size:.88rem"><div class="setting-hint">от 5 до 60</div></div>
+          <div class="setting-item"><label style="font-size:.76rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Сек на вопрос</label><input type="number" id="aTimeQ" min="10" max="180" value="30" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--mono);font-size:.88rem"><div class="setting-hint">от 10 до 180</div></div>
+          <div class="setting-item"><label style="font-size:.76rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Лимит (мин)</label><input type="number" id="aTotalTime" min="1" max="120" value="15" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--mono);font-size:.88rem"><div class="setting-hint">от 1 до 120</div></div>
+        </div>
+        <button class="btn-primary" onclick="saveAdminSettings()" style="padding:9px 20px;font-size:.82rem">&#x1F4BE; Сохранить</button>
+        <div id="adminSettingsMsg" class="admin-msg" style="display:none;margin-top:8px"></div>
+      </div>
+      <!-- RESET TAB -->
+      <div id="apane-reset" style="display:none">
+        <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:10px">Сброс позволяет кандидату пройти тест повторно.</div>
+        <div class="admin-row">
+          <input type="text" id="adminCandidateName" placeholder="Имя кандидата">
+          <input type="password" id="adminPassword" placeholder="Пароль">
+          <button class="btn-primary" onclick="adminReset()" style="padding:9px 18px;font-size:.82rem">Сбросить</button>
+        </div>
+        <div id="adminMsg" style="display:none" class="admin-msg"></div>
+      </div>
+      <!-- HISTORY TAB -->
+      <div id="apane-history" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+          <span id="historyCount" style="font-size:.76rem;color:var(--text-muted)"></span>
+          <div style="display:flex;gap:7px">
+            <button class="btn-secondary" onclick="exportHistoryCSV()" style="padding:6px 13px;font-size:.76rem">&#x2193; CSV</button>
+            <button class="btn-primary" onclick="exportHistoryXLSX()" style="padding:6px 13px;font-size:.76rem">&#x1F4CA; Excel</button>
+          </div>
+        </div>
+        <div id="historyList" style="font-size:.8rem;max-height:280px;overflow-y:auto"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// ADMIN PASSWORD
+// NOTE: localStorage — не серверная защита. Кандидат может открыть DevTools
+// и очистить данные. Это решение подходит для локального / HR-тестирования,
+// где предполагается честное участие кандидата.
+// ═══════════════════════════════════════════════════════════════════════
+const ADMIN_PASSWORD = "qa-admin-2026";
+
+// ── STORAGE KEYS ──
+const SK_CANDIDATES = 'qa_test_completed_candidates'; // основное хранилище кандидатов
+const SK_VIEWED     = 'qa_lead_test_result';          // последний просмотренный результат (legacy)
+const SK_THEME      = 'qa_theme';
+
+// ═══════════════════════════════════════════════════════════════════════
+// QUESTIONS — 60 вопросов
+// correctAnswer: индекс в массиве options (0=A, 1=B, 2=C, 3=D)
+// ═══════════════════════════════════════════════════════════════════════
+const QUESTIONS = [
+  // ── 1–30: Оригинальные вопросы ──
+  {
+    id:1, category:"Bug Management",
+    question:"Перед релизом найден дефект с Severity: Critical, Priority: Low. Как должен поступить QA Team Lead?",
+    options:["Автоматически заблокировать релиз, так как severity критическая","Игнорировать дефект — priority низкая, значит бизнес не спешит","Обсудить бизнес-риск с PO/PM и принять release decision на основе impact","Передать решение разработчику и не участвовать"],
+    correctAnswer:2,
+    explanation:"Severity — техническая серьёзность, Priority — бизнес-срочность. QA Lead обязан помочь оценить риск совместно с PO/PM, предложить mitigation plan и принять взвешенное решение о готовности к релизу."
+  },
+  {
+    id:2, category:"Test Design",
+    question:"Команда тестирует форму регистрации. Поле «возраст» принимает значения от 18 до 99. Какие граничные значения обязательны?",
+    options:["17, 18, 50, 99, 100","0, 50, 100","18, 99","18, 19, 98, 99"],
+    correctAnswer:0,
+    explanation:"Boundary Value Analysis требует проверки: минимум-1 (17), минимум (18), типичное (50), максимум (99), максимум+1 (100). Это покрывает граничные случаи и типичный диапазон."
+  },
+  {
+    id:3, category:"QA Metrics",
+    question:"Defect Leakage Rate в последнем спринте составил 35%. Что это означает и что делать QA Lead?",
+    options:["35% дефектов было найдено до деплоя — хороший показатель","35% дефектов попало в прод, минуя QA — нужно улучшить покрытие и gates","Метрика показывает процент флейки-тестов в CI","35% тест-кейсов упало на регрессии — нужно пересмотреть тесты"],
+    correctAnswer:1,
+    explanation:"Defect Leakage = (defects found in prod / total defects) × 100%. 35% означает серьёзную проблему: треть дефектов прошла через QA в продакшн. Нужен анализ root cause, усиление regression suite и definition of done."
+  },
+  {
+    id:4, category:"API Testing",
+    question:"При тестировании REST API POST /orders возвращает 201 Created с телом. Какой следующий шаг наиболее важен для QA?",
+    options:["Проверить только статус-код ответа","Проверить статус-код, схему тела ответа, заголовки и состояние данных в БД","Проверить время ответа","Сравнить ответ с документацией Swagger"],
+    correctAnswer:1,
+    explanation:"Полноценное API тестирование включает: status code, response body schema, заголовки (Content-Type, Location), и верификацию side effects — данные реально созданы в БД корректно."
+  },
+  {
+    id:5, category:"CI/CD & QA",
+    question:"QA Lead встраивает тесты в CI/CD pipeline. Что следует запускать при каждом pull request?",
+    options:["Только unit-тесты — они быстрые","Полный регрессионный suite — чтобы ничего не пропустить","Unit + интеграционные тесты и critical path smoke-тесты — баланс скорости и покрытия","Только E2E тесты, так как они ближе к реальному пользователю"],
+    correctAnswer:2,
+    explanation:"При каждом PR нужен быстрый feedback: unit + integration + smoke critical path (Test Pyramid). Полная регрессия запускается перед релизом или ночью. Цель PR gate — fail fast без тормозов пайплайна."
+  },
+  {
+    id:6, category:"Team Management",
+    question:"Junior QA постоянно пишет неинформативные баг-репорты без шагов воспроизведения. Как QA Lead должен исправить ситуацию?",
+    options:["Отклонять все его репорты без объяснений","Провести парное занятие, показать шаблон good bug report, установить чеклист review для багов","Передать его задачи более опытному QA","Написать memo с правилами и отправить по почте"],
+    correctAnswer:1,
+    explanation:"Менторинг — ключевая компетенция QA Lead. Правильный подход: показать example, дать template, ввести review процесс. Это растит команду, а не создаёт зависимость или демотивацию."
+  },
+  {
+    id:7, category:"Risk-Based Testing",
+    question:"У команды 3 дня на регрессионное тестирование перед крупным релизом. Какой подход правильный?",
+    options:["Тестировать всё подряд по алфавиту","Провести risk assessment: prioritize high-risk areas, critical paths и регрессию изменённого кода","Запустить автотесты и считать работу выполненной","Тестировать только то, что изменилось в этом релизе"],
+    correctAnswer:1,
+    explanation:"Risk-based testing — основа эффективного QA при ограниченном времени. Нужно оценить: вероятность поломки × бизнес-impact. Приоритизировать critical paths, интеграционные точки и области, изменённые в данном релизе."
+  },
+  {
+    id:8, category:"Agile / Scrum",
+    question:"На планировании спринта разработчики оценили задачи, а QA не успел оценить объём тестирования. Что должен сделать QA Lead?",
+    options:["Принять эстимацию разработчиков молча","Добавить фиксированный буфер 20% на тестирование","Настоять на включении QA-эстимации в story points и уточнить DoD со сценариями тестирования","Тестировать то, что успеет, остальное — следующий спринт"],
+    correctAnswer:2,
+    explanation:"QA должен участвовать в estimation и refinement. Story point должен включать время на тест-дизайн, выполнение тестов и автоматизацию. Definition of Done обязан содержать QA acceptance criteria."
+  },
+  {
+    id:9, category:"SQL & Data Validation",
+    question:"После миграции данных нужно проверить корректность. Какой SQL-запрос поможет найти дублирующиеся email в таблице users?",
+    options:["SELECT email FROM users WHERE email IS NOT NULL","SELECT email, COUNT(*) as cnt FROM users GROUP BY email HAVING COUNT(*) > 1","SELECT DISTINCT email FROM users","SELECT email FROM users ORDER BY email"],
+    correctAnswer:1,
+    explanation:"GROUP BY + HAVING COUNT(*) > 1 — стандартный паттерн поиска дублей. QA должен уметь писать такие запросы для data validation после миграций, ETL-процессов и интеграций."
+  },
+  {
+    id:10, category:"Automation",
+    question:"Какой тип тестов наименее целесообразно автоматизировать в первую очередь?",
+    options:["Регрессионные тесты, которые запускаются при каждом деплое","Smoke-тесты на critical path","Тесты на интуитивность UX и удобство пользователя","API-тесты на основные CRUD операции"],
+    correctAnswer:2,
+    explanation:"UX usability тестирование требует человеческого суждения и субъективной оценки. Автоматизировать его бессмысленно — нужен реальный пользователь или UX-исследователь. Всё остальное — хорошие кандидаты для автоматизации."
+  },
+  {
+    id:11, category:"Bug Lifecycle",
+    question:"Разработчик закрыл баг со статусом «Cannot reproduce». Как должен реагировать QA?",
+    options:["Принять закрытие — разработчик всегда прав","Переоткрыть баг с полными шагами воспроизведения, логами, скриншотами и environment info","Немедленно эскалировать PM","Удалить баг из трекера и создать новый"],
+    correctAnswer:1,
+    explanation:"Cannot Reproduce не значит «не существует». QA должен обогатить репорт: точные шаги, тестовые данные, версию ПО, логи, env. Если воспроизводится стабильно у QA — это основание для реопена с доказательной базой."
+  },
+  {
+    id:12, category:"QA Process",
+    question:"Вас попросили построить QA-процесс в команде, где его нет совсем. С чего начать?",
+    options:["Сразу писать автотесты","Провести аудит: понять product, текущий SDLC, болевые точки; затем внедрять процессы инкрементально","Нанять больше QA и сразу покрыть всё тестами","Внедрить всю документацию Test Plan, Test Strategy за первую неделю"],
+    correctAnswer:1,
+    explanation:"QA с нуля начинается с discovery: понять продукт, команду, риски. Затем quick wins (bug tracking, test cases для critical paths), потом CI integration, автоматизация. Нельзя строить rocket ship без понимания куда летит компания."
+  },
+  {
+    id:13, category:"Release Readiness",
+    question:"Какой из критериев НЕ является типичным release readiness criteria?",
+    options:["Нет открытых Critical/Blocker дефектов","Test pass rate ≥ 95% на regression suite","Все задачи в спринте закрыты разработчиками","Performance baseline соответствует SLA"],
+    correctAnswer:2,
+    explanation:"Закрытые задачи разработки — это development done, не release readiness. Release gate включает: дефекты (no critical open), test coverage, performance, security, smoke-тесты в staging. Статус задачи в Jira — не QA критерий."
+  },
+  {
+    id:14, category:"Exploratory Testing",
+    question:"Команда провела exploratory testing сессию. Как QA Lead должен оформить результаты?",
+    options:["Exploratory testing не требует документации — это свободное исследование","Создать test charter, session notes, найденные дефекты и coverage areas — session-based format","Написать полноценные тест-кейсы по всему, что проверялось","Передать устный отчёт PM"],
+    correctAnswer:1,
+    explanation:"Exploratory testing документируется через Test Charter (цель сессии), Session Notes (что сделано), Coverage Map (что покрыто), список найденных дефектов. Session-Based Test Management (SBTM) — стандартный подход."
+  },
+  {
+    id:15, category:"Communication",
+    question:"PO требует выпустить релиз завтра, но у QA есть незакрытый Major-дефект. Что должен сделать QA Lead?",
+    options:["Молча выпустить релиз — решение за PO","Заблокировать релиз без обсуждения","Чётко донести риск, предложить mitigation (hotfix plan, rollback strategy), и зафиксировать решение письменно","Уйти на больничный, чтобы не нести ответственность"],
+    correctAnswer:2,
+    explanation:"QA Lead — это gate keeper рисков, не блокер. Нужно ясно коммуницировать риск (что может сломаться, для кого, какой impact), предложить план митигации, и если PO принимает риск осознанно — зафиксировать это письменно."
+  },
+  {
+    id:16, category:"Flaky Tests",
+    question:"В CI 15% автотестов нестабильны (иногда падают без изменений кода). Как QA Lead должен решить эту проблему?",
+    options:["Удалить нестабильные тесты — они создают шум","Игнорировать — нестабильность в тестах это норма","Провести анализ причин (race conditions, env зависимости, таймауты), починить или изолировать в отдельный suite с мониторингом","Запускать тесты 3 раза и считать успешным если хотя бы один прошёл"],
+    correctAnswer:2,
+    explanation:"Flaky tests разрушают доверие к CI. Подходы: root cause analysis, fix timeouts/waits, mock external dependencies, использовать retry с отчётностью, quarantine flaky suite. Автоматический retry без fix — временная мера, не решение."
+  },
+  {
+    id:17, category:"Test Design",
+    question:"Приложение имеет 5 фильтров, каждый из 3 значений (243 комбинации). Какой подход позволит сократить до ~25 тестов с разумным покрытием?",
+    options:["Equivalence Partitioning","All-Pairs (Pairwise) Testing","Decision Table Testing","State Transition Testing"],
+    correctAnswer:1,
+    explanation:"Pairwise (All-Pairs) Testing — математически оптимизированный метод, покрывающий все пары значений (не все комбинации). Большинство багов порождается взаимодействием двух факторов, что позволяет сократить 243 теста до ~25–30."
+  },
+  {
+    id:18, category:"Team Management",
+    question:"Два QA в команде конфликтуют из-за подхода к приоритизации дефектов. Как реагирует QA Lead?",
+    options:["Выбрать сторону более опытного QA","Игнорировать конфликт — команда сама разберётся","Провести встречу, выслушать обе стороны, зафиксировать общее соглашение по severity/priority matrix и ввести его как командный стандарт","Передать конфликт HR"],
+    correctAnswer:2,
+    explanation:"QA Lead создаёт ясность через стандарты. Конфликт по классификации дефектов — сигнал отсутствия общего definition. Нужен severity/priority матрикс как командное соглашение, согласованное со стейкхолдерами."
+  },
+  {
+    id:19, category:"Smoke & Sanity",
+    question:"В чём ключевое отличие Smoke Testing от Sanity Testing?",
+    options:["Smoke — ручное, Sanity — автоматическое","Smoke проверяет, стабильна ли сборка для дальнейшего тестирования; Sanity — проверяет конкретную исправленную функцию или дефект","Smoke более детальный, Sanity — быстрый","Это синонимы с разными названиями"],
+    correctAnswer:1,
+    explanation:"Smoke (Build Verification Test) — широкая, поверхностная проверка «пригоден ли билд к тестированию». Sanity — узкая, глубокая проверка конкретного fix или фичи, обычно без регрессии всего приложения."
+  },
+  {
+    id:20, category:"Production Incidents",
+    question:"В продакшне произошёл инцидент — критический баг был пропущен QA. Что должен сделать QA Lead в первую очередь?",
+    options:["Найти виновного QA и наказать","Провести blameless postmortem: выяснить root cause, почему тест не поймал баг, какие процессы нужно улучшить","Написать больше тест-кейсов на этот конкретный сценарий","Увеличить команду QA"],
+    correctAnswer:1,
+    explanation:"Blameless postmortem — стандарт SRE/DevOps культуры. Цель: не найти виновного, а устранить системную причину. Что пошло не так в процессе? Почему тест не существовал или не сработал? Как предотвратить в будущем?"
+  },
+  {
+    id:21, category:"API Testing",
+    question:"Какой HTTP статус-код должен вернуть REST API при попытке создать ресурс с невалидными данными?",
+    options:["200 OK","404 Not Found","422 Unprocessable Entity или 400 Bad Request","500 Internal Server Error"],
+    correctAnswer:2,
+    explanation:"400 Bad Request — общая ошибка клиента, 422 Unprocessable Entity — семантически некорректные данные. 500 означает ошибку сервера, что неверно при проблеме клиентских данных."
+  },
+  {
+    id:22, category:"Test Coverage",
+    question:"PM говорит: «У нас 80% test coverage — значит мы хорошо протестированы». QA Lead должен:",
+    options:["Согласиться — 80% это хорошо по индустриальным стандартам","Объяснить, что code coverage ≠ functional coverage, и важно покрытие user scenarios, edge cases и рисков, а не строк кода","Увеличить coverage до 100% любой ценой","Ничего не делать — решение за PM"],
+    correctAnswer:1,
+    explanation:"Code coverage — метрика качества тестов, не гарантия отсутствия багов. 80% строк покрыто ≠ критические сценарии протестированы. QA Lead должен говорить о functional coverage, risk coverage и business scenario coverage."
+  },
+  {
+    id:23, category:"UI Testing",
+    question:"Автоматизированный UI тест падает после каждого редизайна. Как правильно решить проблему хрупкости?",
+    options:["Использовать XPath с абсолютными путями для надёжности","Ввести Page Object Model, использовать data-testid атрибуты, изолировать локаторы от бизнес-логики","Переписывать тесты вручную после каждого редизайна","Отказаться от UI автоматизации"],
+    correctAnswer:1,
+    explanation:"Page Object Model инкапсулирует локаторы в одном месте. data-testid (или aria-label) — стабильные атрибуты специально для тестирования. Абсолютные XPath — самый хрупкий вариант."
+  },
+  {
+    id:24, category:"QA Process",
+    question:"QA-команда тратит 60% времени на ручную регрессию перед каждым релизом. Как QA Lead должен изменить ситуацию?",
+    options:["Нанять больше QA для ручного тестирования","Полностью отказаться от регрессии","Провести ROI-анализ автоматизации, определить приоритетные кандидаты, внедрить automated regression suite с CI интеграцией","Сократить частоту релизов"],
+    correctAnswer:2,
+    explanation:"60% на ручную регрессию — сигнал к автоматизации. ROI calculation: (время на ручную регрессию × частота × стоимость) vs (время на создание автотестов + maintenance). ROI обычно положительный уже через 3–5 итераций."
+  },
+  {
+    id:25, category:"Agile / Scrum",
+    question:"На retrospective выявили, что баги находятся слишком поздно — в конце спринта. Какое системное решение правильное?",
+    options:["Добавить QA больше времени в конце спринта","Внедрить Shift-Left подход: вовлечь QA с refinement, писать acceptance criteria до разработки, использовать TDD/BDD","Тестировать только в выделенных QA-спринтах","Увеличить длину спринта до 4 недель"],
+    correctAnswer:1,
+    explanation:"Shift-Left Testing — перенос QA активностей влево в SDLC. QA участвует в refinement, пишет acceptance criteria (Gherkin/BDD), разработчики имеют ясные критерии приёмки. Баги находятся до кода, а не после."
+  },
+  {
+    id:26, category:"Knowledge Sharing",
+    question:"QA Lead уходит в отпуск на 3 недели. Что должно быть подготовлено?",
+    options:["Контактный телефон на случай срочных вопросов","Актуальная документация процессов, назначенный acting lead, runbook по release process и escalation matrix","Поставить задачи в Jira и надеяться, что команда справится","Перенести все релизы на период после отпуска"],
+    correctAnswer:1,
+    explanation:"Knowledge sharing — обязанность QA Lead. Bus factor = 1 это риск. Нужны: документированные процессы, trained backup lead, release checklist, escalation paths. Это также признак зрелости команды и процесса."
+  },
+  {
+    id:27, category:"SQL & Data Validation",
+    question:"QA нужно проверить, что у всех заказов есть привязанный пользователь (нет orphan records). Какой SQL запрос подходит?",
+    options:["SELECT * FROM orders WHERE user_id IS NULL","SELECT o.* FROM orders o LEFT JOIN users u ON o.user_id = u.id WHERE u.id IS NULL","SELECT * FROM orders INNER JOIN users ON orders.user_id = users.id","SELECT COUNT(*) FROM orders"],
+    correctAnswer:1,
+    explanation:"LEFT JOIN + WHERE u.id IS NULL — классический паттерн поиска orphan records. Вариант А найдёт только orders с NULL user_id, но пропустит несуществующие ID."
+  },
+  {
+    id:28, category:"QA Metrics",
+    question:"Какая метрика лучше всего показывает качество тест-дизайна команды, а не качество продукта?",
+    options:["Defect Density (число дефектов на 1000 LOC)","Test Case Effectiveness (% дефектов, найденных тест-кейсами vs общее число дефектов)","MTTR (Mean Time To Restore)","Code Coverage %"],
+    correctAnswer:1,
+    explanation:"Test Case Effectiveness = найденные тест-кейсами дефекты / всего дефектов. Высокий % означает, что QA тест-дизайн реально ловит баги. Низкий — тест-кейсы не покрывают реальные сценарии использования."
+  },
+  {
+    id:29, category:"Automation",
+    question:"Разработчик предлагает покрыть весь функционал E2E автотестами. QA Lead должен:",
+    options:["Согласиться — E2E тесты наиболее близки к пользователю","Объяснить Test Pyramid: большинство покрытия должно быть unit+integration, E2E — только для critical paths, так как они дорогие и хрупкие","Отказаться от E2E полностью","Делегировать решение команде разработки"],
+    correctAnswer:1,
+    explanation:"Test Pyramid (Mike Cohn): много unit, меньше integration, минимум E2E. E2E тесты: медленные, хрупкие, дорогие в поддержке. Инвертированная пирамида (Ice Cream Cone) — анти-паттерн."
+  },
+  {
+    id:30, category:"Team Management",
+    question:"Senior QA в команде демотивирован рутинными задачами и думает об уходе. Как QA Lead должен удержать его?",
+    options:["Поднять зарплату — единственный рабочий инструмент","Игнорировать — если уйдёт, найдём замену","Обсудить карьерные цели, делегировать ownership над автоматизацией/архитектурой, вовлечь в менторинг junior'ов и технические решения","Перевести его на другой проект внутри компании"],
+    correctAnswer:2,
+    explanation:"Retention через growth: Senior QA нужны ownership, impact, и рост. Делегирование ownership над automation strategy, code review QA тестов, менторинг, участие в architectural decisions — это то, что удерживает senior специалистов."
+  },
+
+  // ── 31–60: Новые вопросы ──
+  {
+    id:31, category:"Test Strategy",
+    question:"Команде нужно написать Test Strategy для нового продукта. Что является ключевым отличием Test Strategy от Test Plan?",
+    options:["Test Strategy описывает конкретные тест-кейсы, Test Plan — общий подход","Test Strategy определяет методы, подходы и принципы тестирования (как тестировать); Test Plan описывает конкретные активности, сроки, ресурсы (что, когда, кто)","Test Strategy создаётся QA, Test Plan — менеджментом","Это синонимы с разными названиями"],
+    correctAnswer:1,
+    explanation:"Test Strategy — стратегический документ: подходы, методы, типы тестирования, инструменты, критерии входа/выхода. Test Plan — тактический: конкретные задачи, сроки, ответственные, ресурсы. Strategy может быть общей для всей компании, Plan — для конкретного проекта/релиза."
+  },
+  {
+    id:32, category:"QA Process Maturity",
+    question:"Согласно TMMi, на каком уровне зрелости находится команда, если QA-процессы определены, задокументированы и повторяемы, но метрики системно не собираются?",
+    options:["Уровень 1 — Initial (хаотичный)","Уровень 2 — Managed (управляемый)","Уровень 3 — Defined (определённый)","Уровень 4 — Measured (измеряемый)"],
+    correctAnswer:2,
+    explanation:"TMMi Level 3 (Defined): процессы стандартизированы, задокументированы и применяются во всей организации, но систематическое измерение и управление через метрики — это уже Level 4. Level 2 — процессы управляемы, но не стандартизированы."
+  },
+  {
+    id:33, category:"Test Planning",
+    question:"QA Lead готовит Test Plan для релиза новой платёжной фичи. Какой раздел наиболее критичен для этого типа функционала?",
+    options:["Риски и митигация: определение что может пойти не так, план на случай сбоев","Список тест-кейсов","Расписание встреч команды","История предыдущих тест-планов"],
+    correctAnswer:0,
+    explanation:"Для платёжного функционала риски критически важны: потеря денег, двойные списания, отказы транзакций. Test Plan должен содержать risk register с mitigation strategies, fallback plans и чёткими stop criteria. Это не менее важно, чем список тест-кейсов."
+  },
+  {
+    id:34, category:"Release Management",
+    question:"Что такое Feature Flag (Feature Toggle) и как он помогает QA при релизах?",
+    options:["Переключатель для включения debug-режима","Механизм включения/отключения функционала без деплоя, позволяющий тестировать фичу в проде без её активации для всех пользователей","Флаг в баг-трекере для маркировки критических дефектов","Настройка CI/CD для ускорения сборки"],
+    correctAnswer:1,
+    explanation:"Feature Flags позволяют деплоить код без включения функционала. QA может тестировать фичу в продакшн-среде на ограниченной аудитории (canary), откатить без деплоя при проблемах, и разделить deployment от release."
+  },
+  {
+    id:35, category:"Risk-Based Testing",
+    question:"Как правильно приоритизировать тест-кейсы при risk-based подходе?",
+    options:["По сложности написания — начинать с простых тест-кейсов","По алфавиту категорий","По вероятности отказа × бизнес-impact: высокий risk = высший приоритет выполнения","Сначала тестировать новый функционал, потом старый"],
+    correctAnswer:2,
+    explanation:"Risk-based prioritization = Likelihood of failure × Business impact. Тесты с высоким risk-score выполняются первыми. Это гарантирует, что при нехватке времени критические сценарии уже покрыты, а не только «удобные» для написания."
+  },
+  {
+    id:36, category:"Regression Optimization",
+    question:"Команда хочет сократить время регрессионного тестирования с 8 часов до 2 часов. Какой подход наиболее эффективен?",
+    options:["Удалить половину тест-кейсов случайно","Внедрить test impact analysis: запускать только тесты, связанные с изменёнными компонентами кода","Запускать тесты параллельно без анализа покрытия","Проводить регрессию только раз в месяц"],
+    correctAnswer:1,
+    explanation:"Test Impact Analysis (TIA) анализирует, какие тесты покрывают изменённый код, и запускает только их. Инструменты: Pytest-cov, Jest --changedSince, Gradle Test Retry. Сокращение 80% суит при 95% релевантности — реальный результат."
+  },
+  {
+    id:37, category:"Automation Strategy",
+    question:"Команда хочет внедрить автоматизацию. Какой первый шаг правильный согласно automation strategy?",
+    options:["Определить ROI: какие тесты повторяются чаще всего, какова стоимость ручного выполнения vs создания и поддержки автотестов","Купить дорогой инструмент автоматизации","Сразу покрыть всё автотестами","Нанять automation engineer и дать ему полную свободу"],
+    correctAnswer:0,
+    explanation:"Automation strategy начинается с ROI analysis. Цель: определить highest-value candidates — тесты, которые часто запускаются, стабильны в поведении, имеют предсказуемый expected result и дорого обходятся при ручном выполнении."
+  },
+  {
+    id:38, category:"Flaky Tests",
+    question:"Как отличить flaky test от реального бага в коде приложения?",
+    options:["Запустить тест несколько раз: flaky тест показывает непостоянные результаты (pass/fail) при одинаковых условиях; реальный баг воспроизводится стабильно","Flaky тест всегда падает — реальный баг только иногда","Flaky тест всегда связан с UI, реальный баг — с backend","Flaky тест виден только в CI, реальный баг — везде"],
+    correctAnswer:0,
+    explanation:"Признак flaky test — non-determinism: тест иногда проходит, иногда падает при одинаковых условиях. Причины: race conditions, timing issues, внешние зависимости (БД, сеть), shared state. Реальный баг воспроизводится стабильно при тех же условиях."
+  },
+  {
+    id:39, category:"Test Data Management",
+    question:"QA-команда работает с prod-like данными для тестирования. Какой главный риск и как его митигировать?",
+    options:["Данные слишком большие и тесты медленно работают — использовать минимальный датасет","Prod данные всегда устаревшие — обновлять их ежедневно","Разработчики не должны видеть prod данные — ограничить доступ только QA","Реальные персональные данные (PII) нарушают GDPR/PDPA — применять data masking/anonymization перед использованием в тест-среде"],
+    correctAnswer:3,
+    explanation:"Использование реальных PII в тест-среде — compliance-нарушение (GDPR, PCI DSS). Решения: data masking (замена реальных данных на синтетические), anonymization, synthetic data generation. Тест-среда никогда не должна содержать реальные имена, email, номера карт."
+  },
+  {
+    id:40, category:"API Testing",
+    question:"Что такое Idempotency в REST API и как это важно для QA?",
+    options:["API всегда возвращает одинаковый ответ, независимо от входных данных","Повторный вызов с теми же параметрами даёт тот же результат без побочных эффектов — GET/PUT/DELETE идемпотентны, POST обычно нет","API не имеет состояния между запросами","Скорость ответа API не зависит от нагрузки"],
+    correctAnswer:1,
+    explanation:"Idempotency: повторный вызов не создаёт дополнительных побочных эффектов. QA должен тестировать: повторный DELETE возвращает 404, повторный PUT — 200 с теми же данными, повторный POST без idempotency-key создаёт дубль. Критично для платёжных систем."
+  },
+  {
+    id:41, category:"Contract Testing",
+    question:"Что такое Consumer-Driven Contract Testing и какую проблему он решает?",
+    options:["Тестирование, при котором заказчик (бизнес) пишет тест-кейсы","Тест на соответствие API документации Swagger","Подход, при котором consumer сервис определяет контракт (формат запросов/ответов), а provider верифицирует соответствие — решает проблему интеграционных breakages без E2E тестов","Нагрузочное тестирование API между сервисами"],
+    correctAnswer:2,
+    explanation:"Consumer-Driven Contract Testing (Pact) решает проблему сломанных интеграций в микросервисах без тяжёлых E2E тестов. Consumer публикует контракт, Provider запускает верификацию при каждом деплое. Ошибки интеграции обнаруживаются рано и дёшево."
+  },
+  {
+    id:42, category:"Performance Testing",
+    question:"В чём разница между Load Testing и Stress Testing?",
+    options:["Load Testing — ручное, Stress Testing — автоматическое","Это одинаковые типы тестирования с разными названиями","Load Testing проверяет поведение системы при ожидаемой нагрузке; Stress Testing — при нагрузке выше максимальной, чтобы найти точку отказа","Load Testing для API, Stress Testing для UI"],
+    correctAnswer:2,
+    explanation:"Load Testing: поведение при ожидаемой (нормальной/пиковой) нагрузке. Stress Testing: нагрузка сверх максимума до отказа — где именно ломается система? Есть также Spike Testing (внезапный всплеск), Soak Testing (длительная нагрузка), Volume Testing."
+  },
+  {
+    id:43, category:"Security Testing",
+    question:"Какая уязвимость OWASP Top 10 наиболее часто встречается и как QA может её проверить?",
+    options:["Buffer Overflow — проверить через ввод очень длинных строк","SQL Injection — попытаться ввести SQL-код в поля ввода, проверить параметризованные запросы и валидацию input","CSRF — проверить размер файлов cookie","XXE — протестировать скорость загрузки XML"],
+    correctAnswer:1,
+    explanation:"SQL Injection — одна из наиболее распространённых уязвимостей. QA: ввести ' OR '1'='1 в поля, передать payload через параметры URL. Проверить что backend использует parameterized queries, не string concatenation. Также проверить отсутствие детального error output."
+  },
+  {
+    id:44, category:"Accessibility Testing",
+    question:"Компания разрабатывает государственный портал. Какой уровень WCAG соответствия является минимально обязательным?",
+    options:["WCAG 1.0 Level A","WCAG 2.1 Level AAA — максимальный уровень","Accessibility стандарты применяются только для приложений для людей с инвалидностью","WCAG 2.1 Level AA — международный стандарт для большинства государственных и корпоративных сайтов"],
+    correctAnswer:3,
+    explanation:"WCAG 2.1 Level AA — минимальный стандарт для государственных порталов в большинстве юрисдикций. Включает: alt-тексты, keyboard navigation, достаточный contrast ratio, ARIA-атрибуты. QA должен проверять с screen readers (NVDA, VoiceOver) и автоматизированными инструментами (axe, Lighthouse)."
+  },
+  {
+    id:45, category:"Mobile Testing",
+    question:"Какой аспект является уникальным для мобильного тестирования и не присутствует в web-тестировании?",
+    options:["Функциональное тестирование","Прерывания: входящий звонок, push-уведомление, низкий заряд батареи, смена сети (3G→4G→WiFi) во время работы приложения","Тестирование форм","Проверка цветовой схемы"],
+    correctAnswer:1,
+    explanation:"Interruption testing — уникальный аспект мобильного тестирования: как приложение ведёт себя при входящем звонке, SMS, push-уведомлении, смене сети, низком заряде, блокировке экрана. Также: gestures (swipe, pinch), разные OS версии/производители, разрешения экранов."
+  },
+  {
+    id:46, category:"CI/CD Quality Gates",
+    question:"Что такое Quality Gate в контексте CI/CD pipeline и почему он важен?",
+    options:["Автоматизированный набор критериев (coverage threshold, test pass rate, code quality metrics), блокирующий деплой если они не выполнены","Ручная проверка QA перед каждым деплоем","Встреча команды перед релизом","Система управления задачами для QA"],
+    correctAnswer:0,
+    explanation:"Quality Gate — автоматический барьер в pipeline. Примеры критериев SonarQube: code coverage ≥ 80%, нет Critical bugs, test pass rate 100%, security vulnerabilities = 0. Pipeline падает и деплой блокируется если gate не пройден. Это shift-left quality enforcement."
+  },
+  {
+    id:47, category:"Defect Triage",
+    question:"Команда накопила 150 открытых дефектов. QA Lead организует triage-сессию. Что является главной целью?",
+    options:["Закрыть как можно больше дефектов за один раз","Коллективно переоценить приоритеты, severity, назначить ответственных и решить что войдёт в ближайший спринт на основе risk и impact","Назначить все дефекты разработчикам без обсуждения","Удалить устаревшие дефекты"],
+    correctAnswer:1,
+    explanation:"Defect Triage — это командный процесс приоритизации, не одиночное решение QA. Цель: обеспечить shared understanding приоритетов между QA, Dev и PO, выровнять ожидания и направить ресурсы на максимально важные дефекты для текущего спринта или релиза."
+  },
+  {
+    id:48, category:"Root Cause Analysis",
+    question:"QA Lead проводит Root Cause Analysis (5 Whys) после production bug. Что предполагает метод?",
+    options:["Задать вопрос 'почему' пять раз подряд разным членам команды","Провести пять встреч по 1 часу для анализа инцидента","Написать 5 версий отчёта и выбрать лучшую","Последовательно спрашивать 'почему это произошло?' к каждому ответу, пока не будет найдена системная причина, а не симптом"],
+    correctAnswer:3,
+    explanation:"5 Whys: каждый ответ становится следующим 'почему'. Пример: Баг в проде → почему? Не было теста → почему? Не было в acceptance criteria → почему? QA не участвовал в refinement → почему? Нет процесса. Root cause: отсутствие Shift-Left. Решение системное, не точечное."
+  },
+  {
+    id:49, category:"Incident Postmortem",
+    question:"Что означает 'blameless postmortem' и почему это важно для QA культуры?",
+    options:["Постмортем без участия виновных сотрудников","Анализ инцидента без обвинений конкретных людей, фокус на системных причинах и улучшении процессов — создаёт психологическую безопасность для открытого обсуждения ошибок","Постмортем проводится только если нет виновных","Документ без подписей участников для анонимности"],
+    correctAnswer:1,
+    explanation:"Blameless postmortem (Google SRE practice): люди не совершают ошибок из-за некомпетентности — системы создают условия для ошибок. Когда нет наказания, команда честно обсуждает что пошло не так, и fixes становятся системными. Blame culture → сокрытие проблем."
+  },
+  {
+    id:50, category:"Production Quality Metrics",
+    question:"Что из перечисленного является DORA-метрикой для оценки качества DevOps/QA процессов?",
+    options:["Число тест-кейсов в test suite","Количество автотестов в CI","Change Failure Rate (процент деплоев, приведших к инциденту) — одна из 4 ключевых DORA-метрик","Среднее время ответа API"],
+    correctAnswer:2,
+    explanation:"4 DORA метрики: 1) Deployment Frequency, 2) Lead Time for Changes, 3) Change Failure Rate (CFR), 4) Time to Restore (MTTR). CFR — прямой индикатор качества QA-процесса. High performers: CFR < 15%. Low performers: > 45%. QA влияет напрямую на CFR."
+  },
+  {
+    id:51, category:"Team Workload Planning",
+    question:"QA Lead планирует спринт. Команда: 3 QA, каждый 8 часов в день, 10 рабочих дней. Какова реальная доступная capacity?",
+    options:["240 часов (3 × 8 × 10)","Около 180–200 часов: нужно учесть meetings, reviews, onboarding, непредвиденные задачи — обычно 75–85% от теоретического максимума","120 часов — берём 50% на непредвиденное","Capacity не нужно считать — тестируем сколько успеем"],
+    correctAnswer:1,
+    explanation:"Теоретическая capacity: 240 ч. Реальная: 75–85% из-за ceremonies (stand-up, planning, retro), bug triage, code reviews, documentation, slack time. Для sprint planning использовать 180–200 ч — это industry best practice. Пообещать 240 ч означает срывать обязательства."
+  },
+  {
+    id:52, category:"Mentoring QA Engineers",
+    question:"Junior QA всё время просит помощи и не пытается решить проблему самостоятельно. Как QA Lead должен изменить подход?",
+    options:["Перестать отвечать на вопросы — пусть сам разбирается","Написать документ с ответами на все возможные вопросы","Применить метод 'вопрос на вопрос': вместо готового ответа спрашивать 'а что ты уже попробовал? Какие варианты видишь?' — развивает самостоятельность","Перевести junior в другую команду"],
+    correctAnswer:2,
+    explanation:"Socratic method в менторинге: направлять вопросами, а не давать ответы. 'Что ты уже попробовал? Какой documentation читал? Что говорит логика ошибки?' — развивает critical thinking. Если всегда давать ответы — создаёшь зависимость, а не профессионала."
+  },
+  {
+    id:53, category:"Hiring QA Engineers",
+    question:"На собеседовании кандидат на Middle QA Engineer не может объяснить разницу между Smoke и Regression testing. Как это оценивает QA Lead?",
+    options:["Это нормально для Middle — можно обучить","Это базовое знание для Middle, сигнал о завышенном уровне или пробелах в опыте — нужно глубже проверить другие базовые области","Немедленно отказать без дополнительных вопросов","Предложить позицию Junior вместо Middle"],
+    correctAnswer:1,
+    explanation:"Middle QA Engineer должен уверенно знать базовые типы тестирования. Незнание этого — сигнал к дополнительным проверкам: понимание test lifecycle, bug reporting, test design techniques. На основе одного вопроса не отказывают, но это влияет на оценку уровня кандидата."
+  },
+  {
+    id:54, category:"Conflict Resolution",
+    question:"QA и разработчик не могут договориться о severity дефекта. QA считает Major, разработчик — Minor. Как решить конфликт?",
+    options:["Обратиться к описанию severity в командном соглашении (definition), если соглашения нет — привлечь PO для оценки бизнес-impact","QA всегда прав в вопросах severity","Разработчик прав — он знает код лучше","Поставить Medium компромиссно"],
+    correctAnswer:0,
+    explanation:"Severity — не субъективное мнение, а оценка по заранее определённым критериям (impact на пользователя, частота воспроизведения, workaround). Если нет definition — это системная проблема. Компромисс ('поставим Medium') без логики — неверный подход."
+  },
+  {
+    id:55, category:"Communication with Developers",
+    question:"Как QA Lead должен представить разработчику дефект, чтобы минимизировать защитную реакцию и ускорить исправление?",
+    options:["Написать в общем канале чтобы создать давление","Указать что разработчик допустил ошибку","Отправить баг без объяснений и ждать реакции","Представить как 'я нашёл поведение, которое отличается от ожидаемого' + факты + шаги воспроизведения + expected vs actual, без оценочных суждений о коде"],
+    correctAnswer:3,
+    explanation:"Нейтральный, фактологический язык снижает защитную реакцию. 'Я нашёл' вместо 'ты сломал'. Expected vs Actual без оценок. Полные шаги воспроизведения. Разработчик воспринимает это как информацию для исправления, а не атаку — скорость фикса выше."
+  },
+  {
+    id:56, category:"Communication with Product Owners",
+    question:"PO не понимает, почему технический долг влияет на качество. Как QA Lead объяснит это?",
+    options:["Использовать технические термины — PO должен разбираться","Перевести в бизнес-язык: 'технический долг — это как кредит: получили функционал быстро, но платим процентами в виде медленной разработки, большего числа багов и дороже исправлений'","Написать длинный технический документ","Передать объяснение разработчику"],
+    correctAnswer:1,
+    explanation:"QA Lead должен уметь переводить технические концепции в бизнес-язык. Аналогия с кредитом понятна нетехническому PO. Добавить конкретику: 'из-за tech debt этот sprint занял X часов вместо Y' — это убедительнее любой технической аргументации."
+  },
+  {
+    id:57, category:"Stakeholder Reporting",
+    question:"QA Lead готовит еженедельный отчёт для менеджмента. Какие метрики наиболее ценны для нетехнической аудитории?",
+    options:["Release readiness %, критические открытые дефекты, test pass rate, defect leakage за период — всё в контексте бизнес-риска","Число тест-кейсов в Jira","Детальный список всех найденных дефектов с ID","Техническое покрытие кода в процентах"],
+    correctAnswer:0,
+    explanation:"Менеджмент думает бизнес-категориями: готов ли продукт к релизу? Какие риски? Что может сломаться у клиентов? Release Readiness % — прямой ответ. Critical bugs count — понятный риск-индикатор. Code coverage % для менеджмента — абстракция без смысла."
+  },
+  {
+    id:58, category:"Documentation Standards",
+    question:"Что должен включать раздел 'Scope of Testing' в Test Strategy документе?",
+    options:["Список всех тест-кейсов","Расписание тестирования по дням","Чёткое определение что тестируется (in scope) и что намеренно не тестируется (out of scope) с обоснованием — предотвращает недопонимание ожиданий","Имена всех участников тестирования"],
+    correctAnswer:2,
+    explanation:"Scope определяет границы ответственности QA. Out of Scope критически важен: если QA не тестирует 3rd party интеграции, legacy модули или performance — это должно быть явно зафиксировано с обоснованием. Это защищает команду от implicit expectations и scope creep."
+  },
+  {
+    id:59, category:"Knowledge Sharing",
+    question:"QA Lead уходит, и в команде никто не знает все процессы. Как правильно организовать knowledge transfer?",
+    options:["Написать один большой документ за последнюю неделю","Системно документировать процессы в ходе работы (runbooks, wikis), проводить регулярные tech talks, практиковать pair testing — bus factor должен быть >1 всегда","Обучить только одного backup-сотрудника","Нанять нового QA Lead с готовыми знаниями"],
+    correctAnswer:1,
+    explanation:"Bus factor = 1 (только один человек знает процесс) — критический риск. Knowledge sharing должен быть continuous: runbooks, wikis, regular knowledge sessions, pair testing. Написать документ за последнюю неделю — слишком поздно и неполно."
+  },
+  {
+    id:60, category:"Continuous Improvement",
+    question:"QA Lead хочет внедрить культуру continuous improvement в команде. Какой практический подход наиболее эффективен?",
+    options:["Проводить ежеквартальные аудиты процессов","Читать команде лекции о качестве ежемесячно","Внедрить регулярные retrospectives с action items, метрики для отслеживания прогресса, эксперименты с small improvements (Kaizen) и фиксацию результатов изменений","Копировать процессы успешных компаний без адаптации"],
+    correctAnswer:2,
+    explanation:"Kaizen (маленькие постоянные улучшения) + retrospectives с measurable action items — основа CI культуры. Ключевое: изменения должны быть измеримы (было X, стало Y), иначе непонятно работает ли улучшение. Лекции без практики и метрик — не улучшение, а иллюзия."
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════
+let state = {
+  deck: [],            // {q, shuffledOptions, correctIdx}
+  currentIdx: 0,
+  answers: [],         // {questionId, category, question, chosen, correct, explanation, isCorrect, isTimeout, timeLeft, timeSpent}
+  timerInterval: null,
+  totalTimerInterval: null,
+  timeLeft: 30,        // per-question seconds remaining
+  totalTimeLeft: 900,  // total test seconds remaining
+  answered: false,
+  startTime: null,
+  candidateName: '',
+  normalizedName: '',
+  isActive: false,     // true while quiz is running
+  finishReason: 'normal', // 'normal' | 'total_timeout'
+  settings: { numQuestions: 30, timePerQuestion: 30, totalTimeMinutes: 15 },
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function formatTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function normalizeName(name) {
+  return name.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function totalElapsed() {
+  return Math.floor((Date.now() - state.startTime) / 1000);
+}
+
+function todayStr() {
+  return new Date().toLocaleString('ru-RU', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// CANDIDATE STORAGE
+// ═══════════════════════════════════════════════════════════════════════
+function getCandidates() {
+  try {
+    return JSON.parse(localStorage.getItem(SK_CANDIDATES) || '{}');
+  } catch { return {}; }
+}
+
+function saveCandidates(data) {
+  localStorage.setItem(SK_CANDIDATES, JSON.stringify(data));
+}
+
+function getCandidateByName(normalizedName) {
+  return getCandidates()[normalizedName] || null;
+}
+
+// ── Check candidate name on input change ──
+function onNameInput() {
+  const raw = document.getElementById('candidateName').value;
+  const norm = normalizeName(raw);
+  const btnStart = document.getElementById('btnStart');
+  const msgBlocked = document.getElementById('msgBlocked');
+  const msgInterrupted = document.getElementById('msgInterrupted');
+
+  msgBlocked.classList.remove('visible');
+  msgInterrupted.classList.remove('visible');
+  document.getElementById('candidateName').classList.remove('error-border');
+  btnStart.disabled = false;
+
+  if (!norm) {
+    btnStart.disabled = true;
+    return;
+  }
+
+  const candidate = getCandidateByName(norm);
+  if (!candidate) return; // Not found — OK to proceed
+
+  if (candidate.status === 'completed') {
+    const date = candidate.completedAt ? new Date(candidate.completedAt).toLocaleString('ru-RU') : '—';
+    document.getElementById('msgBlockedText').textContent =
+      `Кандидат с таким именем уже проходил тест (${date}, результат: ${candidate.percentage}%, ${candidate.level}).`;
+    msgBlocked.classList.add('visible');
+    btnStart.disabled = true;
+    document.getElementById('candidateName').classList.add('error-border');
+  } else if (candidate.status === 'interrupted' || candidate.status === 'in_progress') {
+    msgInterrupted.classList.add('visible');
+    btnStart.disabled = true;
+    document.getElementById('candidateName').classList.add('error-border');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════════════════════
+function readSettings() {
+  let nq = parseInt(document.getElementById('settingNumQ').value) || 30;
+  let tq = parseInt(document.getElementById('settingTimeQ').value) || 30;
+  let tt = parseInt(document.getElementById('settingTimeTotal').value) || 15;
+
+  nq = Math.min(60, Math.max(5, nq));
+  tq = Math.min(180, Math.max(10, tq));
+  tt = Math.min(120, Math.max(1, tt));
+
+  document.getElementById('settingNumQ').value = nq;
+  document.getElementById('settingTimeQ').value = tq;
+  document.getElementById('settingTimeTotal').value = tt;
+
+  return { numQuestions: nq, timePerQuestion: tq, totalTimeMinutes: tt };
+}
+
+function autoCalcTotal() {
+  const nq = parseInt(document.getElementById('settingNumQ').value) || 30;
+  const tq = parseInt(document.getElementById('settingTimeQ').value) || 30;
+  const calc = Math.min(120, Math.max(1, Math.ceil((nq * tq) / 60)));
+  document.getElementById('settingTimeTotal').value = calc;
+  document.getElementById('autoCalcNote').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// BUILD DECK
+// ═══════════════════════════════════════════════════════════════════════
+function buildDeck(numQuestions) {
+  const shuffledQs = shuffle(QUESTIONS).slice(0, numQuestions);
+  return shuffledQs.map(q => {
+    const localOpts = getLocalQ(q,'options');
+    const indexedOptions = localOpts.map((opt, i) => ({ opt, isCorrect: i === q.correctAnswer }));
+    const shuffled = shuffle(indexedOptions);
+    return {
+      q,
+      shuffledOptions: shuffled.map(o => o.opt),
+      correctIdx: shuffled.findIndex(o => o.isCorrect),
+    };
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════
+function showScreen(id) {
+  ['screenStart', 'screenQuiz', 'screenResult'].forEach(s => {
+    document.getElementById(s).style.display = 'none';
+  });
+  document.getElementById(id).style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// START QUIZ
+// ═══════════════════════════════════════════════════════════════════════
+function startQuiz() {
+  const rawName = document.getElementById('candidateName').value;
+  const norm    = normalizeName(rawName);
+
+  if (!norm) { alert('Введите имя кандидата'); return; }
+
+  // Final check before starting
+  const candidate = getCandidateByName(norm);
+  if (candidate && (candidate.status === 'completed' || candidate.status === 'interrupted' || candidate.status === 'in_progress')) {
+    onNameInput(); // Trigger UI update
+    return;
+  }
+
+  const settings = readSettings();
+  state.settings = settings;
+  state.candidateName = rawName.trim();
+  state.normalizedName = norm;
+  state.deck = buildDeck(settings.numQuestions);
+  state.currentIdx = 0;
+  state.answers = [];
+  state.startTime = Date.now();
+  state.totalTimeLeft = settings.totalTimeMinutes * 60;
+  state.finishReason = 'normal';
+  state.isActive = true;
+
+  // Save in_progress status to localStorage
+  const candidates = getCandidates();
+  candidates[norm] = {
+    status: 'in_progress',
+    originalName: rawName.trim(),
+    startedAt: new Date().toISOString(),
+  };
+  saveCandidates(candidates);
+
+  // Block page reload/navigation during test
+  window.addEventListener('beforeunload', onBeforeUnload);
+
+  showScreen('screenQuiz');
+  renderQuestion();
+  startTotalTimer();
+}
+
+// ── Beforeunload handler — mark as interrupted ──
+function onBeforeUnload(e) {
+  if (state.isActive) {
+    const candidates = getCandidates();
+    if (candidates[state.normalizedName]) {
+      candidates[state.normalizedName].status = 'interrupted';
+      candidates[state.normalizedName].interruptedAt = new Date().toISOString();
+      saveCandidates(candidates);
+    }
+    e.preventDefault();
+    e.returnValue = 'Тест не завершён. Если вы уйдёте, тест будет заблокирован для данного имени.';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// TOTAL TIMER
+// ═══════════════════════════════════════════════════════════════════════
+function startTotalTimer() {
+  clearInterval(state.totalTimerInterval);
+  updateTotalTimerUI();
+
+  state.totalTimerInterval = setInterval(() => {
+    state.totalTimeLeft--;
+    updateTotalTimerUI();
+
+    if (state.totalTimeLeft <= 0) {
+      clearInterval(state.totalTimerInterval);
+      handleTotalTimeout();
+    }
+  }, 1000);
+}
+
+function updateTotalTimerUI() {
+  const el = document.getElementById('totalTimerVal');
+  el.textContent = formatTime(state.totalTimeLeft);
+
+  const totalSecs = state.settings.totalTimeMinutes * 60;
+  const ratio = state.totalTimeLeft / totalSecs;
+  el.classList.remove('warn', 'danger');
+  if (ratio <= 0.1) el.classList.add('danger');
+  else if (ratio <= 0.25) el.classList.add('warn');
+}
+
+function handleTotalTimeout() {
+  if (!state.isActive) return;
+  state.finishReason = 'total_timeout';
+
+  // If current question not yet answered, record as timeout
+  if (!state.answered) {
+    state.answered = true;
+    clearInterval(state.timerInterval);
+    const item = state.deck[state.currentIdx];
+    const { q, shuffledOptions, correctIdx } = item;
+    state.answers.push({
+      questionId: q.id, category: q.category, question: q.question,
+      chosen: null, correct: shuffledOptions[correctIdx],
+      explanation: q.explanation, isCorrect: false, isTimeout: true,
+      timeLeft: 0, timeSpent: state.settings.timePerQuestion,
+    });
+    // Highlight correct answer briefly
+    const btns = document.querySelectorAll('.opt-btn');
+    btns.forEach((btn, idx) => { btn.disabled = true; if (idx === correctIdx) btn.classList.add('correct'); });
+    document.getElementById('totalTimeoutBox').style.display = 'block';
+  }
+
+  setTimeout(finishQuiz, 1500);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// PER-QUESTION TIMER
+// ═══════════════════════════════════════════════════════════════════════
+const CIRCUMFERENCE = 2 * Math.PI * 18;
+
+function startPerQuestionTimer() {
+  clearInterval(state.timerInterval);
+  state.timeLeft = state.settings.timePerQuestion;
+  updatePerQuestionTimerUI();
+
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updatePerQuestionTimerUI();
+
+    if (state.timeLeft <= 0) {
+      clearInterval(state.timerInterval);
+      handlePerQuestionTimeout();
+    }
+  }, 1000);
+}
+
+function updatePerQuestionTimerUI() {
+  const t   = state.timeLeft;
+  const max = state.settings.timePerQuestion;
+  const pct = t / max;
+  const offset = CIRCUMFERENCE * (1 - pct);
+
+  const circle = document.getElementById('timerCircle');
+  const numEl  = document.getElementById('timerNum');
+
+  circle.style.strokeDashoffset = offset;
+  numEl.textContent = t;
+
+  const warn15 = max * 0.5;  // 50% time left → yellow
+  const warn5  = max * 0.17; // 17% time left → red
+  circle.classList.remove('red-timer', 'yellow-timer');
+  if (t <= warn5) {
+    circle.style.stroke = 'var(--red)';
+    numEl.style.color   = 'var(--red)';
+  } else if (t <= warn15) {
+    circle.style.stroke = 'var(--yellow)';
+    numEl.style.color   = 'var(--yellow)';
+  } else {
+    circle.style.stroke = 'var(--green)';
+    numEl.style.color   = 'var(--text)';
+  }
+}
+
+function handlePerQuestionTimeout() {
+  if (state.answered) return;
+  state.answered = true;
+
+  const item = state.deck[state.currentIdx];
+  const { q, shuffledOptions, correctIdx } = item;
+
+  state.answers.push({
+    questionId: q.id, category: q.category, question: q.question,
+    chosen: null, correct: shuffledOptions[correctIdx],
+    explanation: q.explanation, isCorrect: false, isTimeout: true,
+    timeLeft: 0, timeSpent: state.settings.timePerQuestion,
+  });
+
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach((btn, idx) => { btn.disabled = true; if (idx === correctIdx) btn.classList.add('correct'); });
+
+  document.getElementById('timeoutBox').classList.add('visible');
+  setTimeout(advanceQuestion, 2000);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// RENDER QUESTION
+// ═══════════════════════════════════════════════════════════════════════
+function renderQuestion() {
+  if (state.currentIdx >= state.deck.length) { finishQuiz(); return; }
+
+  const item = state.deck[state.currentIdx];
+  const { q, shuffledOptions, correctIdx } = item;
+
+  state.answered = false;
+
+  document.getElementById('qIndex').textContent    = state.currentIdx + 1;
+  document.getElementById('qTotal').textContent    = state.deck.length;
+  document.getElementById('qCategory').textContent = q.category;
+  document.getElementById('progressFill').style.width = (state.currentIdx / state.deck.length * 100) + '%';
+  document.getElementById('questionText').textContent = getLocalQ(q,'question');
+
+  // Reset explanation/timeout boxes
+  document.getElementById('explanationBox').classList.remove('visible');
+  document.getElementById('timeoutBox').classList.remove('visible');
+  document.getElementById('totalTimeoutBox').style.display = 'none';
+
+  // Render options
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  shuffledOptions.forEach((optText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[idx]}</span><span>${optText}</span>`;
+    btn.addEventListener('click', () => handleAnswer(idx));
+    grid.appendChild(btn);
+  });
+
+  startPerQuestionTimer();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// HANDLE ANSWER
+// ═══════════════════════════════════════════════════════════════════════
+function handleAnswer(chosenIdx) {
+  if (state.answered) return;
+  state.answered = true;
+  clearInterval(state.timerInterval);
+
+  const item = state.deck[state.currentIdx];
+  const { q, shuffledOptions, correctIdx } = item;
+  const isCorrect  = chosenIdx === correctIdx;
+  const timeSpent  = state.settings.timePerQuestion - state.timeLeft;
+
+  state.answers.push({
+    questionId: q.id, category: q.category, question: q.question,
+    chosen: shuffledOptions[chosenIdx],
+    correct: shuffledOptions[correctIdx],
+    explanation: q.explanation,
+    isCorrect, isTimeout: false,
+    timeLeft: state.timeLeft, timeSpent,
+  });
+
+  // Highlight buttons
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === correctIdx) btn.classList.add('correct');
+    if (idx === chosenIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Show explanation
+  document.getElementById('explanationText').textContent = getLocalQ(q,'explanation');
+  document.getElementById('explanationBox').classList.add('visible');
+
+  setTimeout(advanceQuestion, 2200);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ADVANCE
+// ═══════════════════════════════════════════════════════════════════════
+function advanceQuestion() {
+  if (state.finishReason === 'total_timeout') { finishQuiz(); return; }
+  state.currentIdx++;
+  if (state.currentIdx >= state.deck.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// FINISH QUIZ
+// ═══════════════════════════════════════════════════════════════════════
+function finishQuiz() {
+  clearInterval(state.timerInterval);
+  clearInterval(state.totalTimerInterval);
+  window.removeEventListener('beforeunload', onBeforeUnload);
+  state.isActive = false;
+
+  const elapsed   = totalElapsed();
+  const total     = state.answers.length;
+  const correct   = state.answers.filter(a => a.isCorrect).length;
+  const timeouts  = state.answers.filter(a => a.isTimeout).length;
+  const wrong     = total - correct;
+  const pct       = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+  let levelText, levelClass;
+  const _lv = UI[LANG].levels;
+  if (pct <= 50)      { levelText = _lv.low;  levelClass = 'level-low';  }
+  else if (pct <= 70) { levelText = _lv.base; levelClass = 'level-base'; }
+  else if (pct <= 85) { levelText = _lv.good; levelClass = 'level-good'; }
+  else                { levelText = _lv.lead; levelClass = 'level-lead'; }
+
+  const completedAt = new Date().toISOString();
+
+  // Save completed result to candidates storage
+  const candidates = getCandidates();
+  const resultPayload = {
+    status: 'completed',
+    originalName:    state.candidateName,
+    completedAt,
+    score: correct,
+    percentage: pct,
+    correctCount: correct,
+    wrongCount: wrong,
+    timeoutCount: timeouts,
+    questionCount: total,
+    perQuestionTime: state.settings.timePerQuestion,
+    totalTimeLimit: state.settings.totalTimeMinutes,
+    totalTimeSpent: elapsed,
+    level: levelText,
+    finishReason: state.finishReason,
+    answers: state.answers,
+    settings: state.settings,
+  };
+  candidates[state.normalizedName] = resultPayload;
+  saveCandidates(candidates);
+
+  // Also save to legacy viewed key
+  localStorage.setItem(SK_VIEWED, JSON.stringify(resultPayload));
+  checkViewedResult();
+
+  // ── Render result screen ──
+  document.getElementById('rScore').innerHTML  = `${pct}<sup>%</sup>`;
+  const lvEl = document.getElementById('rLevel');
+  lvEl.textContent = levelText;
+  lvEl.className   = `result-level ${levelClass}`;
+
+  const nameEl = document.getElementById('rName');
+  nameEl.innerHTML = `${UI[LANG].candidateLbl} <strong>${state.candidateName}</strong>`;
+
+  document.getElementById('rDate').textContent       = new Date(completedAt).toLocaleString('ru-RU');
+  document.getElementById('rNumQ').textContent       = total;
+  document.getElementById('rTimeQ').textContent      = state.settings.timePerQuestion + UI[LANG].secSfx;
+  document.getElementById('rTotalLimit').textContent = state.settings.totalTimeMinutes + UI[LANG].minSfx;
+  document.getElementById('rTimeSpent').textContent  = formatTime(elapsed);
+  document.getElementById('rFinishReason').textContent = state.finishReason === 'total_timeout' ? UI[LANG].finTimeout : UI[LANG].finNormal;
+
+  document.getElementById('rCorrect').textContent = correct;
+  document.getElementById('rWrong').textContent   = wrong;
+  document.getElementById('rTimeout').textContent = timeouts;
+  document.getElementById('rPercent').textContent = pct + '%';
+
+  // Review list
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+  state.answers.forEach((a, i) => {
+    let statusClass, statusText;
+    const _ru = UI[LANG];
+    if (a.isCorrect)      { statusClass = 'rs-correct'; statusText = _ru.correct; }
+    else if (a.isTimeout) { statusClass = 'rs-timeout'; statusText = _ru.timeout; }
+    else                  { statusClass = 'rs-wrong';   statusText = _ru.wrong;   }
+
+    const riClass = a.isCorrect ? 'ri-correct' : a.isTimeout ? 'ri-timeout' : 'ri-wrong';
+    const item = document.createElement('div');
+    item.className = `review-item ${riClass}`;
+    item.innerHTML = `
+      <div class="ri-header">
+        <div class="ri-q">${i + 1}. ${a.question}</div>
+        <span class="ri-status ${statusClass}">${statusText}</span>
+      </div>
+      <div class="ri-answers">
+        <span><span class="lbl">${_ru.answerLbl}</span> ${a.chosen || _ru.timedOut}</span>
+        <span><span class="lbl">${_ru.rightLbl}</span> ${a.correct}</span>
+        <span><span class="lbl">${_ru.catLbl}</span> ${a.category} &nbsp;|&nbsp; ${_ru.spentLbl} ${a.timeSpent || 0}${_ru.secSfx}</span>
+      </div>
+      <div class="ri-expl">💡 ${a.explanation}</div>`;
+    reviewList.appendChild(item);
+  });
+
+  showScreen('screenResult');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════════════════════════
+function getExportData() {
+  const candidates = getCandidates();
+  const d = candidates[state.normalizedName] || JSON.parse(localStorage.getItem(SK_VIEWED) || 'null');
+  return d;
+}
+
+function exportJSON() {
+  const d = getExportData();
+  if (!d) return;
+  const blob = new Blob([JSON.stringify(d, null, 2)], {type:'application/json'});
+  downloadBlob(blob, `qa_test_${state.normalizedName.replace(/\s/g,'_')}_${Date.now()}.json`);
+}
+
+function exportCSV() {
+  const d = getExportData();
+  if (!d) return;
+
+  const meta = [
+    ['Кандидат', d.originalName || ''],
+    ['Дата', d.completedAt ? new Date(d.completedAt).toLocaleString('ru-RU') : ''],
+    ['Результат %', d.percentage + '%'],
+    ['Уровень', d.level],
+    ['Верных ответов', d.correctCount],
+    ['Неверных', d.wrongCount],
+    ['Таймаутов', d.timeoutCount],
+    ['Вопросов в тесте', d.questionCount],
+    ['Время на вопрос (сек)', d.perQuestionTime],
+    ['Лимит теста (мин)', d.totalTimeLimit],
+    ['Фактическое время', d.totalTimeSpent + ' сек'],
+    ['Завершение', d.finishReason || 'normal'],
+    [],
+    ['#', 'Категория', 'Вопрос', 'Ответ кандидата', 'Правильный ответ', 'Статус', 'Потрачено (сек)', 'Пояснение'],
+  ];
+
+  const rows = (d.answers || []).map((a, i) => [
+    i + 1,
+    a.category,
+    `"${(a.question||'').replace(/"/g,'""')}"`,
+    `"${(a.chosen || 'Таймаут').replace(/"/g,'""')}"`,
+    `"${(a.correct||'').replace(/"/g,'""')}"`,
+    a.isCorrect ? 'Верно' : a.isTimeout ? 'Таймаут' : 'Неверно',
+    a.timeSpent || 0,
+    `"${(a.explanation||'').replace(/"/g,'""')}"`
+  ]);
+
+  const csv = [...meta, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8'});
+  downloadBlob(blob, `qa_test_${(state.normalizedName||'result').replace(/\s/g,'_')}_${Date.now()}.csv`);
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// CHECK CANDIDATE MODAL
+// ═══════════════════════════════════════════════════════════════════════
+function openCheckModal() {
+  document.getElementById('checkResult').innerHTML = '';
+  document.getElementById('checkName').value = '';
+  renderAllCandidates();
+  document.getElementById('modalCheck').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modalCheck').style.display = 'none';
+}
+
+function closeCheckModal(e) {
+  if (e.target.id === 'modalCheck') closeModal();
+}
+
+function doCheckCandidate() {
+  const raw  = document.getElementById('checkName').value;
+  const norm = normalizeName(raw);
+  const el   = document.getElementById('checkResult');
+
+  if (!norm) { el.innerHTML = '<div style="color:var(--text-muted);font-size:.82rem">Введите имя для поиска.</div>'; return; }
+
+  const candidate = getCandidateByName(norm);
+  if (!candidate) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:.82rem">Кандидат с таким именем не найден.</div>';
+    return;
+  }
+
+  let statusBadge = '';
+  if (candidate.status === 'completed')   statusBadge = '<span style="color:var(--green);font-weight:700">✓ Завершён</span>';
+  if (candidate.status === 'interrupted') statusBadge = '<span style="color:var(--yellow);font-weight:700">⚠ Прерван</span>';
+  if (candidate.status === 'in_progress') statusBadge = '<span style="color:var(--accent);font-weight:700">⏳ В процессе</span>';
+
+  el.innerHTML = `<div class="modal-result">
+    <div><strong>Кандидат:</strong> ${candidate.originalName || raw}</div>
+    <div><strong>Статус:</strong> ${statusBadge}</div>
+    ${candidate.completedAt ? `<div><strong>Дата:</strong> ${new Date(candidate.completedAt).toLocaleString('ru-RU')}</div>` : ''}
+    ${candidate.percentage !== undefined ? `<div><strong>Результат:</strong> ${candidate.percentage}% (${candidate.correctCount} из ${candidate.questionCount} верно)</div>` : ''}
+    ${candidate.level ? `<div><strong>Уровень:</strong> ${candidate.level}</div>` : ''}
+    ${candidate.totalTimeSpent ? `<div><strong>Время:</strong> ${formatTime(candidate.totalTimeSpent)}</div>` : ''}
+  </div>`;
+}
+
+function renderAllCandidates() {
+  const candidates = getCandidates();
+  const el = document.getElementById('allCandidatesList');
+  const keys = Object.keys(candidates);
+
+  if (keys.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:.78rem">Нет записей.</div>';
+    return;
+  }
+
+  el.innerHTML = keys.map(k => {
+    const c = candidates[k];
+    const date = c.completedAt ? new Date(c.completedAt).toLocaleString('ru-RU') : (c.startedAt ? new Date(c.startedAt).toLocaleString('ru-RU') : '');
+    const status = c.status === 'completed' ? '✓' : c.status === 'interrupted' ? '⚠' : '⏳';
+    const pct = c.percentage !== undefined ? ` — ${c.percentage}%` : '';
+    return `<div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px">
+      <span>${status} <strong>${c.originalName || k}</strong>${pct}</span>
+      <span style="color:var(--text-muted);font-size:.72rem;white-space:nowrap">${date}</span>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ADMIN PANEL
+// ═══════════════════════════════════════════════════════════════════════
+// ── Settings ──
+const SK_SETTINGS = 'qa_test_settings';
+const SK_ADMIN_AUTH = 'qa_admin_authed';
+
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SK_SETTINGS) || 'null');
+    if (!s) return;
+    document.getElementById('settingNumQ').value      = s.numQ  || 30;
+    document.getElementById('settingTimeQ').value     = s.timeQ || 30;
+    document.getElementById('settingTimeTotal').value = s.total || 15;
+    const an = document.getElementById('aNumQ');
+    const at = document.getElementById('aTimeQ');
+    const al = document.getElementById('aTotalTime');
+    if (an) an.value = s.numQ  || 30;
+    if (at) at.value = s.timeQ || 30;
+    if (al) al.value = s.total || 15;
+  } catch(e) {}
+  updateSummary();
+}
+
+function updateSummary() {
+  const n = document.getElementById('summNumQ');
+  const q = document.getElementById('summTimeQ');
+  const t = document.getElementById('summTimeTotal');
+  if (n) n.textContent = document.getElementById('settingNumQ').value;
+  if (q) q.textContent = document.getElementById('settingTimeQ').value;
+  if (t) t.textContent = document.getElementById('settingTimeTotal').value;
+}
+
+function saveAdminSettings() {
+  let nq = Math.min(60,  Math.max(5,   parseInt(document.getElementById('aNumQ').value)      || 30));
+  let tq = Math.min(180, Math.max(10,  parseInt(document.getElementById('aTimeQ').value)     || 30));
+  let tt = Math.min(120, Math.max(1,   parseInt(document.getElementById('aTotalTime').value) || 15));
+  document.getElementById('aNumQ').value      = nq;
+  document.getElementById('aTimeQ').value     = tq;
+  document.getElementById('aTotalTime').value = tt;
+  document.getElementById('settingNumQ').value      = nq;
+  document.getElementById('settingTimeQ').value     = tq;
+  document.getElementById('settingTimeTotal').value = tt;
+  localStorage.setItem(SK_SETTINGS, JSON.stringify({ numQ: nq, timeQ: tq, total: tt }));
+  updateSummary();
+  showAdmMsg('adminSettingsMsg', '✅ Сохранено', 'ok');
+}
+
+function showAdmMsg(id, text, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text; el.className = 'admin-msg ' + type; el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+// ── Auth ──
+function toggleAdmin() {
+  const panel = document.getElementById('adminPanel');
+  const open  = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (!open) {
+    if (sessionStorage.getItem(SK_ADMIN_AUTH) === '1') {
+      _showAdminContent();
+    } else {
+      document.getElementById('adminAuthGate').style.display = 'block';
+      document.getElementById('adminContent').style.display  = 'none';
+      document.getElementById('adminAuthPwd').value = '';
+      document.getElementById('adminAuthErr').style.display = 'none';
+    }
+  }
+}
+
+function adminAuth() {
+  const pwd = document.getElementById('adminAuthPwd').value;
+  if (pwd !== ADMIN_PASSWORD) {
+    document.getElementById('adminAuthErr').style.display = 'block';
+    document.getElementById('adminAuthPwd').value = '';
+    return;
+  }
+  document.getElementById('adminAuthErr').style.display = 'none';
+  sessionStorage.setItem(SK_ADMIN_AUTH, '1');
+  _showAdminContent();
+}
+
+function _showAdminContent() {
+  document.getElementById('adminAuthGate').style.display = 'none';
+  document.getElementById('adminContent').style.display  = 'block';
+  loadSettings();
+}
+
+// ── Tabs ──
+function aTab(name) {
+  ['settings','reset','history'].forEach(n => {
+    const tb = document.getElementById('atab-' + n);
+    const pn = document.getElementById('apane-' + n);
+    if (tb) tb.className = 'adm-tab' + (n === name ? ' adm-tab-active' : '');
+    if (pn) pn.style.display = n === name ? 'block' : 'none';
+  });
+  if (name === 'history') renderHistory();
+}
+
+// ── Reset ──
+function adminReset() {
+  const nameRaw  = document.getElementById('adminCandidateName').value.trim();
+  const password = document.getElementById('adminPassword').value;
+  const msgEl    = document.getElementById('adminMsg');
+  msgEl.style.display = 'none';
+  if (password !== ADMIN_PASSWORD) {
+    msgEl.textContent = '❌ Неверный пароль';
+    msgEl.className = 'admin-msg err'; msgEl.style.display = 'block'; return;
+  }
+  if (!nameRaw) {
+    msgEl.textContent = '❌ Введите имя';
+    msgEl.className = 'admin-msg err'; msgEl.style.display = 'block'; return;
+  }
+  const norm = normalizeName(nameRaw);
+  const cands = getCandidates();
+  if (!cands[norm]) {
+    msgEl.textContent = '❌ Не найден: ' + nameRaw;
+    msgEl.className = 'admin-msg err'; msgEl.style.display = 'block'; return;
+  }
+  delete cands[norm]; saveCandidates(cands);
+  msgEl.textContent = '✅ Сброшен: ' + nameRaw;
+  msgEl.className = 'admin-msg ok'; msgEl.style.display = 'block';
+  document.getElementById('adminCandidateName').value = '';
+  document.getElementById('adminPassword').value = '';
+  onNameInput();
+}
+
+// ── History ──
+function getCompleted() {
+  return Object.values(getCandidates())
+    .filter(c => c.status === 'completed')
+    .sort((a,b) => ((b.completedAt||'') > (a.completedAt||'')) ? 1 : -1);
+}
+
+function renderHistory() {
+  const rows   = getCompleted();
+  const allN   = Object.keys(getCandidates()).length;
+  const cntEl  = document.getElementById('historyCount');
+  const listEl = document.getElementById('historyList');
+  if (!cntEl || !listEl) return;
+  cntEl.textContent = allN + ' записей, ' + rows.length + ' завершили';
+  if (!rows.length) { listEl.innerHTML = '<div style="color:var(--text-muted)">Нет завершённых тестов.</div>'; return; }
+  listEl.innerHTML = rows.map(c => {
+    const pct = c.percentage || 0;
+    const bg  = pct>85 ? 'var(--green-soft);color:var(--green)' :
+                pct>70 ? 'var(--accent-soft);color:var(--accent)' :
+                pct>50 ? 'var(--yellow-soft);color:var(--yellow)' :
+                         'var(--red-soft);color:var(--red)';
+    const dt  = c.completedAt ? new Date(c.completedAt).toLocaleString('ru-RU') : '';
+    const tm  = formatTime(c.totalTimeSpent || 0);
+    return '<div style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap">'
+      + '<div style="display:flex;gap:7px;align-items:center">'
+      + '<span style="padding:2px 8px;border-radius:4px;font-family:var(--mono);font-size:.74rem;font-weight:700;background:' + bg + '">' + pct + '%</span>'
+      + '<strong style="font-size:.82rem">' + (c.originalName||'') + '</strong>'
+      + '<span style="font-size:.7rem;color:var(--text-muted)">✓' + (c.correctCount||0) + ' ✕' + (c.wrongCount||0) + ' | ' + tm + '</span>'
+      + '</div><span style="font-size:.7rem;color:var(--text-muted);white-space:nowrap">' + dt + '</span></div>';
+  }).join('');
+}
+
+// ── Export CSV ──
+function exportHistoryCSV() {
+  const rows = getCompleted();
+  if (!rows.length) { alert('Нет данных.'); return; }
+  const hdr = ['Кандидат','Дата','Результат %','Уровень','Верно','Неверно','Таймаут','Вопросов','Время','Завершение'];
+  const q = v => '"' + String(v||'').replace(/"/g,'""') + '"';
+  const lines = [hdr.join(','), ...rows.map(c => [
+    q(c.originalName), q(c.completedAt ? new Date(c.completedAt).toLocaleString('ru-RU') : ''),
+    (c.percentage||0)+'%', q(c.level||''),
+    c.correctCount||0, c.wrongCount||0, c.timeoutCount||0, c.questionCount||0,
+    q(formatTime(c.totalTimeSpent||0)),
+    q(c.finishReason==='total_timeout'?'истекло время':'завершен')
+  ].join(','))];
+  dlBlob(new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'}), 'qa_results_'+Date.now()+'.csv');
+}
+
+// ── Export XLSX ──
+function exportHistoryXLSX() {
+  const rows = getCompleted();
+  if (!rows.length) { alert('Нет данных.'); return; }
+  const h1 = ['Кандидат','Дата','Результат %','Уровень','Верно','Неверно','Таймаут','Вопросов','Время','Завершение'];
+  const r1 = rows.map(c => [c.originalName||'', c.completedAt?new Date(c.completedAt).toLocaleString('ru-RU'):'', c.percentage||0, c.level||'', c.correctCount||0, c.wrongCount||0, c.timeoutCount||0, c.questionCount||0, formatTime(c.totalTimeSpent||0), c.finishReason==='total_timeout'?'истекло время':'завершен']);
+  const h2 = ['Кандидат','Дата','#','Категория','Вопрос','Ответ кандидата','Правильный ответ','Статус','Сек'];
+  const r2 = [];
+  rows.forEach(c => {
+    if (!c.answers) return;
+    const d = c.completedAt ? new Date(c.completedAt).toLocaleString('ru-RU') : '';
+    c.answers.forEach((a,i) => r2.push([c.originalName||'', d, i+1, a.category||'', a.question||'', a.chosen||'таймаут', a.correct||'', a.isCorrect?'верно':a.isTimeout?'таймаут':'неверно', a.timeSpent||0]));
+  });
+  dlBlob(makeXLSX([{name:'Сводная',hdr:h1,rows:r1},{name:'Детальный разбор',hdr:h2,rows:r2}]), 'qa_results_'+Date.now()+'.xlsx');
+}
+
+function dlBlob(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function makeXLSX(sheets) {
+  const enc=new TextEncoder();
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  function sxml(hdr,rows){
+    let x='<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetData>';
+    [hdr,...rows].forEach((row,ri)=>{
+      x+='<row r="'+(ri+1)+'">';
+      row.forEach((v,ci)=>{const ref=String.fromCharCode(65+ci)+(ri+1);x+=typeof v==='number'?'<c r="'+ref+'"><v>'+v+'</v></c>':'<c r="'+ref+'" t="inlineStr"><is><t>'+esc(v)+'</t></is></c>';});
+      x+='</row>';
+    });
+    return x+'</sheetData></worksheet>';
+  }
+  const files={};
+  let ct='<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>';
+  sheets.forEach((_,i)=>ct+='<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>');
+  ct+='<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/></Types>';
+  files['[Content_Types].xml']=ct;
+  files['_rels/.rels']='<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
+  let wb='<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>';
+  sheets.forEach((s,i)=>wb+='<sheet name="'+esc(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>');
+  wb+='</sheets></workbook>'; files['xl/workbook.xml']=wb;
+  let wr='<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+  sheets.forEach((_,i)=>wr+='<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>');
+  wr+='</Relationships>'; files['xl/_rels/workbook.xml.rels']=wr;
+  sheets.forEach((s,i)=>files['xl/worksheets/sheet'+(i+1)+'.xml']=sxml(s.hdr,s.rows));
+  const parts=[]; let off=0; const cdir=[];
+  function crc32(d){let c=0xFFFFFFFF;for(let i=0;i<d.length;i++){c^=d[i];for(let j=0;j<8;j++)c=(c&1)?(c>>>1)^0xEDB88320:(c>>>1);}return(c^0xFFFFFFFF)>>>0;}
+  for(const[name,content] of Object.entries(files)){
+    const nb=enc.encode(name);const db=enc.encode(content);const crc=crc32(db);
+    const lh=new Uint8Array(30+nb.length);const lv=new DataView(lh.buffer);
+    lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint32(14,crc,true);
+    lv.setUint32(18,db.length,true);lv.setUint32(22,db.length,true);lv.setUint16(26,nb.length,true);
+    lh.set(nb,30);cdir.push({nb,crc,size:db.length,off});parts.push(lh);parts.push(db);off+=lh.length+db.length;
+  }
+  const cdStart=off;
+  for(const cd of cdir){
+    const ch=new Uint8Array(46+cd.nb.length);const cv=new DataView(ch.buffer);
+    cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);
+    cv.setUint32(16,cd.crc,true);cv.setUint32(20,cd.size,true);cv.setUint32(24,cd.size,true);
+    cv.setUint16(28,cd.nb.length,true);cv.setUint32(42,cd.off,true);ch.set(cd.nb,46);
+    parts.push(ch);off+=ch.length;
+  }
+  const eocd=new Uint8Array(22);const ev=new DataView(eocd.buffer);
+  ev.setUint32(0,0x06054b50,true);ev.setUint16(8,cdir.length,true);ev.setUint16(10,cdir.length,true);
+  ev.setUint32(12,off-cdStart,true);ev.setUint32(16,cdStart,true);parts.push(eocd);
+  const total=parts.reduce((s,p)=>s+p.length,0);const buf=new Uint8Array(total);let pos=0;
+  for(const p of parts){buf.set(p,pos);pos+=p.length;}
+  return new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// VIEWED RESULT (legacy / start screen buttons)
+// ═══════════════════════════════════════════════════════════════════════
+function checkViewedResult() {
+  const has = !!localStorage.getItem(SK_VIEWED);
+  document.getElementById('btnClearViewed').style.display = has ? 'inline-flex' : 'none';
+}
+
+function clearViewedResult() {
+  localStorage.removeItem(SK_VIEWED);
+  checkViewedResult();
+  showToast('Просмотренный результат очищен');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════════════════════
+function initTheme() {
+  const saved = localStorage.getItem(SK_THEME) || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️' : '🌙';
+}
+
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(SK_THEME, next);
+  document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════════════
+let _toastTimer;
+function showToast(msg) {
+  let t = document.getElementById('_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_toast';
+    t.style.cssText = `position:fixed;bottom:56px;left:50%;transform:translateX(-50%) translateY(20px);
+      background:var(--text);color:var(--surface);padding:8px 18px;border-radius:8px;
+      font-size:.8rem;font-family:var(--font);opacity:0;transition:all .25s;
+      pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.2)`;
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2200);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// EVENT BINDINGS
+// ═══════════════════════════════════════════════════════════════════════
+document.getElementById('btnStart').addEventListener('click', startQuiz);
+document.getElementById('btnStart').disabled = true; // disabled until name entered
+
+document.getElementById('candidateName').addEventListener('input', onNameInput);
+document.getElementById('candidateName').addEventListener('paste', () => setTimeout(onNameInput, 50));
+
+document.getElementById('btnCheckCandidate').addEventListener('click', openCheckModal);
+document.getElementById('btnClearViewed').addEventListener('click', clearViewedResult);
+
+document.getElementById('btnExportJSON').addEventListener('click', exportJSON);
+document.getElementById('btnExportCSV').addEventListener('click', exportCSV);
+document.getElementById('btnPrint').addEventListener('click', () => window.print());
+
+document.getElementById('btnBackToStart').addEventListener('click', () => {
+  showScreen('screenStart');
+  onNameInput(); // Refresh start screen state
+});
+
+// Settings auto-calc
+// Settings managed in admin panel
+
+// ═══════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════ LANGUAGE SWITCHER ═══════════════════════════════
+let LANG = localStorage.getItem('qa_lang') || 'ru';
+
+const UI = {
+  ru: {
+    title:     'QA Team Lead \u2014 \u0422\u0435\u0441\u0442 \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u0438',
+    subtitle:  '60 \u0432\u043e\u043f\u0440\u043e\u0441\u043e\u0432 \u043f\u043e \u0442\u0435\u0441\u0442-\u0434\u0438\u0437\u0430\u0439\u043d\u0443, \u0431\u0430\u0433-\u043c\u0435\u043d\u0435\u0434\u0436\u043c\u0435\u043d\u0442\u0443, \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u0438, \u043c\u0435\u0442\u0440\u0438\u043a\u0430\u043c \u0438 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044e \u043a\u043e\u043c\u0430\u043d\u0434\u043e\u0439.',
+    nameLbl:   '\u0418\u043c\u044f \u043a\u0430\u043d\u0434\u0438\u0434\u0430\u0442\u0430',
+    namePh:    '\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043f\u043e\u043b\u043d\u043e\u0435 \u0438\u043c\u044f \u043a\u0430\u043d\u0434\u0438\u0434\u0430\u0442\u0430',
+    startBtn:  '\u25b6 \u041d\u0430\u0447\u0430\u0442\u044c \u0442\u0435\u0441\u0442',
+    checkBtn:  '\ud83d\udd0d \u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u043a\u0430\u043d\u0434\u0438\u0434\u0430\u0442\u0430',
+    totalLbl:  '\u041e\u0431\u0449\u0435\u0435',
+    explLbl:   '\ud83d\udca1 \u041f\u043e\u044f\u0441\u043d\u0435\u043d\u0438\u0435',
+    timeoutQ:  '\u23f0 \u0412\u0440\u0435\u043c\u044f \u043d\u0430 \u0432\u043e\u043f\u0440\u043e\u0441 \u0438\u0441\u0442\u0435\u043a\u043b\u043e. \u041f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0439 \u043e\u0442\u0432\u0435\u0442 \u0432\u044b\u0434\u0435\u043b\u0435\u043d.',
+    backBtn:   '\u2190 \u041d\u0430 \u0433\u043b\u0430\u0432\u043d\u0443\u044e',
+    correct:   '\u2713 \u0412\u0435\u0440\u043d\u043e',
+    wrong:     '\u2715 \u041d\u0435\u0432\u0435\u0440\u043d\u043e',
+    timeout:   '\u23f0 \u0422\u0430\u0439\u043c\u0430\u0443\u0442',
+    result:    '\ud83d\udcca \u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442',
+    review:    '\u0414\u0435\u0442\u0430\u043b\u044c\u043d\u044b\u0439 \u0440\u0430\u0437\u0431\u043e\u0440',
+    answerLbl: '\u041e\u0442\u0432\u0435\u0442 \u043a\u0430\u043d\u0434\u0438\u0434\u0430\u0442\u0430:',
+    rightLbl:  '\u041f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0439 \u043e\u0442\u0432\u0435\u0442:',
+    catLbl:    '\u041a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f:',
+    spentLbl:  '\u041f\u043e\u0442\u0440\u0430\u0447\u0435\u043d\u043e:',
+    timedOut:  '\u2014 (\u0432\u0440\u0435\u043c\u044f \u0438\u0441\u0442\u0435\u043a\u043b\u043e)',
+    levels:    { low:'\u274c \u041d\u0435\u0434\u043e\u0441\u0442\u0430\u0442\u043e\u0447\u043d\u044b\u0439 \u0443\u0440\u043e\u0432\u0435\u043d\u044c', base:'\u26a0\ufe0f \u0411\u0430\u0437\u043e\u0432\u044b\u0439 / Middle', good:'\u2705 \u0425\u043e\u0440\u043e\u0448\u0438\u0439 Senior', lead:'\ud83c\udfc6 \u0421\u0438\u043b\u044c\u043d\u044b\u0439 QA Team Lead' },
+    finNormal: '\u2713 \u0412\u0441\u0435 \u0432\u043e\u043f\u0440\u043e\u0441\u044b',
+    finTimeout:'\u23f0 \u0418\u0441\u0442\u0435\u043a\u043b\u043e \u0432\u0440\u0435\u043c\u044f',
+    secSfx: ' \u0441\u0435\u043a', minSfx: ' \u043c\u0438\u043d',
+    rDateLbl: '\ud83d\udcc5 \u0414\u0430\u0442\u0430 \u043f\u0440\u043e\u0445\u043e\u0436\u0434\u0435\u043d\u0438\u044f',
+    rNumQ:    '\ud83d\udccb \u0412\u043e\u043f\u0440\u043e\u0441\u043e\u0432 \u0432 \u0442\u0435\u0441\u0442\u0435',
+    rTimeQ:   '\u23f1 \u0412\u0440\u0435\u043c\u044f \u043d\u0430 \u0432\u043e\u043f\u0440\u043e\u0441',
+    rTotal:   '\ud83d\udd50 \u041b\u0438\u043c\u0438\u0442 \u0442\u0435\u0441\u0442\u0430',
+    rSpent:   '\u231b \u0424\u0430\u043a\u0442\u0438\u0447\u0435\u0441\u043a\u043e\u0435 \u0432\u0440\u0435\u043c\u044f',
+    rFinish:  '\ud83c\udfc1 \u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0438\u0435',
+    candidateLbl: '\u041a\u0430\u043d\u0434\u0438\u0434\u0430\u0442:',
+  },
+  en: {
+    title:     'QA Team Lead Validation Test',
+    subtitle:  '60 questions on test design, bug management, automation, metrics, and team leadership.',
+    nameLbl:   'Candidate Name',
+    namePh:    'Enter candidate full name',
+    startBtn:  '\u25b6 Start Test',
+    checkBtn:  '\ud83d\udd0d Check Candidate',
+    totalLbl:  'Total',
+    explLbl:   '\ud83d\udca1 Explanation',
+    timeoutQ:  '\u23f0 Time expired. Correct answer highlighted in green.',
+    backBtn:   '\u2190 Back to Start',
+    correct:   '\u2713 Correct',
+    wrong:     '\u2715 Wrong',
+    timeout:   '\u23f0 Timeout',
+    result:    '\ud83d\udcca Result',
+    review:    'Detailed Review',
+    answerLbl: 'Candidate answer:',
+    rightLbl:  'Correct answer:',
+    catLbl:    'Category:',
+    spentLbl:  'Time spent:',
+    timedOut:  '\u2014 (timed out)',
+    levels:    { low:'\u274c Insufficient level', base:'\u26a0\ufe0f Basic / Middle', good:'\u2705 Good Senior', lead:'\ud83c\udfc6 Strong QA Team Lead' },
+    finNormal: '\u2713 All questions',
+    finTimeout:'\u23f0 Time expired',
+    secSfx: ' sec', minSfx: ' min',
+    rDateLbl: '\ud83d\udcc5 Date completed',
+    rNumQ:    '\ud83d\udccb Questions in test',
+    rTimeQ:   '\u23f1 Time per question',
+    rTotal:   '\ud83d\udd50 Test limit',
+    rSpent:   '\u231b Actual time',
+    rFinish:  '\ud83c\udfc1 Finish',
+    candidateLbl: 'Candidate:',
+  }
+};
+
+// EN question translations
+const EN_Q = {
+  1:{q:"Before a release, a defect is found: Severity Critical, Priority Low. What should the QA Team Lead do?",o:["Automatically block the release","Ignore the defect — priority is low","Discuss the business risk with PO/PM and make a release decision based on impact","Delegate the decision to the developer"],e:"Severity is technical seriousness; Priority is business urgency. The QA Lead must assess risk with PO/PM, propose mitigation, and make a balanced decision."},
+  2:{q:"A registration form age field accepts 18-99. Which boundary values are mandatory?",o:["17, 18, 50, 99, 100","0, 50, 100","18, 99","18, 19, 98, 99"],e:"BVA requires: min-1 (17), min (18), typical (50), max (99), max+1 (100)."},
+  3:{q:"Defect Leakage Rate was 35%. What does this mean and what should QA Lead do?",o:["35% of defects were found before deployment — good","35% of defects reached production bypassing QA — coverage needs improvement","The metric shows percentage of flaky tests","35% of test cases failed regression"],e:"35% means a third of defects passed QA into production. Root cause analysis and strengthened regression are needed."},
+  4:{q:"POST /orders returns 201 Created. What is the most important next step for QA?",o:["Only check the status code","Check status code, response body schema, headers, and DB data state","Check response time","Compare with Swagger documentation"],e:"Full API testing: status code, response body schema, headers, and side effects — data was correctly created in DB."},
+  5:{q:"What should run on every pull request in CI/CD?",o:["Only unit tests","Full regression suite","Unit + integration tests and critical path smoke tests","Only E2E tests"],e:"Every PR needs fast feedback: unit + integration + smoke critical path (Test Pyramid)."},
+  6:{q:"A Junior QA writes uninformative bug reports with no steps to reproduce. What should the QA Lead do?",o:["Reject all reports without explanation","Hold a pairing session, show a template, establish a review checklist","Transfer tasks to experienced QA","Write a memo with rules"],e:"Mentoring is key. Show an example, provide a template, introduce a review process."},
+  7:{q:"The team has 3 days for regression before a major release. What is the right approach?",o:["Test everything in alphabetical order","Risk assessment: prioritize high-risk areas, critical paths, changed code","Run automated tests and consider done","Only test what changed"],e:"Risk-based testing: prioritize critical paths, integration points, areas changed in this release."},
+  8:{q:"Developers estimated tasks but QA didn't estimate testing. What should the QA Lead do?",o:["Silently accept the developers' estimate","Add a fixed 20% buffer","Insist QA estimation is included in story points and clarify DoD","Test what they can; rest goes to next sprint"],e:"QA must participate in estimation. Story points should include test design, execution, and automation time."},
+  9:{q:"After data migration, which SQL query finds duplicate emails in users table?",o:["SELECT email FROM users WHERE email IS NOT NULL","SELECT email, COUNT(*) as cnt FROM users GROUP BY email HAVING COUNT(*) > 1","SELECT DISTINCT email FROM users","SELECT email FROM users ORDER BY email"],e:"GROUP BY + HAVING COUNT(*) > 1 is the standard duplicate-finding pattern."},
+  10:{q:"Which type of test is LEAST advisable to automate first?",o:["Regression tests that run with every deployment","Smoke tests on the critical path","Tests for UX intuitiveness and user convenience","API tests for basic CRUD operations"],e:"UX usability testing requires human judgment. Everything else is a good automation candidate."},
+  11:{q:"A developer closed a bug with 'Cannot Reproduce'. How should QA respond?",o:["Accept the closure","Reopen with full reproduction steps, logs, screenshots, and environment info","Immediately escalate to PM","Delete and create a new bug"],e:"Cannot Reproduce does not mean it does not exist. Enrich the report with exact steps, test data, version, logs."},
+  12:{q:"You are asked to build a QA process in a team that has none. Where do you start?",o:["Start writing automated tests immediately","Audit: understand product, SDLC, pain points; introduce processes incrementally","Hire more QA and cover everything","Produce all documentation in week one"],e:"QA from scratch starts with discovery: product, team, risks. Then quick wins, CI integration, automation."},
+  13:{q:"Which is NOT a typical release readiness criterion?",o:["No open Critical/Blocker defects","Test pass rate >= 95%","All sprint tasks are closed by developers","Performance baseline meets SLA"],e:"Closed development tasks are not a QA release readiness criterion. Gate includes: defects, coverage, performance, security, smoke tests."},
+  14:{q:"The team held an exploratory testing session. How should results be documented?",o:["No documentation needed","Create test charter, session notes, found defects, coverage areas — session-based format","Write full test cases for everything","Oral report to PM"],e:"Exploratory testing documented via Test Charter, Session Notes, Coverage Map, found defects. SBTM is standard."},
+  15:{q:"PO demands a release tomorrow but QA has an unclosed Major defect. What should the QA Lead do?",o:["Silently release","Block without discussion","Communicate risk clearly, propose mitigation, document decision in writing","Take sick leave"],e:"The QA Lead is a risk gatekeeper. Communicate risk, propose mitigation, document if PO accepts risk."},
+  16:{q:"15% of automated tests in CI are unstable. How should the QA Lead solve this?",o:["Delete unstable tests","Ignore it — instability is normal","Analyze root causes, fix or isolate into a monitored suite","Run 3 times and count pass if one passes"],e:"Flaky tests destroy CI trust. Root cause analysis, fix timeouts, mock external dependencies, quarantine."},
+  17:{q:"5 filters with 3 values each (243 combinations). Which approach reduces to ~25 tests with reasonable coverage?",o:["Equivalence Partitioning","All-Pairs (Pairwise) Testing","Decision Table Testing","State Transition Testing"],e:"Pairwise Testing covers all pairs of values. Most bugs are caused by interaction of two factors."},
+  18:{q:"Two QA engineers conflict over defect prioritization. How does the QA Lead respond?",o:["Side with the more experienced QA","Ignore the conflict","Hold a meeting, document a common severity/priority matrix as team standard","Escalate to HR"],e:"The QA Lead creates clarity through standards. Document a severity/priority matrix as a team agreement."},
+  19:{q:"What is the key difference between Smoke Testing and Sanity Testing?",o:["Smoke is manual, Sanity is automated","Smoke checks build stability for further testing; Sanity checks a specific fixed function","Smoke is more detailed, Sanity is quick","They are synonyms"],e:"Smoke (BVT) is broad and shallow — is the build suitable for testing? Sanity is narrow and deep — does this specific fix work?"},
+  20:{q:"A critical bug missed by QA caused a production incident. What should QA Lead do first?",o:["Find the guilty engineer and punish them","Conduct a blameless postmortem: root cause, why test didn't catch it, what to improve","Write more test cases for this scenario","Increase QA team size"],e:"Blameless postmortem: eliminate systemic cause, not find someone to blame."},
+  21:{q:"What HTTP status code should a REST API return for invalid request data?",o:["200 OK","404 Not Found","422 Unprocessable Entity or 400 Bad Request","500 Internal Server Error"],e:"400 = general client error; 422 = semantically incorrect data. 500 = server error, wrong for client data issues."},
+  22:{q:"PM says: '80% test coverage means we are well tested.' QA Lead should:",o:["Agree — 80% is good by industry standards","Explain code coverage != functional coverage; user scenarios, edge cases, and risk coverage matter","Increase to 100% at any cost","Do nothing"],e:"Code coverage is a test quality metric, not a guarantee of absence of bugs. Focus on functional and risk coverage."},
+  23:{q:"An automated UI test fails after every redesign. How do you solve the fragility?",o:["Use XPath with absolute paths","Introduce Page Object Model, use data-testid attributes, isolate locators from business logic","Rewrite tests manually after each redesign","Abandon UI automation"],e:"Page Object Model encapsulates locators. data-testid attributes are stable for testing. Absolute XPath is most fragile."},
+  24:{q:"QA team spends 60% of time on manual regression before each release. How should QA Lead change this?",o:["Hire more QA for manual testing","Abandon regression","Conduct ROI analysis, identify automation candidates, implement automated regression with CI","Reduce release frequency"],e:"60% on manual regression signals automation. ROI is typically positive after 3-5 iterations."},
+  25:{q:"Bugs are found too late — at end of sprint. What is the correct systemic solution?",o:["Give QA more time at end of sprint","Implement Shift-Left: involve QA from refinement, write acceptance criteria before development, use TDD/BDD","Test only in dedicated QA sprints","Extend sprint to 4 weeks"],e:"Shift-Left moves QA activities earlier. QA in refinement, acceptance criteria before code, bugs found pre-implementation."},
+  26:{q:"QA Lead is going on 3-week vacation. What should be prepared?",o:["A contact phone number","Up-to-date process docs, designated acting lead, release runbook, escalation matrix","Put tasks in Jira and hope","Postpone all releases"],e:"Knowledge sharing is a QA Lead obligation. Bus factor = 1 is a risk. Documented processes, trained backup, release checklist."},
+  27:{q:"QA needs to verify all orders have an associated user (no orphan records). Which SQL?",o:["SELECT * FROM orders WHERE user_id IS NULL","SELECT o.* FROM orders o LEFT JOIN users u ON o.user_id = u.id WHERE u.id IS NULL","SELECT * FROM orders INNER JOIN users ON orders.user_id = users.id","SELECT COUNT(*) FROM orders"],e:"LEFT JOIN + WHERE u.id IS NULL is the classic orphan record detection pattern."},
+  28:{q:"Which metric best shows quality of the team's test design rather than product quality?",o:["Defect Density (defects per 1000 LOC)","Test Case Effectiveness (% of defects found by test cases vs total)","MTTR","Code Coverage %"],e:"Test Case Effectiveness = defects found by test cases / total defects. High % means QA design genuinely catches bugs."},
+  29:{q:"Developer proposes covering all functionality with E2E tests. QA Lead should:",o:["Agree — E2E is closest to real user","Explain Test Pyramid: most coverage should be unit+integration, E2E only for critical paths","Reject E2E entirely","Delegate to development team"],e:"Test Pyramid: many unit, fewer integration, minimal E2E. E2E tests are slow, fragile, and expensive. Inverted pyramid is anti-pattern."},
+  30:{q:"Senior QA is demotivated by routine tasks and thinking of leaving. How should QA Lead retain them?",o:["Raise their salary","Ignore it","Discuss career goals, delegate ownership over automation/architecture, involve in mentoring and technical decisions","Transfer to another project"],e:"Retention through growth: ownership, impact, growth. Delegate automation strategy ownership and architectural decisions."},
+  31:{q:"What is the key difference between Test Strategy and Test Plan?",o:["Strategy describes test cases, Plan describes the general approach","Strategy defines methods, approaches, principles (how to test); Plan describes specific activities, timelines, resources","Strategy is created by QA, Plan by management","They are synonyms"],e:"Test Strategy is strategic (approaches, methods, types, tools). Test Plan is tactical (tasks, timelines, responsible parties)."},
+  32:{q:"At what TMMi maturity level is a team if processes are defined but metrics not systematically collected?",o:["Level 1 — Initial","Level 2 — Managed","Level 3 — Defined","Level 4 — Measured"],e:"TMMi Level 3: standardized and documented processes. Systematic measurement is Level 4."},
+  33:{q:"QA Lead preparing Test Plan for a payment feature. Which section is most critical?",o:["Risks and mitigation","List of test cases","Team meeting schedule","History of previous test plans"],e:"For payment functionality, risks are critical: money loss, double charges, transaction failures. Risk register with mitigation is essential."},
+  34:{q:"What is a Feature Flag and how does it help QA?",o:["A debug mode switch","A mechanism to enable/disable functionality without deployment, allowing testing in production for limited users","A flag for critical defects in bug tracker","A CI/CD setting to speed up builds"],e:"Feature Flags allow deploying code without enabling functionality. QA can test in production for a limited audience and roll back without deployment."},
+  35:{q:"How should test cases be prioritized in a risk-based approach?",o:["By complexity — start with simple tests","Alphabetically by category","By likelihood of failure x business impact: high risk = highest priority","New functionality first, then old"],e:"Risk-based prioritization = Likelihood of failure x Business impact. High risk tests run first."},
+  36:{q:"Team wants to reduce regression from 8 hours to 2 hours. Which approach is most effective?",o:["Randomly delete half the test cases","Implement test impact analysis: only run tests related to changed code","Run tests in parallel without coverage analysis","Only conduct regression once a month"],e:"Test Impact Analysis (TIA) analyzes which tests cover changed code and only runs those. 80% suite reduction with 95% relevance is realistic."},
+  37:{q:"Team wants to implement automation. What is the correct first step?",o:["Define ROI: which tests run most frequently, what is cost of manual vs automated","Buy an expensive automation tool","Immediately cover everything with tests","Hire an automation engineer with full freedom"],e:"Automation strategy starts with ROI analysis. Identify highest-value candidates: frequent, stable, costly to run manually."},
+  38:{q:"How do you distinguish a flaky test from a real bug?",o:["Run multiple times: flaky shows inconsistent results; real bug reproduces consistently","Flaky always fails — real bug only sometimes","Flaky is always UI-related, real bug is backend","Flaky is only visible in CI"],e:"Flaky test hallmark: non-determinism. Real bug reproduces consistently under same conditions."},
+  39:{q:"QA team works with prod-like data for testing. What is the main risk?",o:["Data is too large — use minimal dataset","Prod data is outdated — update daily","Developers should not see prod data","Real PII violates GDPR/PDPA — apply data masking/anonymization before use in test environment"],e:"Using real PII in test environment is a compliance violation (GDPR, PCI DSS). Apply masking, anonymization, or synthetic data."},
+  40:{q:"What is Idempotency in REST API and why important for QA?",o:["API always returns same response regardless of input","Repeated call with same parameters produces same result without side effects — GET/PUT/DELETE are idempotent, POST usually is not","API has no state between requests","API speed does not depend on load"],e:"Idempotency: repeated call creates no additional side effects. Test: repeated DELETE = 404, repeated PUT = 200 same data."},
+  41:{q:"What is Consumer-Driven Contract Testing and what problem does it solve?",o:["Testing where customer writes test cases","Testing API compliance with Swagger","Consumer service defines contract; provider verifies compliance — solves integration breakages without E2E tests","Load testing between services"],e:"Consumer-Driven Contract Testing (Pact) solves broken integrations in microservices without heavy E2E tests."},
+  42:{q:"What is the difference between Load Testing and Stress Testing?",o:["Load is manual, Stress is automated","They are the same type of testing","Load checks behavior under expected load; Stress checks behavior above maximum to find the breaking point","Load is for API, Stress is for UI"],e:"Load Testing: expected load. Stress Testing: beyond maximum until failure — where exactly does the system break?"},
+  43:{q:"Which OWASP Top 10 vulnerability is most common and how can QA check for it?",o:["Buffer Overflow — enter very long strings","SQL Injection — enter SQL code in input fields, check parameterized queries","CSRF — check cookie sizes","XXE — test XML upload speed"],e:"SQL Injection: most common. Enter ' OR '1'='1 in fields. Verify backend uses parameterized queries, not string concatenation."},
+  44:{q:"Company developing a government portal. What is the minimum required WCAG level?",o:["WCAG 1.0 Level A","WCAG 2.1 Level AAA","Accessibility standards only apply for disabilities","WCAG 2.1 Level AA — standard for most government and corporate sites"],e:"WCAG 2.1 Level AA is the minimum for government portals. Verify with screen readers (NVDA, VoiceOver) and tools (axe, Lighthouse)."},
+  45:{q:"Which aspect is unique to mobile testing and not present in web testing?",o:["Functional testing","Interruptions: incoming call, push notification, low battery, network change during app use","Form testing","Color scheme verification"],e:"Interruption testing is unique to mobile: incoming call, SMS, push notification, network change, low battery, screen lock."},
+  46:{q:"What is a Quality Gate in CI/CD context?",o:["Automated criteria (coverage, test pass rate, code quality metrics) that blocks deployment if not met","Manual QA check before every deployment","Team meeting before release","Task management system for QA"],e:"Quality Gate is an automated barrier. Example: coverage >= 80%, no Critical bugs, test pass rate 100%. Pipeline fails if not passed."},
+  47:{q:"Team has 150 open defects. QA Lead organizes triage. What is the main goal?",o:["Close as many as possible at once","Collectively re-evaluate priorities, severity, assign owners, decide what goes into next sprint based on risk","Assign all to developers without discussion","Delete outdated defects"],e:"Defect Triage is a team prioritization process. Shared understanding of priorities between QA, Dev, and PO."},
+  48:{q:"QA Lead conducts Root Cause Analysis (5 Whys) after a production bug. What does the method assume?",o:["Ask 'why' five times to different team members","Hold five one-hour meetings","Write 5 versions of the report","Sequentially ask 'why did this happen?' until a systemic cause is found, not just a symptom"],e:"5 Whys: each answer becomes the next why. Find systemic root cause, not a point fix."},
+  49:{q:"What does 'blameless postmortem' mean and why is it important for QA culture?",o:["Postmortem without guilty employees present","Analysis without blaming specific people, focusing on systemic causes — creates psychological safety for open discussion","Postmortem only when there are no guilty parties","Document without participant signatures"],e:"Blameless postmortem (Google SRE): systems create conditions for errors. No punishment = honest discussion = systemic fixes."},
+  50:{q:"Which is a DORA metric for evaluating DevOps/QA process quality?",o:["Number of test cases","Number of automated tests in CI","Change Failure Rate (% of deployments causing an incident) — one of 4 key DORA metrics","Average API response time"],e:"4 DORA metrics: Deployment Frequency, Lead Time, Change Failure Rate (CFR), Time to Restore. CFR directly indicates QA process quality."},
+  51:{q:"QA Lead plans a sprint: 3 QA engineers, 8 hours/day, 10 working days. What is the realistic capacity?",o:["240 hours (3 x 8 x 10)","About 180-200 hours: meetings, reviews, onboarding — typically 75-85% of theoretical maximum","120 hours — 50% buffer","Capacity doesn't need calculating"],e:"Theoretical: 240h. Real: 75-85% due to ceremonies, bug triage, code reviews, documentation. Use 180-200h for planning."},
+  52:{q:"A Junior QA always asks for help and doesn't try to solve problems independently. How should QA Lead respond?",o:["Stop answering questions","Write a document with all possible answers","Apply 'question with a question' method: 'What have you already tried? What options do you see?'","Transfer to another team"],e:"Socratic method in mentoring: guide with questions, not answers. Builds critical thinking and independence."},
+  53:{q:"Middle QA Engineer candidate cannot explain difference between Smoke and Regression testing. How does QA Lead assess this?",o:["Normal for Middle — can be trained","Basic knowledge for Middle, signal of inflated level or gaps — other areas need deeper investigation","Immediately reject","Offer Junior position"],e:"A Middle QA Engineer must confidently know basic testing types. Signal for additional verification of fundamentals."},
+  54:{q:"QA and developer cannot agree on defect severity. How is the conflict resolved?",o:["Refer to severity definition in team agreement; if none — involve PO for business impact assessment","QA is always right on severity","Developer is right — they know the code","Set Medium as compromise"],e:"Severity is not subjective but based on pre-defined criteria (user impact, frequency, workaround). No definition = systemic problem."},
+  55:{q:"How should QA Lead present a defect to minimize defensive reaction and speed up fix?",o:["Write in public channel to create pressure","Point out that developer made a mistake","Send bug without explanation and wait","Present as 'I found behavior that differs from expected' + facts + steps + expected vs actual, without judgments"],e:"Neutral, factual language reduces defensiveness. 'I found' not 'you broke'. Expected vs Actual without judgments."},
+  56:{q:"PO does not understand why technical debt affects quality. How does QA Lead explain this?",o:["Use technical terms","Translate to business language: 'technical debt is like a loan — we got functionality fast but pay interest as slower development, more bugs, expensive fixes'","Write a long technical document","Delegate explanation to developer"],e:"QA Lead must translate technical concepts to business language. Loan analogy is understandable for non-technical PO."},
+  57:{q:"QA Lead prepares weekly report for management. Which metrics are most valuable for non-technical audience?",o:["Release readiness %, critical open defects, test pass rate, defect leakage — all in business risk context","Number of test cases in Jira","Detailed list of all found defects","Technical code coverage %"],e:"Management thinks in business categories: is the product ready? What are the risks? Release Readiness % is a direct answer."},
+  58:{q:"What should 'Scope of Testing' include in a Test Strategy document?",o:["List of all test cases","Testing schedule by day","Clear definition of what IS tested (in scope) and what is intentionally NOT tested (out of scope) with justification","Names of all testing participants"],e:"Scope defines QA responsibility boundaries. Out of Scope is critical to prevent implicit expectations and scope creep."},
+  59:{q:"QA Lead is leaving and no one knows all the processes. How to organize knowledge transfer?",o:["Write one big document in the last week","Systematically document during work (runbooks, wikis), hold tech talks, practice pair testing — bus factor must always be >1","Train only one backup employee","Hire a new QA Lead"],e:"Bus factor = 1 is a critical risk. Knowledge sharing must be continuous: runbooks, wikis, regular knowledge sessions, pair testing."},
+  60:{q:"QA Lead wants to build a culture of continuous improvement. What practical approach is most effective?",o:["Conduct quarterly audits","Read the team lectures on quality monthly","Regular retrospectives with action items, metrics to track progress, small improvements (Kaizen), document results of changes","Copy processes from successful companies without adaptation"],e:"Kaizen + retrospectives with measurable action items are the foundation of CI culture. Changes must be measurable."},
+};
+
+function getLocalQ(q, field) {
+  if (LANG === 'en' && EN_Q[q.id]) {
+    if (field === 'question') return EN_Q[q.id].q;
+    if (field === 'options')  return EN_Q[q.id].o;
+    if (field === 'explanation') return EN_Q[q.id].e;
+  }
+  if (field === 'options') return q.options;
+  if (field === 'explanation') return q.explanation;
+  return q.question;
+}
+
+function applyLangUI() {
+  const L = UI[LANG];
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  const setHTML = (id, val) => { const el=document.getElementById(id); if(el) el.innerHTML=val; };
+  const setAttr = (id, attr, val) => { const el=document.getElementById(id); if(el) el[attr]=val; };
+  const setQ = (sel, val) => { const el=document.querySelector(sel); if(el) el.textContent=val; };
+
+  // Start screen
+  set('startTitle',    L.title);
+  set('startSubtitle', L.subtitle);
+  setHTML('nameLbl',   L.nameLbl + ' <span style="color:var(--red)">*</span>');
+  setAttr('candidateName', 'placeholder', L.namePh);
+  setHTML('btnStart',  L.startBtn);
+  setHTML('btnCheckCandidate', L.checkBtn);
+
+  // Quiz screen
+  setQ('.total-timer-lbl', L.totalLbl);
+  setQ('#explanationBox strong', L.explLbl);
+  set('timeoutBox',    L.timeoutQ);
+  set('btnBackToStart', L.backBtn);
+
+  // Result stats
+  setQ('.sv-correct + .sk',  L.correct);
+  setQ('.sv-wrong + .sk',    L.wrong);
+  setQ('.sv-timeout + .sk',  L.timeout);
+  setQ('.sv-time + .sk',     L.result);
+  setQ('.review-title',      L.review);
+
+  // Result meta labels
+  set('rDateLbl',   L.rDateLbl);
+  set('rNumQLbl',   L.rNumQ);
+  set('rTimeQLbl',  L.rTimeQ);
+  set('rTotalLbl',  L.rTotal);
+  set('rSpentLbl',  L.rSpent);
+  set('rFinishLbl', L.rFinish);
+
+  // Lang button
+  const lb = document.getElementById('langBtn');
+  if (lb) lb.textContent = LANG === 'ru' ? 'EN' : 'RU';
+}
+
+function toggleLang() {
+  LANG = LANG === 'ru' ? 'en' : 'ru';
+  localStorage.setItem('qa_lang', LANG);
+  applyLangUI();
+}
+
+initTheme();
+loadSettings();
+applyLangUI();
+checkViewedResult();
+showScreen('screenStart');
+</script>
+</body>
+</html>
