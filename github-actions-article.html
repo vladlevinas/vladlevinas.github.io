@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Actions: Полное руководство</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --orange: #f0883e;
+    --pink: #ff7b72;
+    --teal: #39d353;
+    --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ── */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 56px;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 620px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot-green  { background: var(--green); }
+  .dot-blue   { background: var(--accent); }
+  .dot-orange { background: var(--orange); }
+
+  /* ── ToC ── */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 56px;
+  }
+
+  .toc-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .toc ol {
+    counter-reset: toc;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 32px;
+  }
+
+  @media (max-width: 600px) { .toc ol { grid-template-columns: 1fr; } }
+
+  .toc li {
+    counter-increment: toc;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    min-width: 24px;
+  }
+
+  .toc a { color: var(--text); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+
+  /* ── Sections ── */
+  section { margin-bottom: 72px; }
+
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  h2 .sec-num {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--accent);
+    background: rgba(88,166,255,.1);
+    border: 1px solid rgba(88,166,255,.25);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  h3 {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 32px 0 12px;
+  }
+
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin: 24px 0 8px;
+  }
+
+  p { color: #c9d1d9; margin-bottom: 16px; }
+
+  a { color: var(--accent); }
+
+  /* ── Code ── */
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 20px 0 24px;
+    position: relative;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+
+  .code-lang {
+    font-family: var(--mono);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .code-lang::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--yellow);
+  }
+
+  .code-file {
+    font-family: var(--mono);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  pre code {
+    display: block;
+    padding: 20px;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+    tab-size: 2;
+  }
+
+  code { font-family: var(--mono); font-size: .88em; }
+  p code, li code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--pink);
+  }
+
+  /* ── Syntax colors ── */
+  .kw  { color: var(--pink); }
+  .key { color: var(--accent); }
+  .str { color: var(--green); }
+  .cmt { color: var(--muted); font-style: italic; }
+  .val { color: var(--orange); }
+  .fn  { color: var(--yellow); }
+  .var { color: var(--purple); }
+  .num { color: var(--orange); }
+  .op  { color: var(--pink); }
+
+  /* ── Callouts ── */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14.5px;
+    display: flex;
+    gap: 14px;
+  }
+
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .callout-body { flex: 1; }
+  .callout-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
+  .callout-body p { margin: 0; font-size: 14px; }
+
+  .callout-info { background: rgba(88,166,255,.08); border: 1px solid rgba(88,166,255,.25); }
+  .callout-info .callout-body strong { color: var(--accent); }
+
+  .callout-warn { background: rgba(210,153,34,.08); border: 1px solid rgba(210,153,34,.25); }
+  .callout-warn .callout-body strong { color: var(--yellow); }
+
+  .callout-tip  { background: rgba(63,185,80,.08); border: 1px solid rgba(63,185,80,.25); }
+  .callout-tip .callout-body strong { color: var(--green); }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x: auto; margin: 20px 0 24px; border-radius: 8px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 10px 16px; border-bottom: 1px solid var(--surface2); color: #c9d1d9; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,.025); }
+
+  /* ── Cards ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .card-icon { font-size: 24px; margin-bottom: 12px; }
+  .card-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 6px; }
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ── Pipeline diagram ── */
+  .pipeline {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin: 24px 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .pipe-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .pipe-step-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; }
+  .pipe-step-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .pipe-step-time { font-size: 11px; font-family: var(--mono); color: var(--green); margin-top: 8px; }
+
+  .pipe-arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    color: var(--border);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-family: var(--mono);
+  }
+
+  .badge-blue   { background: rgba(88,166,255,.15); color: var(--accent); }
+  .badge-green  { background: rgba(63,185,80,.15);  color: var(--green); }
+  .badge-orange { background: rgba(240,136,62,.15); color: var(--orange); }
+  .badge-red    { background: rgba(248,81,73,.15);  color: var(--red); }
+
+  /* ── Lists ── */
+  ul, ol { padding-left: 0; margin: 12px 0 20px; }
+  li { color: #c9d1d9; margin-bottom: 8px; padding-left: 24px; position: relative; list-style: none; font-size: 15px; }
+  ul li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+  ol { counter-reset: li; }
+  ol li { counter-increment: li; }
+  ol li::before { content: counter(li) '.'; position: absolute; left: 0; color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; }
+
+  /* ── Conclusion ── */
+  .conclusion {
+    background: linear-gradient(135deg, rgba(88,166,255,.06), rgba(188,140,255,.06));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .conclusion h2 { justify-content: center; font-size: 24px; }
+  .conclusion p { color: var(--muted); max-width: 560px; margin: 12px auto 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-eyebrow">DevOps / CI·CD</div>
+    <h1>GitHub <span>Actions</span>:<br>от первого workflow<br>до production-grade pipeline</h1>
+    <p class="hero-sub">Полное руководство по автоматизации разработки — триггеры, матрицы, среды, кастомные экшены, секреты, OIDC и лучшие практики безопасности.</p>
+    <div class="hero-meta">
+      <span><span class="dot dot-green"></span>Актуально для 2024–2025</span>
+      <span><span class="dot dot-blue"></span>~45 мин чтения</span>
+      <span><span class="dot dot-orange"></span>30+ примеров кода</span>
+    </div>
+  </header>
+
+  <!-- ToC -->
+  <nav class="toc">
+    <div class="toc-title">Содержание</div>
+    <ol>
+      <li><a href="#s1">Что такое GitHub Actions</a></li>
+      <li><a href="#s2">Ключевые концепции</a></li>
+      <li><a href="#s3">Анатомия workflow</a></li>
+      <li><a href="#s4">Триггеры (on:)</a></li>
+      <li><a href="#s5">Jobs и Steps</a></li>
+      <li><a href="#s6">Переменные и секреты</a></li>
+      <li><a href="#s7">Matrix builds</a></li>
+      <li><a href="#s8">Reusable workflows</a></li>
+      <li><a href="#s9">Кастомные Actions</a></li>
+      <li><a href="#s10">Environments и Deployments</a></li>
+      <li><a href="#s11">Безопасность и OIDC</a></li>
+      <li><a href="#s12">Self-hosted runners</a></li>
+      <li><a href="#s13">Кэширование</a></li>
+      <li><a href="#s14">Реальные примеры</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. Что такое -->
+  <section id="s1">
+    <h2><span class="sec-num">01</span> Что такое GitHub Actions</h2>
+    <p>GitHub Actions — встроенная в GitHub платформа автоматизации, которая позволяет запускать произвольные скрипты в ответ на события репозитория: коммиты, pull requests, релизы, расписание, вебхуки.</p>
+    <p>В отличие от Jenkins или GitLab CI, Actions полностью интегрирован с GitHub: у него есть доступ к контексту PR, issue, пакетам, реестру контейнеров, секретам и средам — без дополнительных интеграций.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Быстрый старт</div>
+        <div class="card-desc">Один YAML-файл в <code>.github/workflows/</code> — и pipeline готов</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧩</div>
+        <div class="card-title">Marketplace</div>
+        <div class="card-desc">20 000+ готовых Actions от сообщества и вендоров</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Безопасность</div>
+        <div class="card-desc">OIDC, Environments, required reviews, секреты в Vault</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-title">Цена</div>
+        <div class="card-desc">2 000 мин/месяц бесплатно для публичных и приватных репо</div>
+      </div>
+    </div>
+
+    <h3>Лимиты GitHub-hosted runners</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>OS</th><th>CPU</th><th>RAM</th><th>Disk</th><th>Мин/месяц (free)</th></tr></thead>
+        <tbody>
+          <tr><td><code>ubuntu-latest</code></td><td>4 vCPU</td><td>16 GB</td><td>14 GB SSD</td><td>2 000</td></tr>
+          <tr><td><code>windows-latest</code></td><td>4 vCPU</td><td>16 GB</td><td>14 GB SSD</td><td>1 000 (×2)</td></tr>
+          <tr><td><code>macos-latest</code></td><td>4 vCPU (M1)</td><td>14 GB</td><td>14 GB SSD</td><td>333 (×10)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. Концепции -->
+  <section id="s2">
+    <h2><span class="sec-num">02</span> Ключевые концепции</h2>
+    <p>Прежде чем писать YAML, важно понять иерархию объектов.</p>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-step-name">Уровень 1</div>
+        <div class="pipe-step-title">Workflow</div>
+        <div class="pipe-step-time">.github/workflows/*.yml</div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-step-name">Уровень 2</div>
+        <div class="pipe-step-title">Job</div>
+        <div class="pipe-step-time">runs-on: ubuntu</div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-step-name">Уровень 3</div>
+        <div class="pipe-step-title">Step</div>
+        <div class="pipe-step-time">uses: / run:</div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-step-name">Уровень 4</div>
+        <div class="pipe-step-title">Action</div>
+        <div class="pipe-step-time">Marketplace / Local</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Термин</th><th>Описание</th><th>Аналог в Jenkins</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Workflow</strong></td><td>Автоматизированный процесс, описанный в YAML</td><td>Jenkinsfile</td></tr>
+          <tr><td><strong>Event / Trigger</strong></td><td>Событие, запускающее workflow (push, PR, schedule…)</td><td>Trigger</td></tr>
+          <tr><td><strong>Job</strong></td><td>Группа шагов, выполняемых на одном runner</td><td>Stage</td></tr>
+          <tr><td><strong>Step</strong></td><td>Одна команда или Action внутри Job</td><td>Step</td></tr>
+          <tr><td><strong>Action</strong></td><td>Переиспользуемый модуль (JS, Docker, Composite)</td><td>Shared Library</td></tr>
+          <tr><td><strong>Runner</strong></td><td>Виртуальная машина, исполняющая Job</td><td>Agent/Node</td></tr>
+          <tr><td><strong>Context</strong></td><td>Объекты с метаданными: <code>github</code>, <code>env</code>, <code>secrets</code>…</td><td>env vars</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3. Анатомия -->
+  <section id="s3">
+    <h2><span class="sec-num">03</span> Анатомия workflow-файла</h2>
+    <p>Минимальный рабочий пример — CI для Node.js-приложения:</p>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span><span class="code-file">.github/workflows/ci.yml</span></div><code><span class="cmt"># Название — отображается в UI GitHub</span>
+<span class="key">name</span><span class="op">:</span> <span class="str">CI Pipeline</span>
+
+<span class="cmt"># ── Триггеры ──────────────────────────────────────────</span>
+<span class="key">on</span><span class="op">:</span>
+  <span class="key">push</span><span class="op">:</span>
+    <span class="key">branches</span><span class="op">:</span> [<span class="str">main</span>, <span class="str">develop</span>]
+  <span class="key">pull_request</span><span class="op">:</span>
+    <span class="key">branches</span><span class="op">:</span> [<span class="str">main</span>]
+
+<span class="cmt"># ── Глобальные env-переменные ────────────────────────</span>
+<span class="key">env</span><span class="op">:</span>
+  <span class="key">NODE_VERSION</span><span class="op">:</span> <span class="str">'20'</span>
+
+<span class="cmt"># ── Jobs ─────────────────────────────────────────────</span>
+<span class="key">jobs</span><span class="op">:</span>
+
+  <span class="key">build-and-test</span><span class="op">:</span>
+    <span class="key">name</span><span class="op">:</span> <span class="str">Build & Test</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+
+    <span class="key">steps</span><span class="op">:</span>
+      <span class="cmt"># Клонировать репозиторий</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/checkout@v4</span>
+
+      <span class="cmt"># Установить Node.js (с кэшем npm)</span>
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Setup Node</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="val">actions/setup-node@v4</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">node-version</span><span class="op">:</span> <span class="var">${{ env.NODE_VERSION }}</span>
+          <span class="key">cache</span><span class="op">:</span> <span class="str">'npm'</span>
+
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Install dependencies</span>
+        <span class="key">run</span><span class="op">:</span> <span class="str">npm ci</span>
+
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Lint</span>
+        <span class="key">run</span><span class="op">:</span> <span class="str">npm run lint</span>
+
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Test</span>
+        <span class="key">run</span><span class="op">:</span> <span class="str">npm test -- --coverage</span>
+
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Upload coverage</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="val">actions/upload-artifact@v4</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">name</span><span class="op">:</span> <span class="str">coverage-report</span>
+          <span class="key">path</span><span class="op">:</span> <span class="str">coverage/</span>
+          <span class="key">retention-days</span><span class="op">:</span> <span class="num">7</span></code></pre>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body">
+        <strong>Совет по версиям Actions</strong>
+        <p>Всегда пиннируйте Actions по SHA-коммиту в production: <code>actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683</code>. Это защищает от supply chain атак при компрометации тега.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Триггеры -->
+  <section id="s4">
+    <h2><span class="sec-num">04</span> Триггеры (on:)</h2>
+    <p>Триггеры определяют, когда запускается workflow. GitHub поддерживает более 35 типов событий.</p>
+
+    <h3>Основные события</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">on</span><span class="op">:</span>
+
+  <span class="cmt"># Push в ветку / по тегу</span>
+  <span class="key">push</span><span class="op">:</span>
+    <span class="key">branches</span><span class="op">:</span>
+      - <span class="str">main</span>
+      - <span class="str">'release/**'</span>       <span class="cmt"># glob-паттерн</span>
+    <span class="key">tags</span><span class="op">:</span>
+      - <span class="str">'v*.*.*'</span>
+    <span class="key">paths</span><span class="op">:</span>             <span class="cmt"># только если изменились эти файлы</span>
+      - <span class="str">'src/**'</span>
+      - <span class="str">'package.json'</span>
+    <span class="key">paths-ignore</span><span class="op">:</span>
+      - <span class="str">'docs/**'</span>
+      - <span class="str">'*.md'</span>
+
+  <span class="cmt"># Pull Request</span>
+  <span class="key">pull_request</span><span class="op">:</span>
+    <span class="key">types</span><span class="op">:</span> [<span class="str">opened</span>, <span class="str">synchronize</span>, <span class="str">reopened</span>]
+
+  <span class="cmt"># Расписание (cron)</span>
+  <span class="key">schedule</span><span class="op">:</span>
+    - <span class="key">cron</span><span class="op">:</span> <span class="str">'0 3 * * 1-5'</span>  <span class="cmt"># По будням в 03:00 UTC</span>
+
+  <span class="cmt"># Ручной запуск с параметрами</span>
+  <span class="key">workflow_dispatch</span><span class="op">:</span>
+    <span class="key">inputs</span><span class="op">:</span>
+      <span class="key">environment</span><span class="op">:</span>
+        <span class="key">description</span><span class="op">:</span> <span class="str">'Target environment'</span>
+        <span class="key">required</span><span class="op">:</span> <span class="kw">true</span>
+        <span class="key">type</span><span class="op">:</span> <span class="str">choice</span>
+        <span class="key">options</span><span class="op">:</span> [<span class="str">dev</span>, <span class="str">staging</span>, <span class="str">prod</span>]
+      <span class="key">dry_run</span><span class="op">:</span>
+        <span class="key">description</span><span class="op">:</span> <span class="str">'Dry run only'</span>
+        <span class="key">type</span><span class="op">:</span> <span class="str">boolean</span>
+        <span class="key">default</span><span class="op">:</span> <span class="kw">false</span>
+
+  <span class="cmt"># Вызов из другого workflow</span>
+  <span class="key">workflow_call</span><span class="op">:</span>
+    <span class="key">inputs</span><span class="op">:</span>
+      <span class="key">version</span><span class="op">:</span>
+        <span class="key">type</span><span class="op">:</span> <span class="str">string</span>
+        <span class="key">required</span><span class="op">:</span> <span class="kw">true</span>
+    <span class="key">secrets</span><span class="op">:</span>
+      <span class="key">DEPLOY_TOKEN</span><span class="op">:</span>
+        <span class="key">required</span><span class="op">:</span> <span class="kw">true</span>
+
+  <span class="cmt"># Событие из другого репозитория</span>
+  <span class="key">repository_dispatch</span><span class="op">:</span>
+    <span class="key">types</span><span class="op">:</span> [<span class="str">deploy-prod</span>]</code></pre>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>schedule и fork</strong>
+        <p>Cron-триггеры не работают в форках. Если workflow не запускался 60 дней — GitHub автоматически отключает расписание.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Jobs и Steps -->
+  <section id="s5">
+    <h2><span class="sec-num">05</span> Jobs, Steps и зависимости</h2>
+
+    <h3>needs: — зависимости между Jobs</h3>
+    <p>По умолчанию все Jobs запускаются параллельно. Используйте <code>needs:</code> для последовательного выполнения и передачи outputs.</p>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">jobs</span><span class="op">:</span>
+
+  <span class="key">build</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">outputs</span><span class="op">:</span>
+      <span class="key">image-tag</span><span class="op">:</span> <span class="var">${{ steps.meta.outputs.tags }}</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/checkout@v4</span>
+      - <span class="key">id</span><span class="op">:</span> meta
+        <span class="key">uses</span><span class="op">:</span> <span class="val">docker/metadata-action@v5</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">images</span><span class="op">:</span> <span class="str">ghcr.io/${{ github.repository }}</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">docker build -t ${{ steps.meta.outputs.tags }} .</span>
+
+  <span class="key">test</span><span class="op">:</span>
+    <span class="key">needs</span><span class="op">:</span> <span class="str">build</span>         <span class="cmt"># ждёт build</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">echo "Image: ${{ needs.build.outputs.image-tag }}"</span>
+
+  <span class="key">deploy-staging</span><span class="op">:</span>
+    <span class="key">needs</span><span class="op">:</span> [<span class="str">build</span>, <span class="str">test</span>]  <span class="cmt"># ждёт оба</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">if</span><span class="op">:</span> <span class="var">github.ref == 'refs/heads/main'</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">echo "Deploying to staging..."</span>
+
+  <span class="key">notify</span><span class="op">:</span>
+    <span class="cmt"># Запускается всегда, даже если предыдущие упали</span>
+    <span class="key">needs</span><span class="op">:</span> [<span class="str">build</span>, <span class="str">test</span>, <span class="str">deploy-staging</span>]
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">if</span><span class="op">:</span> <span class="var">always()</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">echo "Status: ${{ needs.deploy-staging.result }}"</span></code></pre>
+
+    <h3>Условия if: и функции выражений</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">steps</span><span class="op">:</span>
+  <span class="cmt"># Только на main</span>
+  - <span class="key">if</span><span class="op">:</span> <span class="var">github.ref == 'refs/heads/main'</span>
+
+  <span class="cmt"># Только при неудаче предыдущего шага</span>
+  - <span class="key">if</span><span class="op">:</span> <span class="var">failure()</span>
+
+  <span class="cmt"># Всегда, даже при cancelled</span>
+  - <span class="key">if</span><span class="op">:</span> <span class="var">always()</span>
+
+  <span class="cmt"># Сложное условие</span>
+  - <span class="key">if</span><span class="op">:</span> <span class="op">|</span>
+      <span class="var">github.event_name == 'push' &&
+      contains(github.ref, 'release') &&
+      !cancelled()</span>
+
+  <span class="cmt"># Проверка входных данных workflow_dispatch</span>
+  - <span class="key">if</span><span class="op">:</span> <span class="var">inputs.dry_run == false</span></code></pre>
+
+    <h3>Работа с outputs и артефактами</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">steps</span><span class="op">:</span>
+  - <span class="key">name</span><span class="op">:</span> <span class="str">Generate version</span>
+    <span class="key">id</span><span class="op">:</span> version
+    <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+      <span class="cmt"># Записываем output через $GITHUB_OUTPUT</span>
+      <span class="fn">echo</span> <span class="str">"tag=v$(date +%Y%m%d)-${{ github.run_number }}"</span> >> <span class="var">$GITHUB_OUTPUT</span>
+
+  - <span class="key">name</span><span class="op">:</span> <span class="str">Use version</span>
+    <span class="key">run</span><span class="op">:</span> <span class="fn">echo</span> <span class="str">"Building ${{ steps.version.outputs.tag }}"</span>
+
+  <span class="cmt"># Мультистрочный output</span>
+  - <span class="key">name</span><span class="op">:</span> <span class="str">Set matrix</span>
+    <span class="key">id</span><span class="op">:</span> set-matrix
+    <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+      <span class="fn">echo</span> <span class="str">"matrix={\"include\":[{\"env\":\"dev\"},{\"env\":\"prod\"}]}"</span> >> <span class="var">$GITHUB_OUTPUT</span>
+
+  <span class="cmt"># Summary — красивый отчёт в UI</span>
+  - <span class="key">name</span><span class="op">:</span> <span class="str">Write summary</span>
+    <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+      <span class="fn">echo</span> <span class="str">"## Build Results 🚀"</span> >> <span class="var">$GITHUB_STEP_SUMMARY</span>
+      <span class="fn">echo</span> <span class="str">"| Status | Value |"</span>   >> <span class="var">$GITHUB_STEP_SUMMARY</span>
+      <span class="fn">echo</span> <span class="str">"|--------|-------|"</span>   >> <span class="var">$GITHUB_STEP_SUMMARY</span>
+      <span class="fn">echo</span> <span class="str">"| Tag | v1.2.3 |"</span>     >> <span class="var">$GITHUB_STEP_SUMMARY</span></code></pre>
+  </section>
+
+  <!-- 6. Secrets -->
+  <section id="s6">
+    <h2><span class="sec-num">06</span> Переменные и секреты</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Тип</th><th>Синтаксис</th><th>Видимость в логах</th><th>Scope</th></tr></thead>
+        <tbody>
+          <tr><td>Environment variable</td><td><code>${{ env.MY_VAR }}</code></td><td>Да</td><td>Job / Step</td></tr>
+          <tr><td>Secret</td><td><code>${{ secrets.TOKEN }}</code></td><td>Маскируется ****</td><td>Repo / Org / Env</td></tr>
+          <tr><td>Variable (repo var)</td><td><code>${{ vars.APP_URL }}</code></td><td>Да</td><td>Repo / Org / Env</td></tr>
+          <tr><td>GitHub context</td><td><code>${{ github.sha }}</code></td><td>Да</td><td>Workflow</td></tr>
+          <tr><td>Input (dispatch)</td><td><code>${{ inputs.env }}</code></td><td>Да</td><td>Workflow</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">env</span><span class="op">:</span>
+  <span class="cmt"># На уровне workflow</span>
+  <span class="key">APP_ENV</span><span class="op">:</span> <span class="str">production</span>
+
+<span class="key">jobs</span><span class="op">:</span>
+  <span class="key">deploy</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">env</span><span class="op">:</span>
+      <span class="cmt"># На уровне job (переопределяет workflow-level)</span>
+      <span class="key">DEPLOY_DIR</span><span class="op">:</span> <span class="str">/var/app</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Deploy</span>
+        <span class="key">env</span><span class="op">:</span>
+          <span class="cmt"># На уровне step (секрет передаётся здесь, а не в run)</span>
+          <span class="key">AWS_ACCESS_KEY_ID</span><span class="op">:</span>     <span class="var">${{ secrets.AWS_ACCESS_KEY_ID }}</span>
+          <span class="key">AWS_SECRET_ACCESS_KEY</span><span class="op">:</span> <span class="var">${{ secrets.AWS_SECRET_ACCESS_KEY }}</span>
+          <span class="key">AWS_REGION</span><span class="op">:</span>             <span class="str">eu-west-1</span>
+        <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+          <span class="cmt"># Секреты доступны как обычные переменные окружения</span>
+          <span class="fn">aws</span> s3 sync dist/ s3://my-bucket/</code></pre>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>Никогда не выводите секреты в echo</strong>
+        <p>GitHub маскирует известные значения секретов в логах, но <code>echo "$SECRET" | base64</code> или разбивка на части могут обойти маскирование. Используйте секреты только через <code>env:</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Matrix -->
+  <section id="s7">
+    <h2><span class="sec-num">07</span> Matrix builds</h2>
+    <p>Matrix позволяет запускать один Job с разными комбинациями параметров — например, тестировать на нескольких версиях языка и ОС одновременно.</p>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">jobs</span><span class="op">:</span>
+  <span class="key">test</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="var">${{ matrix.os }}</span>
+    <span class="key">strategy</span><span class="op">:</span>
+      <span class="key">fail-fast</span><span class="op">:</span> <span class="kw">false</span>   <span class="cmt"># не останавливать матрицу при первом провале</span>
+      <span class="key">max-parallel</span><span class="op">:</span> <span class="num">4</span>    <span class="cmt"># не более 4 параллельных Job</span>
+      <span class="key">matrix</span><span class="op">:</span>
+        <span class="key">os</span><span class="op">:</span>      [<span class="str">ubuntu-latest</span>, <span class="str">windows-latest</span>, <span class="str">macos-latest</span>]
+        <span class="key">node</span><span class="op">:</span>    [<span class="str">'18'</span>, <span class="str">'20'</span>, <span class="str">'22'</span>]
+        <span class="key">include</span><span class="op">:</span>
+          <span class="cmt"># Добавить экспериментальную комбинацию</span>
+          - <span class="key">os</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+            <span class="key">node</span><span class="op">:</span> <span class="str">'23'</span>
+            <span class="key">experimental</span><span class="op">:</span> <span class="kw">true</span>
+        <span class="key">exclude</span><span class="op">:</span>
+          <span class="cmt"># Исключить Node 18 на macOS</span>
+          - <span class="key">os</span><span class="op">:</span> <span class="str">macos-latest</span>
+            <span class="key">node</span><span class="op">:</span> <span class="str">'18'</span>
+
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/checkout@v4</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/setup-node@v4</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">node-version</span><span class="op">:</span> <span class="var">${{ matrix.node }}</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">npm ci && npm test</span>
+        <span class="key">continue-on-error</span><span class="op">:</span> <span class="var">${{ matrix.experimental == true }}</span></code></pre>
+
+    <h3>Динамическая матрица из скрипта</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">jobs</span><span class="op">:</span>
+  <span class="key">prepare</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">outputs</span><span class="op">:</span>
+      <span class="key">matrix</span><span class="op">:</span> <span class="var">${{ steps.set.outputs.matrix }}</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">id</span><span class="op">:</span> set
+        <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+          <span class="cmt"># Читаем сервисы из файла</span>
+          <span class="var">SERVICES</span><span class="op">=</span><span class="fn">$(</span><span class="fn">cat services.json</span><span class="fn">)</span>
+          <span class="fn">echo</span> <span class="str">"matrix=$SERVICES"</span> >> <span class="var">$GITHUB_OUTPUT</span>
+
+  <span class="key">deploy</span><span class="op">:</span>
+    <span class="key">needs</span><span class="op">:</span> prepare
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">strategy</span><span class="op">:</span>
+      <span class="key">matrix</span><span class="op">:</span> <span class="var">${{ fromJson(needs.prepare.outputs.matrix) }}</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">echo "Deploying ${{ matrix.service }}"</span></code></pre>
+  </section>
+
+  <!-- 8. Reusable -->
+  <section id="s8">
+    <h2><span class="sec-num">08</span> Reusable Workflows</h2>
+    <p>Reusable workflows — это способ вынести общую логику в отдельный файл и вызывать его из нескольких workflow. Это DRY-принцип для CI/CD.</p>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span><span class="code-file">.github/workflows/_deploy.yml  (reusable)</span></div><code><span class="key">on</span><span class="op">:</span>
+  <span class="key">workflow_call</span><span class="op">:</span>
+    <span class="key">inputs</span><span class="op">:</span>
+      <span class="key">environment</span><span class="op">:</span>
+        <span class="key">type</span><span class="op">:</span>     <span class="str">string</span>
+        <span class="key">required</span><span class="op">:</span> <span class="kw">true</span>
+      <span class="key">image-tag</span><span class="op">:</span>
+        <span class="key">type</span><span class="op">:</span>     <span class="str">string</span>
+        <span class="key">required</span><span class="op">:</span> <span class="kw">true</span>
+    <span class="key">secrets</span><span class="op">:</span>
+      <span class="key">KUBE_CONFIG</span><span class="op">:</span>
+        <span class="key">required</span><span class="op">:</span> <span class="kw">true</span>
+    <span class="key">outputs</span><span class="op">:</span>
+      <span class="key">deployment-url</span><span class="op">:</span>
+        <span class="key">value</span><span class="op">:</span> <span class="var">${{ jobs.deploy.outputs.url }}</span>
+
+<span class="key">jobs</span><span class="op">:</span>
+  <span class="key">deploy</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">environment</span><span class="op">:</span> <span class="var">${{ inputs.environment }}</span>
+    <span class="key">outputs</span><span class="op">:</span>
+      <span class="key">url</span><span class="op">:</span> <span class="var">${{ steps.deploy.outputs.url }}</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">id</span><span class="op">:</span> deploy
+        <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+          <span class="fn">echo</span> <span class="str">"Deploying ${{ inputs.image-tag }} to ${{ inputs.environment }}"</span>
+          <span class="fn">echo</span> <span class="str">"url=https://${{ inputs.environment }}.example.com"</span> >> <span class="var">$GITHUB_OUTPUT</span></code></pre>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span><span class="code-file">.github/workflows/cd.yml  (caller)</span></div><code><span class="key">jobs</span><span class="op">:</span>
+  <span class="key">deploy-staging</span><span class="op">:</span>
+    <span class="key">uses</span><span class="op">:</span> <span class="str">./.github/workflows/_deploy.yml</span>
+    <span class="key">with</span><span class="op">:</span>
+      <span class="key">environment</span><span class="op">:</span> staging
+      <span class="key">image-tag</span><span class="op">:</span>   <span class="var">${{ needs.build.outputs.image-tag }}</span>
+    <span class="key">secrets</span><span class="op">:</span>
+      <span class="key">KUBE_CONFIG</span><span class="op">:</span> <span class="var">${{ secrets.KUBE_CONFIG_STAGING }}</span>
+
+  <span class="key">deploy-prod</span><span class="op">:</span>
+    <span class="key">needs</span><span class="op">:</span> deploy-staging
+    <span class="key">uses</span><span class="op">:</span> <span class="str">./.github/workflows/_deploy.yml</span>
+    <span class="key">with</span><span class="op">:</span>
+      <span class="key">environment</span><span class="op">:</span> production
+      <span class="key">image-tag</span><span class="op">:</span>   <span class="var">${{ needs.build.outputs.image-tag }}</span>
+    <span class="key">secrets</span><span class="op">:</span>
+      <span class="key">inherit</span>     <span class="cmt"># передать все секреты родителя</span></code></pre>
+
+    <div class="callout callout-tip">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <strong>Организация reusable workflows</strong>
+        <p>Принято называть переиспользуемые файлы с подчёркивания: <code>_build.yml</code>, <code>_deploy.yml</code>. Их можно хранить в центральном репозитории <code>.github</code> организации и вызывать через <code>ORG/.github/.github/workflows/_deploy.yml@main</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Custom Actions -->
+  <section id="s9">
+    <h2><span class="sec-num">09</span> Кастомные Actions</h2>
+    <p>Существует три типа кастомных Actions: JavaScript, Docker Container и Composite.</p>
+
+    <h3>Composite Action</h3>
+    <p>Наиболее простой вариант — обёртка над набором шагов. Не требует компиляции.</p>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span><span class="code-file">actions/setup-python-poetry/action.yml</span></div><code><span class="key">name</span><span class="op">:</span> <span class="str">'Setup Python + Poetry'</span>
+<span class="key">description</span><span class="op">:</span> <span class="str">'Installs Python, Poetry and caches dependencies'</span>
+
+<span class="key">inputs</span><span class="op">:</span>
+  <span class="key">python-version</span><span class="op">:</span>
+    <span class="key">description</span><span class="op">:</span> <span class="str">'Python version'</span>
+    <span class="key">required</span><span class="op">:</span> <span class="kw">false</span>
+    <span class="key">default</span><span class="op">:</span> <span class="str">'3.12'</span>
+  <span class="key">poetry-version</span><span class="op">:</span>
+    <span class="key">description</span><span class="op">:</span> <span class="str">'Poetry version'</span>
+    <span class="key">default</span><span class="op">:</span> <span class="str">'1.8.3'</span>
+
+<span class="key">outputs</span><span class="op">:</span>
+  <span class="key">cache-hit</span><span class="op">:</span>
+    <span class="key">description</span><span class="op">:</span> <span class="str">'Whether cache was hit'</span>
+    <span class="key">value</span><span class="op">:</span> <span class="var">${{ steps.cache.outputs.cache-hit }}</span>
+
+<span class="key">runs</span><span class="op">:</span>
+  <span class="key">using</span><span class="op">:</span> <span class="str">"composite"</span>
+  <span class="key">steps</span><span class="op">:</span>
+    - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/setup-python@v5</span>
+      <span class="key">with</span><span class="op">:</span>
+        <span class="key">python-version</span><span class="op">:</span> <span class="var">${{ inputs.python-version }}</span>
+
+    - <span class="key">name</span><span class="op">:</span> <span class="str">Install Poetry</span>
+      <span class="key">shell</span><span class="op">:</span> <span class="str">bash</span>
+      <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+        <span class="fn">pip install</span> poetry==<span class="var">${{ inputs.poetry-version }}</span>
+
+    - <span class="key">id</span><span class="op">:</span> cache
+      <span class="key">uses</span><span class="op">:</span> <span class="val">actions/cache@v4</span>
+      <span class="key">with</span><span class="op">:</span>
+        <span class="key">path</span><span class="op">:</span> <span class="var">~/.cache/pypoetry</span>
+        <span class="key">key</span><span class="op">:</span> <span class="var">poetry-${{ hashFiles('poetry.lock') }}</span>
+
+    - <span class="key">name</span><span class="op">:</span> <span class="str">Install dependencies</span>
+      <span class="key">shell</span><span class="op">:</span> <span class="str">bash</span>
+      <span class="key">run</span><span class="op">:</span> <span class="str">poetry install --no-root</span></code></pre>
+
+    <h3>JavaScript Action</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span><span class="code-file">action.yml</span></div><code><span class="key">name</span><span class="op">:</span> <span class="str">'Slack Notifier'</span>
+<span class="key">runs</span><span class="op">:</span>
+  <span class="key">using</span><span class="op">:</span> <span class="str">'node20'</span>
+  <span class="key">main</span><span class="op">:</span> <span class="str">'dist/index.js'</span>
+  <span class="key">pre</span><span class="op">:</span>  <span class="str">'dist/pre.js'</span>    <span class="cmt"># запускается перед main</span>
+  <span class="key">post</span><span class="op">:</span> <span class="str">'dist/post.js'</span>   <span class="cmt"># запускается после main (cleanup)</span></code></pre>
+
+    <pre><div class="code-header"><span class="code-lang">javascript</span><span class="code-file">src/index.js</span></div><code><span class="kw">const</span> <span class="fn">core</span>  <span class="op">=</span> <span class="fn">require</span>(<span class="str">'@actions/core'</span>);
+<span class="kw">const</span> <span class="fn">github</span> <span class="op">=</span> <span class="fn">require</span>(<span class="str">'@actions/github'</span>);
+
+<span class="kw">async function</span> <span class="fn">run</span>() {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> token   <span class="op">=</span> core.<span class="fn">getInput</span>(<span class="str">'token'</span>, { required: <span class="kw">true</span> });
+    <span class="kw">const</span> message <span class="op">=</span> core.<span class="fn">getInput</span>(<span class="str">'message'</span>);
+    <span class="kw">const</span> ctx     <span class="op">=</span> github.<span class="fn">context</span>;
+
+    core.<span class="fn">info</span>(<span class="str">`Running on: ${ctx.repo.owner}/${ctx.repo.repo}`</span>);
+    core.<span class="fn">setOutput</span>(<span class="str">'result'</span>, <span class="str">'success'</span>);
+
+    <span class="cmt">// Добавить аннотацию в UI</span>
+    core.<span class="fn">notice</span>(<span class="str">'Deploy completed'</span>, {
+      title: <span class="str">'Deployment'</span>,
+      file:  <span class="str">'src/app.ts'</span>,
+      startLine: <span class="num">10</span>
+    });
+
+  } <span class="kw">catch</span> (err) {
+    core.<span class="fn">setFailed</span>(err.message);
+  }
+}
+
+<span class="fn">run</span>();</code></pre>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body">
+        <strong>Коммитить dist/ в репозиторий</strong>
+        <p>JavaScript Actions должны включать <code>dist/</code> в репозиторий. GitHub не устанавливает npm при использовании Action. Используйте <code>@vercel/ncc</code> для бандлинга всех зависимостей в один файл.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Environments -->
+  <section id="s10">
+    <h2><span class="sec-num">10</span> Environments и Deployments</h2>
+    <p>Environments позволяют добавить approval gates, задержки и защиты перед деплоем в production.</p>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">jobs</span><span class="op">:</span>
+  <span class="key">deploy-prod</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">environment</span><span class="op">:</span>
+      <span class="key">name</span><span class="op">:</span> production
+      <span class="key">url</span><span class="op">:</span>  <span class="str">https://app.example.com</span>
+    <span class="key">concurrency</span><span class="op">:</span>
+      <span class="key">group</span><span class="op">:</span>             <span class="str">prod-deploy</span>
+      <span class="key">cancel-in-progress</span><span class="op">:</span> <span class="kw">false</span>  <span class="cmt"># не отменять текущий деплой</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">kubectl apply -f k8s/</span></code></pre>
+
+    <p>В настройках Environment (Settings → Environments) можно задать:</p>
+    <ul>
+      <li><strong>Required reviewers</strong> — один или несколько человек должны одобрить деплой</li>
+      <li><strong>Wait timer</strong> — задержка перед запуском (до 43 200 минут = 30 дней)</li>
+      <li><strong>Deployment branches</strong> — только определённые ветки могут деплоиться</li>
+      <li><strong>Environment secrets</strong> — секреты, доступные только в этом Environment</li>
+      <li><strong>Environment variables</strong> — переменные, специфичные для среды</li>
+    </ul>
+  </section>
+
+  <!-- 11. Security / OIDC -->
+  <section id="s11">
+    <h2><span class="sec-num">11</span> Безопасность и OIDC</h2>
+
+    <h3>OIDC — деплой без долгоживущих ключей</h3>
+    <p>OpenID Connect позволяет получать временные токены облачных провайдеров вместо хранения статических ключей в секретах.</p>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span><span class="code-file">AWS через OIDC</span></div><code><span class="key">permissions</span><span class="op">:</span>
+  <span class="key">id-token</span><span class="op">:</span> <span class="str">write</span>   <span class="cmt"># разрешить получение OIDC токена</span>
+  <span class="key">contents</span><span class="op">:</span> <span class="str">read</span>
+
+<span class="key">jobs</span><span class="op">:</span>
+  <span class="key">deploy</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Configure AWS Credentials</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="val">aws-actions/configure-aws-credentials@v4</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">role-to-assume</span><span class="op">:</span>    <span class="str">arn:aws:iam::123456789:role/github-actions</span>
+          <span class="key">role-session-name</span><span class="op">:</span> <span class="str">GitHubActions</span>
+          <span class="key">aws-region</span><span class="op">:</span>        <span class="str">eu-west-1</span>
+          <span class="cmt"># audience — необязательно, по умолчанию sts.amazonaws.com</span>
+
+      - <span class="key">run</span><span class="op">:</span> <span class="fn">aws</span> sts get-caller-identity</code></pre>
+
+    <h3>Минимальные permissions</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="cmt"># Отключить все разрешения по умолчанию</span>
+<span class="key">permissions</span><span class="op">:</span> {}
+
+<span class="key">jobs</span><span class="op">:</span>
+  <span class="key">read-only</span><span class="op">:</span>
+    <span class="key">permissions</span><span class="op">:</span>
+      <span class="key">contents</span><span class="op">:</span>  <span class="str">read</span>
+      <span class="key">packages</span><span class="op">:</span>  <span class="str">read</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">echo "Limited scope"</span>
+
+  <span class="key">pr-bot</span><span class="op">:</span>
+    <span class="key">permissions</span><span class="op">:</span>
+      <span class="key">contents</span><span class="op">:</span>      <span class="str">read</span>
+      <span class="key">pull-requests</span><span class="op">:</span> <span class="str">write</span>   <span class="cmt"># только для создания комментариев</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/github-script@v7</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">script</span><span class="op">:</span> <span class="op">|</span>
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: <span class="str">'Tests passed ✅'</span>
+            })</code></pre>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Лучшая практика</th><th>Зачем</th></tr></thead>
+        <tbody>
+          <tr><td>Пиннировать Actions по SHA</td><td>Защита от supply chain атак при захвате тега</td></tr>
+          <tr><td>OIDC вместо ключей</td><td>Нет долгоживущих секретов — меньше blast radius</td></tr>
+          <tr><td><code>permissions: {}</code> по умолчанию</td><td>Принцип наименьших привилегий</td></tr>
+          <tr><td>Проверять <code>pull_request_target</code> осторожно</td><td>Открывает доступ к секретам из форков — опасно</td></tr>
+          <tr><td>Dependabot для Actions</td><td>Автоматические обновления зависимостей</td></tr>
+          <tr><td>Использовать Environment для prod</td><td>Обязательный approve перед деплоем</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 12. Self-hosted -->
+  <section id="s12">
+    <h2><span class="sec-num">12</span> Self-hosted Runners</h2>
+    <p>Когда GitHub-hosted runner недостаточно: нужен GPU, приватная сеть, специфичное железо или снижение стоимости.</p>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">jobs</span><span class="op">:</span>
+  <span class="key">gpu-training</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span>
+      - <span class="str">self-hosted</span>
+      - <span class="str">linux</span>
+      - <span class="str">gpu</span>        <span class="cmt"># кастомный лейбл</span>
+      - <span class="str">rtx-5090</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="str">nvidia-smi</span></code></pre>
+
+    <h3>Runner в Docker (Kubernetes)</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span><span class="code-file">k8s/runner-deployment.yaml</span></div><code><span class="key">apiVersion</span><span class="op">:</span> <span class="str">apps/v1</span>
+<span class="key">kind</span><span class="op">:</span> <span class="str">Deployment</span>
+<span class="key">metadata</span><span class="op">:</span>
+  <span class="key">name</span><span class="op">:</span> <span class="str">github-runner</span>
+<span class="key">spec</span><span class="op">:</span>
+  <span class="key">replicas</span><span class="op">:</span> <span class="num">3</span>
+  <span class="key">template</span><span class="op">:</span>
+    <span class="key">spec</span><span class="op">:</span>
+      <span class="key">containers</span><span class="op">:</span>
+        - <span class="key">name</span><span class="op">:</span> <span class="str">runner</span>
+          <span class="key">image</span><span class="op">:</span> <span class="str">myoung34/github-runner:latest</span>
+          <span class="key">env</span><span class="op">:</span>
+            - <span class="key">name</span><span class="op">:</span>  <span class="str">REPO_URL</span>
+              <span class="key">value</span><span class="op">:</span> <span class="str">https://github.com/org/repo</span>
+            - <span class="key">name</span><span class="op">:</span> <span class="str">RUNNER_TOKEN</span>
+              <span class="key">valueFrom</span><span class="op">:</span>
+                <span class="key">secretKeyRef</span><span class="op">:</span>
+                  <span class="key">name</span><span class="op">:</span> <span class="str">runner-secret</span>
+                  <span class="key">key</span><span class="op">:</span>  <span class="str">token</span>
+            - <span class="key">name</span><span class="op">:</span>  <span class="str">LABELS</span>
+              <span class="key">value</span><span class="op">:</span> <span class="str">self-hosted,linux,k8s</span></code></pre>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>Self-hosted + публичные репозитории = риск</strong>
+        <p>Никогда не используйте self-hosted runner для публичных репозиториев без ограничений. Злоумышленник может открыть PR с вредоносным кодом, который выполнится на вашем сервере.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. Cache -->
+  <section id="s13">
+    <h2><span class="sec-num">13</span> Кэширование зависимостей</h2>
+
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">steps</span><span class="op">:</span>
+  <span class="cmt"># Ручное управление кэшем</span>
+  - <span class="key">name</span><span class="op">:</span> <span class="str">Cache node_modules</span>
+    <span class="key">id</span><span class="op">:</span> cache-npm
+    <span class="key">uses</span><span class="op">:</span> <span class="val">actions/cache@v4</span>
+    <span class="key">with</span><span class="op">:</span>
+      <span class="key">path</span><span class="op">:</span> ~/.npm
+      <span class="key">key</span><span class="op">:</span> <span class="var">npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}</span>
+      <span class="key">restore-keys</span><span class="op">:</span> <span class="op">|</span>
+        <span class="str">npm-${{ runner.os }}-</span>
+        <span class="str">npm-</span>
+
+  - <span class="key">run</span><span class="op">:</span> <span class="str">npm ci</span>
+    <span class="key">if</span><span class="op">:</span> <span class="var">steps.cache-npm.outputs.cache-hit != 'true'</span>
+
+  <span class="cmt"># Docker layer cache с GitHub Container Registry</span>
+  - <span class="key">name</span><span class="op">:</span> <span class="str">Build Docker image</span>
+    <span class="key">uses</span><span class="op">:</span> <span class="val">docker/build-push-action@v6</span>
+    <span class="key">with</span><span class="op">:</span>
+      <span class="key">push</span><span class="op">:</span> <span class="kw">true</span>
+      <span class="key">tags</span><span class="op">:</span> <span class="var">ghcr.io/${{ github.repository }}:latest</span>
+      <span class="key">cache-from</span><span class="op">:</span> <span class="str">type=gha</span>
+      <span class="key">cache-to</span><span class="op">:</span>   <span class="str">type=gha,mode=max</span></code></pre>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Экосистема</th><th>Автоматический кэш через setup-*</th><th>Путь кэша</th></tr></thead>
+        <tbody>
+          <tr><td>Node.js / npm</td><td><code>actions/setup-node cache: 'npm'</code></td><td><code>~/.npm</code></td></tr>
+          <tr><td>Node.js / yarn</td><td><code>cache: 'yarn'</code></td><td><code>$(yarn cache dir)</code></td></tr>
+          <tr><td>Python / pip</td><td><code>actions/setup-python cache: 'pip'</code></td><td><code>~/.cache/pip</code></td></tr>
+          <tr><td>Go</td><td><code>actions/setup-go cache: true</code></td><td><code>~/go/pkg/mod</code></td></tr>
+          <tr><td>Java / Maven</td><td><code>actions/setup-java cache: 'maven'</code></td><td><code>~/.m2/repository</code></td></tr>
+          <tr><td>Rust</td><td>Нет, использовать <code>actions/cache</code></td><td><code>~/.cargo, target/</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 14. Real examples -->
+  <section id="s14">
+    <h2><span class="sec-num">14</span> Реальные примеры</h2>
+
+    <h3>Полный CI/CD для Docker + Kubernetes</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span><span class="code-file">.github/workflows/release.yml</span></div><code><span class="key">name</span><span class="op">:</span> <span class="str">Release</span>
+
+<span class="key">on</span><span class="op">:</span>
+  <span class="key">push</span><span class="op">:</span>
+    <span class="key">tags</span><span class="op">:</span> [<span class="str">'v*.*.*'</span>]
+
+<span class="key">permissions</span><span class="op">:</span>
+  <span class="key">contents</span><span class="op">:</span>  <span class="str">write</span>   <span class="cmt"># создание GitHub Release</span>
+  <span class="key">packages</span><span class="op">:</span>  <span class="str">write</span>   <span class="cmt"># push в GHCR</span>
+  <span class="key">id-token</span><span class="op">:</span>  <span class="str">write</span>   <span class="cmt"># OIDC для AWS</span>
+
+<span class="key">jobs</span><span class="op">:</span>
+
+  <span class="key">build</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">outputs</span><span class="op">:</span>
+      <span class="key">image</span><span class="op">:</span> <span class="var">${{ steps.meta.outputs.tags }}</span>
+      <span class="key">digest</span><span class="op">:</span> <span class="var">${{ steps.push.outputs.digest }}</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/checkout@v4</span>
+
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Docker metadata</span>
+        <span class="key">id</span><span class="op">:</span> meta
+        <span class="key">uses</span><span class="op">:</span> <span class="val">docker/metadata-action@v5</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">images</span><span class="op">:</span> <span class="str">ghcr.io/${{ github.repository }}</span>
+          <span class="key">tags</span><span class="op">:</span> <span class="op">|</span>
+            <span class="str">type=semver,pattern={{version}}</span>
+            <span class="str">type=semver,pattern={{major}}.{{minor}}</span>
+            <span class="str">type=sha</span>
+
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">docker/login-action@v3</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">registry</span><span class="op">:</span> <span class="str">ghcr.io</span>
+          <span class="key">username</span><span class="op">:</span> <span class="var">${{ github.actor }}</span>
+          <span class="key">password</span><span class="op">:</span> <span class="var">${{ secrets.GITHUB_TOKEN }}</span>
+
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Build & Push</span>
+        <span class="key">id</span><span class="op">:</span> push
+        <span class="key">uses</span><span class="op">:</span> <span class="val">docker/build-push-action@v6</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">push</span><span class="op">:</span>       <span class="kw">true</span>
+          <span class="key">tags</span><span class="op">:</span>       <span class="var">${{ steps.meta.outputs.tags }}</span>
+          <span class="key">labels</span><span class="op">:</span>     <span class="var">${{ steps.meta.outputs.labels }}</span>
+          <span class="key">cache-from</span><span class="op">:</span> <span class="str">type=gha</span>
+          <span class="key">cache-to</span><span class="op">:</span>   <span class="str">type=gha,mode=max</span>
+          <span class="key">provenance</span><span class="op">:</span> <span class="kw">true</span>  <span class="cmt"># SLSA provenance</span>
+          <span class="key">sbom</span><span class="op">:</span>       <span class="kw">true</span>  <span class="cmt"># Software Bill of Materials</span>
+
+  <span class="key">deploy</span><span class="op">:</span>
+    <span class="key">needs</span><span class="op">:</span> build
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">environment</span><span class="op">:</span>
+      <span class="key">name</span><span class="op">:</span> production
+      <span class="key">url</span><span class="op">:</span>  <span class="str">https://app.example.com</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/checkout@v4</span>
+      - <span class="key">name</span><span class="op">:</span> <span class="str">AWS Credentials via OIDC</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="val">aws-actions/configure-aws-credentials@v4</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">role-to-assume</span><span class="op">:</span> <span class="var">${{ secrets.AWS_ROLE_ARN }}</span>
+          <span class="key">aws-region</span><span class="op">:</span>     <span class="str">eu-west-1</span>
+      - <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+          <span class="fn">aws</span> eks update-kubeconfig --name prod-cluster
+          <span class="fn">helm</span> upgrade --install myapp ./chart \
+            --set image.tag=<span class="var">${{ github.ref_name }}</span> \
+            --wait --timeout 5m
+
+  <span class="key">release</span><span class="op">:</span>
+    <span class="key">needs</span><span class="op">:</span> deploy
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/checkout@v4</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">fetch-depth</span><span class="op">:</span> <span class="num">0</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">softprops/action-gh-release@v2</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">generate_release_notes</span><span class="op">:</span> <span class="kw">true</span>
+          <span class="key">make_latest</span><span class="op">:</span>           <span class="kw">true</span></code></pre>
+
+    <h3>Автоматический PR-ревью бот</h3>
+    <pre><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="key">name</span><span class="op">:</span> <span class="str">PR Review Bot</span>
+
+<span class="key">on</span><span class="op">:</span>
+  <span class="key">pull_request</span><span class="op">:</span>
+    <span class="key">types</span><span class="op">:</span> [<span class="str">opened</span>, <span class="str">synchronize</span>]
+
+<span class="key">permissions</span><span class="op">:</span>
+  <span class="key">pull-requests</span><span class="op">:</span> <span class="str">write</span>
+  <span class="key">contents</span><span class="op">:</span>      <span class="str">read</span>
+
+<span class="key">jobs</span><span class="op">:</span>
+  <span class="key">review</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="val">actions/checkout@v4</span>
+
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Check PR size</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="val">actions/github-script@v7</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">script</span><span class="op">:</span> <span class="op">|</span>
+            <span class="kw">const</span> { data: pr } <span class="op">=</span> <span class="kw">await</span> github.rest.pulls.get({
+              owner:       context.repo.owner,
+              repo:        context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            <span class="kw">const</span> lines <span class="op">=</span> pr.additions <span class="op">+</span> pr.deletions;
+            <span class="kw">if</span> (lines > <span class="num">500</span>) {
+              <span class="kw">await</span> github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                body:  <span class="str">`⚠️ This PR changes **${lines} lines**. Consider splitting.`</span>
+              });
+            }</code></pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Conclusion -->
+  <div class="conclusion">
+    <h2>GitHub Actions — это не просто CI</h2>
+    <p>Это полноценная платформа автоматизации, которая позволяет строить сложные multi-environment pipeline с approval gates, OIDC-аутентификацией, матричными сборками и переиспользуемой логикой. Правильная архитектура workflow — такой же код, как и основное приложение: он требует ревью, тестирования и документации.</p>
+  </div>
+
+</div>
+</body>
+</html>
